@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.svw.touchtime.CheckableLinearLayout
+
+    android:id="@+id/scrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout android:id="@+id/linearLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TableRow
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <Spinner
+                        android:id="@+id/year_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/last_name_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/first_name_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/group_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/company_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/location_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/job_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Button
+                        android:id="@+id/report_start_date_button"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.2"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/employee_selection_item_date"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:textColor="@color/svw_blue"
+                        android:clickable="true"
+                        android:onClick="onSelectDateButtonClicked"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/report_end_date_button"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.4"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/employee_selection_item_date"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:textColor="@color/svw_blue"
+                        android:clickable="true"
+                        android:onClick="onSelectDateButtonClicked"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.4"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/employee_selection_item_timeout"
+                        android:textSize="@dimen/medium_text_size"
+                        android:textStyle="bold|italic"
+                        android:background="@color/svw_orange"
+                        android:textColor="@color/svw_black"
+                        android:gravity="center" />
+
+                    <EditText
+                        android:id="@+id/activity_lunch_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:hint="@string/enter_lunch_hint"
+                        android:inputType="number"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:textStyle="bold|italic"
+                        android:background="@color/svw_dark_gray"
+                        android:textColor="@color/svw_black"/>
+
+                    <TextView
+                        android:id="@+id/total_hours_view"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/employee_selection_item_hours"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:textStyle="bold|italic"
+                        android:background="@color/svw_orange"
+                        android:textColor="@color/svw_black"
+                        android:gravity="center" />
+
+                    <EditText
+                    android:id="@+id/activity_supervisor_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:paddingLeft="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="@string/enter_supervisor_hint"
+                    android:inputType="text"
+                    android:textSize="@dimen/medium_small_text_size"
+                    android:textStyle="bold|italic"
+                    android:background="@color/svw_dark_gray"
+                    android:textColor="@color/svw_black"/>
+
+                    <EditText
+                        android:id="@+id/activity_comment_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:hint="@string/enter_comment_hint"
+                        android:inputType="text"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:textStyle="bold|italic"
+                        android:background="@color/svw_dark_gray"
+                        android:textColor="@color/svw_black"/>
+                </TableRow>
+
+                <ListView
+                    android:id="@+id/daily_activity_list_view"
+                    android:layout_width="3000dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/list_view_border"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:choiceMode="singleChoice"
+                    android:listSelector="@android:color/darker_gray"
+                    />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+</com.svw.touchtime.CheckableLinearLayout>

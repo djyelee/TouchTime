@@ -1,0 +1,243 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://www.gueei.com/android-binding/"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator">
+
+        <ListView
+            android:id="@+id/work_group_list_view"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.8"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:choiceMode="singleChoice"
+            android:listSelector="@android:color/darker_gray"/>
+
+        <ListView
+            android:id="@+id/employee_list_view"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3.2"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:choiceMode="singleChoice"
+            android:listSelector="@android:color/darker_gray"/>
+
+        <TableLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            >
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/work_group_name_text"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_blue"
+                    android:layout_weight="1" />
+                <EditText
+                    android:id="@+id/work_group_name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="text"
+                    android:textColor="@color/svw_black"
+                    android:layout_weight="1.1"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:background="@color/svw_dark_gray"
+                    android:layout_gravity="bottom" />
+            </TableRow>
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/supervisor_name_text"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_blue"
+                    android:layout_weight="1" />
+                <EditText
+                    android:id="@+id/supervisor_name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="text"
+                    android:textColor="@color/svw_black"
+                    android:layout_weight="1.1"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:background="@color/svw_dark_gray"
+                    android:layout_gravity="bottom" />
+            </TableRow>
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shift_name_text"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_blue"
+                    android:layout_weight="1" />
+                <EditText
+                    android:id="@+id/shift_name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="text"
+                    android:textColor="@color/svw_black"
+                    android:layout_weight="1.1"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:background="@color/svw_dark_gray"
+                    android:layout_gravity="bottom" />
+            </TableRow>
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/hourly_rate_text"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_blue"
+                    android:layout_weight="1" />
+                <EditText
+                    android:id="@+id/hourly_rate_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="number"
+                    android:textColor="@color/svw_black"
+                    android:layout_weight="1.1"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:background="@color/svw_dark_gray"
+                    android:layout_gravity="bottom" />
+              </TableRow>
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/piece_rate_text"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_blue"
+                    android:layout_weight="1" />
+                <EditText
+                    android:id="@+id/piece_rate_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="number"
+                    android:textColor="@color/svw_black"
+                    android:layout_weight="1.1"
+                    android:layout_marginBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:background="@color/svw_dark_gray"
+                    android:layout_gravity="bottom" />
+             </TableRow>
+
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/add_work_group"
+                    android:text="@string/button_new"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/roundshapebtn"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:onClick="onAddUpdateButtonClicked"
+                    android:layout_gravity="center_vertical" />
+                <Button
+                    android:id="@+id/update_work_group"
+                    android:text="@string/button_upd"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/roundshapebtn"
+                    android:clickable="true"
+                    android:onClick="onAddUpdateButtonClicked"
+                    android:layout_gravity="center_vertical" />
+            </TableRow>
+
+            <TableRow
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+                <Button
+                    android:text="@string/button_emp"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/roundshapebtn"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:clickable="true"
+                    android:onClick="onEmployeeButtonClicked"
+                    android:layout_gravity="center_vertical" />
+                <Button
+                    android:text="@string/button_del"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/roundshapebtn"
+                    android:clickable="true"
+                    android:onClick="onDeleteButtonClicked"
+                    android:layout_gravity="center_vertical" />
+            </TableRow>
+
+        </TableLayout>
+
+</LinearLayout>

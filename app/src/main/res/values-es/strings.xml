@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General Purposes -->
+    <dimen name="large_text_size">64sp</dimen>
+    <dimen name="medium_large_text_size">48sp</dimen>
+    <dimen name="medium_text_size">32sp</dimen>
+    <dimen name="medium_small_text_size">24sp</dimen>
+    <dimen name="small_text_size">16sp</dimen>
+    <dimen name="button_width">300dp</dimen>
+    <dimen name="button_height">100dp</dimen>
+    <color name="svw_blue">#ff15168c</color>
+    <color name="svw_cyan">#ffc7e3ff</color>
+    <color name="svw_gray">#ffa0a0a0</color>
+    <color name="svw_black">#000000</color>
+    <color name="svw_dark_gray">#ffd0d0d0</color>
+    <color name="svw_orange">#ffffa441</color>
+
+    <!-- These are used for database keys.  Can only use English -->
+    <string name="employee_selection_item_id">ID</string>
+    <string name="employee_selection_item_last_name">Last Name</string>
+    <string name="employee_selection_item_first_name">First Name</string>v
+    <string name="employee_selection_item_active">Active</string>
+    <string name="employee_selection_item_current">Current</string>
+    <string name="employee_selection_item_group">Group</string>
+    <string name="employee_selection_item_status">Status</string>
+    <string name="company_selection_item_name">Company Name</string>
+    <string name="group_selection_item_name">Group</string>
+    <string name="company_selection_item">Company</string>
+    <string name="employee_selection_item_company">Company</string>
+    <string name="employee_selection_item_location">Location</string>
+    <string name="employee_selection_item_job">Job</string>
+    <string name="employee_selection_item_date">Date</string>
+    <string name="employee_selection_item_timein">Time In</string>
+    <string name="employee_selection_item_timeout">Time Out</string>
+    <string name="employee_selection_item_lunch">Lunch</string>
+    <string name="employee_selection_item_hours">Hours</string>
+    <string name="employee_selection_item_supervisor">Supervisor</string>
+    <string name="employee_selection_item_comments">Comments</string>
+
+    <!-- Main Menus -->
+    <string name="app_name">Touch Time - Smart Vision Works, LLC.</string>
+    <string name="screen_name">Main Menu</string>
+    <string name="administrator">Administrator</string>
+    <string name="supervisor">Supervisor</string>
+    <string name="employee">Employee</string>
+    <string name="confirm_delete_title">Confirm Delete</string>
+    <string name="empty_entry_title">Empty Entry Warning !</string>
+    <string name="work_group_title">Edit Work Group</string>
+    <string name="work_group_warning_title">Work Group Warning !</string>
+    <string name="company_warning_title">Company Warning !</string>
+    <string name="work_group_punch_title">Confirm Group Punch In/Out!</string>
+    <string name="work_group_assign_title">Confirm Assign Group !</string>
+    <string name="employee_assign_title">Confirm Assign Employee !</string>
+    <string name="employee_punch_title">Confirm Employee Punch In/Out!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="out">Out</string>
+    <string name="in">In</string>
+    <string name="empty">Empty</string>
+    <string name="button_new">New</string>
+    <string name="button_del">Delete</string>
+    <string name="button_upd">Update</string>
+    <string name="button_sub">Submit</string>
+    <string name="button_sel">Select</string>
+    <string name="button_go">Go</string>
+    <string name="button_emp">Employees</string>
+    <string name="button_move_job">Move Job</string>
+    <string name="button_punch_in">Punch In</string>
+    <string name="button_punch_out">Punch Out</string>
+    <string name="button_assign">Assign Job</string>
+
+    <!-- Administrator and Supervisor Menus -->
+    <string name="administrator_menu">Administrator Menu</string>
+    <string name="supervisor_menu">Supervisor Menu</string>
+    <string name="company_profile_menu">Company Profile</string>
+    <string name="job_location_menu">Job and Location</string>
+    <string name="employee_profile_menu">Employee Profile</string>
+    <string name="work_group_menu">Work Group</string>
+    <string name="individual_punch_menu">Individual \n Punch In/Out</string>
+    <string name="work_group_punch_menu">Work Group \n Punch In/Out</string>
+    <string name="daily_activity_menu">Daily Activity</string>
+    <string name="report_review_menu">View Report</string>
+    <string name="report_export_menu">Export Report</string>
+
+    <!-- Company Profile Menu -->
+    <string name="company_name_header">Company Name</string>
+    <string name="company_profile_title">Edit Company Profile</string>
+    <string name="company_name_text">Name:</string>
+    <string name="company_street_text">Street:</string>
+    <string name="company_city_text">City:</string>
+    <string name="company_state_text">State:</string>
+    <string name="company_zip_code_text">Zip Code:</string>
+    <string name="company_country_text">Country:</string>
+    <string name="company_contact_text">Contact:</string>
+    <string name="company_phone_text">Tel:</string>
+    <string name="company_email_text">Email:</string>
+    <string name="new_company_message">Create company profile ?</string>
+    <string name="change_company_message">Update company name ?</string>
+    <string name="update_company_message">Update company profile ?</string>
+    <string name="confirm_delete_company_message">Delete company permanently ?</string>
+
+    <!-- Job and Location Menu -->
+    <string name="no_company_message">No company !</string>
+    <string name="radio_employee">Employee</string>
+    <string name="radio_company">Company</string>
+    <string name="radio_job">Job</string>
+    <string name="radio_loc">Location</string>
+    <string name="hint_add_job_item">Enter a new job here ...</string>
+    <string name="hint_add_location_item">Enter a new location here ...</string>
+
+    <!-- Employee Profile Menu -->
+    <string name="employee_name_text">Name:</string>
+    <string name="employee_last_name_text">Last Name</string>
+    <string name="employee_first_name_text">First Name</string>
+    <string name="employee_comma_name_text"> , </string>
+    <string name="employee_ss_number_text">SS#:</string>
+    <string name="employee_birth_date_text">DoB:</string>
+    <string name="employee_hire_date_text">DoHire:</string>
+    <string name="employee_active_text">Active</string>
+    <string name="employee_expiration_text">Doc Exp:</string>
+    <string name="employee_current_text">Current</string>
+
+    <string name="employee_done_text">Done</string>
+    <string name="hint_employee_id_text">Employee ID</string>
+    <string name="hint_employee_comments_text">Comments</string>
+    <string name="confirm_delete_employee_message">Delete employee permanently ?</string>
+    <string name="last_name_empty_message">Last name cannot be empty !</string>
+    <string name="first_name_empty_message">First name cannot be empty !</string>
+    <string name="employee_profile_title">Edit Employee Profile</string>
+    <string name="existing_employee_ID_message">Assign a new ID ?</string>
+    <string name="new_employee_ID_message">Create employee profile ?</string>
+    <string name="update_employee_message">Update employee profile ?</string>
+    <string name="no_employee_ID_message">Select an employee !</string>
+    <string name="empty_employee_message">No employee assigned to group !</string>
+
+    <!-- Work Group Menu -->
+    <string name="group_name_header">Group</string>
+    <string name="manage_work_group_title">Manage Work Group</string>
+    <string name="work_group_name_text">Group Name:</string>
+    <string name="supervisor_name_text">Supervisor:</string>
+    <string name="shift_name_text">Shift Name:</string>
+    <string name="hourly_rate_text">Hourly Rate:</string>
+    <string name="piece_rate_text">Piece Rate:</string>
+    <string name="new_work_group_message">Create work group ?</string>
+    <string name="update_work_group_message">Update work group ?</string>
+    <string name="confirm_delete_work_group_message">Delete work group permanently ?</string>
+    <string name="select_work_group_message">Select a work group !</string>
+    <string name="group_name_empty_message">Group name cannot be empty !</string>
+    <string name="invalid_employee_selection">Assign inactive or not current employees ?</string>
+    <string name="reassign_employee_selection">Reassign group ?</string>
+    <string name="employee_selection_title">Select employees for group </string>
+
+    <!-- Work Group Punch In -->
+    <string name="button_select_location">Location</string>
+    <string name="button_select_job">Job</string>
+    <string name="group_id_view">Group ID</string>
+    <string name="group_name_view">Group Name</string>
+    <string name="no_work_group_message">No work group !</string>
+    <string name="assign_work_group_message">Assign company, location, and job to work group ?</string>
+    <string name="select_company_message">Select a company !</string>
+    <string name="no_location_message">Company has no location assigned !</string>
+    <string name="no_job_message">Company has no job assigned !</string>
+    <string name="group_punch_in_message">Punch in group ?</string>
+    <string name="group_punch_out_message">Punch out group ?</string>
+    <string name="group_move_message">Move group ?</string>
+    <string name="group_already_punched_in_message">Group already punched in !</string>
+    <string name="group_must_punch_out_message">Group must be punched out first !</string>
+    <string name="group_not_punched_in_message">Group has not been punched in !</string>
+    <string name="group_move_anyway_message">Group has not been punched in. Punch in now ?</string>
+
+    <!-- Employee Punch In -->
+    <string name="no_employee_message">No employee !</string>
+    <string name="employee_punch_in_message">Punch in employee ?</string>
+    <string name="employee_punch_out_message">Punch out employee ?</string>
+    <string name="employee_move_message">Move employee ?</string>
+    <string name="employee_already_punched_in_message">Employee already punched in !</string>
+    <string name="employee_already_punched_out_message">Employee already punched out !</string>
+    <string name="employee_must_punch_out_message">Employee must be punched out first !</string>
+    <string name="employee_not_punched_in_message">Employee has not been punched in !</string>
+    <string name="employee_move_anyway_message">Employee has not been punched in. Punch in now ?</string>
+    <string name="no_company_location_job_message">Assign company, location, and job !</string>
+    <string name="assign_employee_message">Assign company, location, and job to employee ?</string>
+
+    <!-- Report Selection -->
+    <string name="report_selection_id">Employee ID</string>
+    <string name="report_selection_last_name">Last Name</string>
+    <string name="report_selection_first_name">First Name</string>
+    <string name="report_selection_start_date">Start Date</string>
+    <string name="report_selection_end_date">End Date</string>
+    <string name="report_selection_group">Group</string>
+    <string name="report_selection_company">Company</string>
+    <string name="report_selection_location">Location</string>
+    <string name="report_selection_job">Job</string>
+
+    <!-- Daily Activity -->
+    <string name="no_daily_activity_message">No activity </string>
+    <string name="delete_daily_activity_message">Delete activity permanently ?</string>
+    <string name="enter_comment_hint">Enter comment...</string>
+    <string name="enter_supervisor_hint">Enter supervisor..</string>
+    <string name="enter_lunch_hint">Lunch..</string>
+    <string name="employee_selection_item_no_selection">No Selection</string>
+    <!-- Employee Menus -->
+    <string name="employee_menu">Employee Punch In/Out</string>
+    <string name="id_hint">Enter 4-Digit Employee ID : </string>
+    <string name="id_success">Are you </string>
+    <string name="id_fail">ID not available, enter again.</string>
+    <string name="job_location">Job Location</string>
+
+    <!-- Activity Names -->
+    <string name="title_activity_main">Touch Time Main Menu</string>
+    <string name="title_activity_administrator_menu">Administrator Menu</string>
+    <string name="title_activity_supervisor_menu">Supervisor Menu</string>
+    <string name="title_activity_employee_menu">Employee Menu</string>
+
+    <string name="title_activity_report_Selection_menu">Report Selection Menu</string>
+    <string name="title_activity_employee_profile_menu">Employee Profile Menu</string>
+    <string name="title_activity_punch_in_out_menu">Punch In/Out Menu</string>
+
+    <string name="title_activity_work_group_menu">Work Group Menu</string>
+    <string name="title_activity_daily_activity_menu">Daily Activity Menu</string>
+    <string name="title_activity_export_data_menu">Export Data Menu</string>
+    <string name="title_activity_job_location_menu">Job Location Menu</string>
+    <string name="title_activity_company_profile_menu">Company Profile Menu</string>
+    <string name="title_activity_employee_punch_menu">Employee Punch In/Out Menu</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_group_punch_menu">Group Punch In/Out Menu</string>
+    <string name="title_activity_employee_detail">Employee Detail</string>
+    <string name="title_activity_employee_selection">Employee Selection</string>
+    <string name="title_activity_report_view">ReportViewActivity</string>
+    <string name="title_activity_report_selection_menu">ReportSelectionMenuActivity</string>
+    <string name="title_activity_work_group_punch_menu">WorkGroupPunchMenuActivity</string>
+    <string name="title_activity_report_export_menu">ReportExportMenuActivity</string>
+    <string name="title_activity_report_review_menu">ReportReviewMenuActivity</string>
+
+</resources>

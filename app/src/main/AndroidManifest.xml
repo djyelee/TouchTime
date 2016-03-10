@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.svw.touchtime" >
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".TouchTimeActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".AdministratorMenuActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName=".TouchTimeActivity" >
+        </activity>
+        <activity
+            android:name=".SupervisorMenuActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName=".TouchTimeActivity" >
+        </activity>
+        <activity
+            android:name=".EmployeeMenuActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName=".TouchTimeActivity" >
+        </activity>
+        <activity
+            android:name=".CompanyProfileMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <!-- add adjustPan so EditText will not be blocked by soft keyboard -->
+        <activity
+            android:name=".JobLocationMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".EmployeeProfileMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".EmployeeDetailActivity"
+            android:label="@string/title_activity_employee_profile_menu"
+            android:parentActivityName=".EmployeeProfileMenuActivity" >
+        </activity>
+        <activity
+            android:name=".WorkGroupMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".EmployeeSelectionActivity"
+            android:label="@string/title_activity_work_group_menu"
+            android:parentActivityName=".WorkGroupMenuActivity" >
+        </activity>
+        <activity
+            android:name=".WorkGroupPunchMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity" >
+        </activity>
+        <activity
+            android:name=".EmployeePunchMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity" >
+        </activity>
+        <activity
+            android:name=".DailyActivityMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".ReportReviewMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name=".ReportExportMenuActivity"
+            android:label="@string/title_activity_administrator_menu"
+            android:parentActivityName=".AdministratorMenuActivity" >
+        </activity>
+
+    </application>
+
+</manifest>

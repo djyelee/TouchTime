@@ -1,0 +1,151 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://www.gueei.com/android-binding/"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/svw_cyan"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <TextView
+        android:textSize="@dimen/large_text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/employee_menu"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold|italic"
+        android:textColor="@color/svw_blue"
+        android:layout_weight="1.2" />
+
+    <TableLayout
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal|top"
+        android:orientation="vertical">
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <TextView
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/id_hint"
+                android:layout_gravity="center_vertical|left"
+                android:textStyle="bold|italic"
+                android:gravity="bottom" />
+            <EditText
+                android:id="@+id/EmployeeID"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:inputType="numberPassword"
+                android:password="true"
+                android:imeOptions="actionDone"
+                android:layout_gravity="center_vertical" />
+            <TextView
+                android:id="@+id/current_time"
+                android:textSize="@dimen/large_text_size"
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/svw_blue"
+                android:text="Current Time"
+                android:layout_gravity="center_vertical|right"
+                android:textStyle="bold|italic"
+                android:gravity="center|right" />
+        </TableRow>
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingRight="50dp"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/LocalTextView"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|left"
+                android:textStyle="bold|italic" />
+            <Button
+                android:text="@string/yes"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_gravity="center_vertical" />
+            <Button
+                android:text="@string/no"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_gravity="center_vertical" />
+        </TableRow>
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <Spinner
+                android:id="@+id/location_spinner"
+                android:textSize="64sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:prompt="@string/job_location"
+                android:layout_gravity="center|right"
+                android:layout_weight="1"
+                android:touchscreenBlocksFocus="false" />
+
+            <Spinner
+                android:id="@+id/job_spinner"
+                android:textSize="64sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:prompt="@string/job_location"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+        </TableRow>
+        <TableRow
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" >
+            <Button
+                android:text="@string/button_move_job"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:clickable="true"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+            <Button
+                android:text="@string/button_punch_in"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:clickable="true"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+            <Button
+                android:text="@string/button_punch_out"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:clickable="true"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+        </TableRow>
+
+    </TableLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,192 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://www.gueei.com/android-binding/"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator">
+
+    <ListView
+        android:id="@+id/work_group_list_view"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="0.8"
+        android:background="@drawable/list_view_border"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/darker_gray"/>
+
+    <TableLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="4.8"
+        >
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/selection"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:orientation="horizontal" >
+            <RadioButton
+                android:id="@+id/radio_employee"
+                android:paddingRight="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/radio_employee"
+                android:textSize="@dimen/medium_text_size"
+                android:onClick="onRadioButtonClicked"
+                android:layout_gravity="center_vertical"
+                android:checked="true"
+                android:clickable="true" />
+            <RadioButton
+                android:id="@+id/radio_company"
+                android:paddingRight="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.1"
+                android:text="@string/radio_company"
+                android:textSize="@dimen/medium_text_size"
+                android:onClick="onRadioButtonClicked"
+                android:layout_gravity="center_vertical"
+                android:clickable="true" />
+            <RadioButton
+                android:id="@+id/radio_loc"
+                android:paddingRight="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/radio_loc"
+                android:textSize="@dimen/medium_text_size"
+                android:onClick="onRadioButtonClicked"
+                android:layout_gravity="center_vertical"
+                android:clickable="true" />
+            <RadioButton
+                android:id="@+id/radio_job"
+                android:paddingRight="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="@string/radio_job"
+                android:textSize="@dimen/medium_text_size"
+                android:onClick="onRadioButtonClicked"
+                android:layout_gravity="center_vertical"
+                android:clickable="true" />
+        </RadioGroup>
+
+        <ListView
+            android:id="@+id/universal_list_view"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:choiceMode="singleChoice"
+            android:listSelector="@android:color/darker_gray"
+            android:scrollingCache="true" />
+    </TableLayout>
+
+    <TableLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.5"
+        >
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            />
+        <TextView
+            android:id="@+id/current_date"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@color/svw_blue"
+            android:text="Date"
+            android:textStyle="bold|italic"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/current_time"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textColor="@color/svw_blue"
+            android:text="Time"
+            android:textStyle="bold|italic"
+            android:gravity="center" />
+        <Button
+            android:id="@+id/group_assign"
+            android:text="@string/button_assign"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:onClick="onAssignButtonClicked"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/group_punch_in"
+            android:text="@string/button_punch_in"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:onClick="onPunchInButtonClicked"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/group_punch_out"
+            android:text="@string/button_punch_out"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:onClick="onPunchOutButtonClicked"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/group_move"
+            android:text="@string/button_move_job"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:onClick="onMoveJobButtonClicked"
+            android:layout_gravity="center_vertical" />
+
+    </TableLayout>
+
+</LinearLayout>
