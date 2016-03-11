@@ -11,8 +11,8 @@ public class ReportExportMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -36,6 +36,12 @@ public class ReportExportMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+
+            // close database
+
+            onBackPressed();
             return true;
         }
 

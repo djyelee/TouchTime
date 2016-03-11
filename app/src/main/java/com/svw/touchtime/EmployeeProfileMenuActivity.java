@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,14 +39,15 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     EmployeeProfileList Employee;
     static final int PICK_NEW_REQUEST = 123;             // The request code
     static final int PICK_UPDATE_REQUEST = 456;          // The request code
+    private int Caller;
 
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeWorkGroupDBWrapper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -107,13 +109,16 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
 
     public void onUpdateButtonClicked(View view) {
         if (itemEmployee >= 0) {
+            int [] Data = new int[2];
             Intent intent = new Intent(this, EmployeeDetailActivity.class);
-            intent.putExtra("EmployeeID", Employee.getEmployeeID());
+            Data[0] = Caller;
+            Data[1] = Employee.getEmployeeID();
+            intent.putExtra("EmployeeID", Data);
             startActivityForResult(intent, PICK_UPDATE_REQUEST);
             // itemEmployee = -1;  Remove this line because need to remember previous selection
         } else {
             // put the dialog inside so it will not dim the screen when returns.
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.no_employee_ID_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -125,8 +130,11 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onAddButtonClicked(View view) {
+        int [] Data = new int[2];
         Intent intent = new Intent(this, EmployeeDetailActivity.class);
-        intent.putExtra("EmployeeID", 0);
+        Data[0] = Caller;
+        Data[1] = 0;
+        intent.putExtra("EmployeeID", Data);
         startActivityForResult(intent, PICK_NEW_REQUEST);
     }
 
@@ -167,7 +175,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
 
     public void onDeleteButtonClicked(View view) {
         getWindow().setSoftInputMode ( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN );
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemEmployee >= 0) {
             builder.setMessage(R.string.confirm_delete_employee_message).setTitle(R.string.confirm_delete_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -242,8 +250,11 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home) {
+            db.closeDB();
+            onBackPressed();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

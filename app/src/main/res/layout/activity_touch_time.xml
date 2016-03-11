@@ -27,6 +27,7 @@
             android:layout_weight="1"
             android:layout_gravity="center">
             <Button
+                android:id="@+id/caller_administrator"
                 android:text="@string/administrator"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
@@ -36,6 +37,7 @@
                 android:layout_marginRight="10dp"
                 android:onClick="AdministratorMenu" />
             <Button
+                android:id="@+id/caller_supervisor"
                 android:text="@string/supervisor"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
@@ -65,6 +67,7 @@
                 android:layout_weight="1"
             />
             <Button
+                    android:id="@+id/caller_employee"
                     android:text="@string/employee"
                     android:textSize="@dimen/medium_text_size"
                     android:layout_width="0dp"

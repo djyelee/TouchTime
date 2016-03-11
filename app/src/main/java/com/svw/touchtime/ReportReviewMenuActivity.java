@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,8 +79,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -205,7 +206,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
                                 builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.confirm_delete_title);
                                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
@@ -264,7 +265,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                             ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
                             Activity = ActivityList.get(0);   // should only return one, take the first one
                             if (!Lunch.isEmpty() && Long.parseLong(Lunch) >= 0) {
-                                if (Activity.TimeIn != null) {
+                                if (!Activity.TimeIn.isEmpty()) {
                                     long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
                                     diff = (diff > 0 && diff >= Long.parseLong(Lunch)) ? diff - Long.parseLong(Lunch) : 0;
                                     Activity.setHours(diff);
@@ -480,7 +481,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             map.put(getText(R.string.employee_selection_item_first_name).toString(), Activity.getFirstName());
             list_first_name.add(Activity.getFirstName());
             map.put(getText(R.string.employee_selection_item_group).toString(), Activity.getWorkGroup());
-            if (Activity.getWorkGroup() != null) list_group.add(Activity.getWorkGroup());
+            if (!Activity.getWorkGroup().isEmpty()) list_group.add(Activity.getWorkGroup());
             map.put(getText(R.string.employee_selection_item_company).toString(), Activity.getCompany());
             list_company.add(Activity.getCompany());
             map.put(getText(R.string.employee_selection_item_location).toString(), Activity.getLocation());
@@ -489,7 +490,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             list_job.add(Activity.getJob());
             map.put(getText(R.string.employee_selection_item_date).toString(), Activity.getDate());
             map.put(getText(R.string.employee_selection_item_timein).toString(), Activity.getTimeIn());
-            if (readAll && Activity.getTimeOut() == null && CurrentDate.compareTo(Activity.getDate()) > 0) {
+            if (readAll && Activity.getTimeOut().isEmpty() && CurrentDate.compareTo(Activity.getDate()) > 0) {
                 // reading the entire years record the first time, time out is empty and current date > then punch in date
                 Activity.setTimeOut(DEFAULT_CHECKOUT_TIME);
                 long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
@@ -568,6 +569,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            onBackPressed();
             return true;
         }
 

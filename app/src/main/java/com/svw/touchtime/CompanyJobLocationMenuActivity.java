@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 
 import static com.svw.touchtime.R.layout.company_job_location_listview;
 
-public class JobLocationMenuActivity extends ActionBarActivity {
+public class CompanyJobLocationMenuActivity extends ActionBarActivity {
     private EditText JobLocationEdit;
     private ListView job_location_list_view;
     private ListView company_list_view;
@@ -41,7 +42,8 @@ public class JobLocationMenuActivity extends ActionBarActivity {
     HashMap<String, String> map;
     String[] list_items = new String[5];
     int[] list_id = new int[5];
-    private int item = -1;
+    private int item = -1, olditem = -1;
+    private boolean copy_flag = false;
     CompanyJobLocationList Company;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     // Database Wrapper
@@ -50,12 +52,12 @@ public class JobLocationMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
-        setContentView(R.layout.activity_job_location_menu);
+        setContentView(R.layout.activity_company_job_location_menu);
         // layout id information
         Button button_new;
         ArrayList<CompanyJobLocationList> all_lists;
@@ -84,13 +86,13 @@ public class JobLocationMenuActivity extends ActionBarActivity {
             do {
                 unique_com.add(all_lists.get(i++).getName());
             } while (i < all_lists.size());
-            if (all_lists.get(0).getJob() != null) {
+            if (!all_lists.get(0).getJob().isEmpty()) {
                 for (String s : all_lists.get(0).Job.split(",")) {
                     String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                     if (!ss.isEmpty()) unique_job.add(ss);
                 }
             }
-            if (all_lists.get(0).getLocation() != null) {
+            if (!all_lists.get(0).getLocation().isEmpty()) {
                 for (String s: all_lists.get(0).Location.split(",")) {
                     String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                     if (!ss.isEmpty()) unique_loc.add(ss);
@@ -133,7 +135,7 @@ public class JobLocationMenuActivity extends ActionBarActivity {
                 job_location_list_view.setAdapter(adapter_loc);
             }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.no_company_message).setTitle(R.string.company_warning_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -150,7 +152,7 @@ public class JobLocationMenuActivity extends ActionBarActivity {
         adapter_com = new SimpleAdapter(this, feedCompanyList, R.layout.company_display_view, list_items, list_id);
         company_list_view.setAdapter(adapter_com);
         if (all_lists.size() > 0) {
-            item = 0;
+            item = olditem = 0;
             company_list_view.setItemChecked(item+1, true);
             Company = db.getCompanyList(unique_com.get(0));
         }
@@ -159,6 +161,7 @@ public class JobLocationMenuActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
+                olditem = item;
                 item = position-1;
                 company_list_view.setItemChecked(position, true);
                 view.animate().setDuration(100).alpha(0)   // dim the selection
@@ -166,6 +169,15 @@ public class JobLocationMenuActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.company_selection_item_name).toString()));
+                                if (copy_flag) {
+                                    CompanyJobLocationList OldCompany;
+                                    // OldCompany = new CompanyJobLocationList();
+                                    OldCompany = db.getCompanyList(feedCompanyList.get(olditem).get(getText(R.string.company_selection_item_name).toString()));
+                                    Company.Job = OldCompany.getJob();
+                                    Company.Location = OldCompany.getLocation();
+                                    db.updateCompanyList(Company);
+                                    copy_flag = false;
+                                }
                                 String[] array = Company.Job.split(",");
                                 unique_job.clear();
                                 for (String s: array) {
@@ -210,7 +222,7 @@ public class JobLocationMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                  view.setAlpha(1);
+                                view.setAlpha(1);
                             }
                         });
             }
@@ -286,6 +298,32 @@ public class JobLocationMenuActivity extends ActionBarActivity {
         }
     }
 
+    public void onClearButtonClicked(View view) {
+        if (item >= 0) {
+            unique_job.clear();
+            JSONArray JobArray = new JSONArray(unique_job);
+            Company.setJob(JobArray.toString());
+
+            unique_loc.clear();
+            JSONArray LocationArray = new JSONArray(unique_loc);
+            Company.setLocation(LocationArray.toString());
+
+            db.updateCompanyList(Company);
+
+            if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                adapter_job.notifyDataSetChanged();
+            } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                adapter_loc.notifyDataSetChanged();
+            }
+        }
+    }
+
+    public void onCopyToButtonClicked(View view) {
+        if (item >= 0) {
+            copy_flag = true;
+        }
+    }
+
     public void onRadioButtonClicked(View view) {
         if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
             JobLocationEdit.setHint(R.string.hint_add_job_item);
@@ -301,7 +339,7 @@ public class JobLocationMenuActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_job_location_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_company_job_location_menu, menu);
         return true;
     }
 
@@ -314,6 +352,10 @@ public class JobLocationMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            db.closeDB();
+            onBackPressed();
             return true;
         }
 

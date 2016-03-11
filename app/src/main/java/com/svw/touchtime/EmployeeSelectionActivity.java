@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -170,7 +171,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
            } while (++i < feedList.size());
         }
         if (reassignEmployee) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.reassign_employee_selection).setTitle(R.string.employee_selection_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -187,7 +188,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         } else if (!validEmployee) {   // employee is not current or invalid
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.invalid_employee_selection).setTitle(R.string.employee_selection_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {

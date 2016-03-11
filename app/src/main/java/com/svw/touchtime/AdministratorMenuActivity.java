@@ -1,72 +1,83 @@
 package com.svw.touchtime;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class AdministratorMenuActivity extends ActionBarActivity {
+    private int Caller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administrator_menu);
+
+        TextView main_menu;
+        main_menu = (TextView) findViewById(R.id.main_menu);
+        Caller = getIntent().getIntExtra("Caller", -1);
+        setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_main).toString()));
+        if (Caller == R.id.caller_administrator)
+            main_menu.setText(getText(R.string.title_activity_administrator_menu).toString());
+        else
+            main_menu.setText(getText(R.string.title_activity_supervisor_menu).toString());
     }
 
     public void ReportReviewMenu(View view) {
         Intent intent = new Intent(this, ReportReviewMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void EmployeeProfileMenu(View view) {
         Intent intent = new Intent(this, EmployeeProfileMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void EmployeePunchMenu(View view) {
         Intent intent = new Intent(this, EmployeePunchMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void WorkGroupPunchMenu(View view) {
         Intent intent = new Intent(this, WorkGroupPunchMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void WorkGroupMenu(View view) {
         Intent intent = new Intent(this, WorkGroupMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void DailyActivityMenu(View view) {
         Intent intent = new Intent(this, DailyActivityMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void ReportExportMenu(View view) {
         Intent intent = new Intent(this, ReportExportMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
-    public void JobLocationMenu(View view) {
-        Intent intent = new Intent(this, JobLocationMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+    public void CompanyJobLocationMenu(View view) {
+        Intent intent = new Intent(this, CompanyJobLocationMenuActivity.class);
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 
     public void CompanyProfileMenu(View view) {
         Intent intent = new Intent(this, CompanyProfileMenuActivity.class);
-        intent.putExtra("Caller", getText(R.string.administrator_menu).toString());
+        intent.putExtra("Caller", Caller);
         startActivity(intent);
     }
 

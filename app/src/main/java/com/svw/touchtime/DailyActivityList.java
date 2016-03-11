@@ -22,19 +22,19 @@ public class DailyActivityList {
     // constructors
     public DailyActivityList() {
         this.EmployeeID = 0;
-        this.LastName = null;
-        this.FirstName = null;
-        this.WorkGroup = null;
-        this.Company = null;
-        this.Location = null;
-        this.Job = null;
-        this.Date = null;
-        this.TimeIn = null;
-        this.TimeOut = null;
+        this.LastName = "";
+        this.FirstName = "";
+        this.WorkGroup = "";
+        this.Company = "";
+        this.Location = "";
+        this.Job = "";
+        this.Date = "";
+        this.TimeIn = "";
+        this.TimeOut = "";
         this.Lunch = 0;
         this.Hours = 0;
-        this.Supervisor = null;
-        this.Comments = null;
+        this.Supervisor = "";
+        this.Comments = "";
     }
 
     public DailyActivityList(DailyActivityList DailyActivity) {
@@ -60,38 +60,38 @@ public class DailyActivityList {
     }       // must be at least 1
 
     public void setLastName(String LastName) {
-        if (LastName != null) this.LastName = LastName;
+        if (!LastName.isEmpty()) this.LastName = LastName;
     }
 
     public void setFirstName(String FirstName) {
-        if (FirstName != null) this.FirstName = FirstName;
+        if (!FirstName.isEmpty()) this.FirstName = FirstName;
     }
 
     public void setWorkGroup(String WorkGroup) {
-        if (WorkGroup != null) this.WorkGroup = WorkGroup;
+        if (!WorkGroup.isEmpty()) this.WorkGroup = WorkGroup;
     }
 
     public void setCompany(String Company) {
-        if (Company != null) this.Company = Company;
+        if (!Company.isEmpty()) this.Company = Company;
     }
 
     public void setLocation(String Location) {
-        if (Location != null) this.Location = Location;
+        if (!Location.isEmpty()) this.Location = Location;
     }
 
     public void setJob(String Job) {
-        if (Job != null) this.Job = Job;
+        if (!Job.isEmpty()) this.Job = Job;
     }
     public void setDate(String Date) {
-        if (Date != null) this.Date = Date;
+        if (!Date.isEmpty()) this.Date = Date;
     }
 
     public void setTimeIn(String TimeIn) {
-        if (TimeIn != null) this.TimeIn = TimeIn;
+        if (!TimeIn.isEmpty()) this.TimeIn = TimeIn;
     }
 
     public void setTimeOut(String TimeOut) {
-        if (TimeOut != null) this.TimeOut = TimeOut;
+        if (!TimeOut.isEmpty()) this.TimeOut = TimeOut;
     }
 
     public void setLunch(long Lunch) {
@@ -103,11 +103,11 @@ public class DailyActivityList {
     }
 
     public void setSupervisor(String Supervisor) {
-        if (Supervisor != null) this.Supervisor = Supervisor;
+        if (!Supervisor.isEmpty()) this.Supervisor = Supervisor;
     }
 
     public void setComments(String Comments) {
-        if (Comments != null) this.Comments = Comments;
+        if (!Comments.isEmpty()) this.Comments = Comments;
     }
 
     // getters

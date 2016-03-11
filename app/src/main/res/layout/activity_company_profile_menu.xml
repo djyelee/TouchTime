@@ -22,7 +22,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:choiceMode="singleChoice"
-            android:listSelector="@android:color/darker_gray"/>
+            android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
 
         <TableLayout
             android:orientation="horizontal"

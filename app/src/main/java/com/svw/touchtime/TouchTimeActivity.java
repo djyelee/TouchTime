@@ -42,20 +42,19 @@ public class TouchTimeActivity extends ActionBarActivity {
 
     public void AdministratorMenu(View view) {
         Intent intent = new Intent(this, AdministratorMenuActivity.class);
-/*        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-*/
+        intent.putExtra("Caller", R.id.caller_administrator);
         startActivity(intent);
     }
 
     public void SupervisorMenu(View view) {
-        Intent intent = new Intent(this, SupervisorMenuActivity.class);
+        Intent intent = new Intent(this, AdministratorMenuActivity.class);
+        intent.putExtra("Caller", R.id.caller_supervisor);
         startActivity(intent);
     }
 
     public void EmployeeMenu(View view) {
         Intent intent = new Intent(this, EmployeeMenuActivity.class);
+        intent.putExtra("Caller", R.id.caller_employee);
         startActivity(intent);
     }
 }

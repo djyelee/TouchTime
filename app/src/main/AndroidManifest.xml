@@ -26,11 +26,6 @@
             android:parentActivityName=".TouchTimeActivity" >
         </activity>
         <activity
-            android:name=".SupervisorMenuActivity"
-            android:label="@string/title_activity_main"
-            android:parentActivityName=".TouchTimeActivity" >
-        </activity>
-        <activity
             android:name=".EmployeeMenuActivity"
             android:label="@string/title_activity_main"
             android:parentActivityName=".TouchTimeActivity" >
@@ -43,7 +38,7 @@
         </activity>
         <!-- add adjustPan so EditText will not be blocked by soft keyboard -->
         <activity
-            android:name=".JobLocationMenuActivity"
+            android:name=".CompanyJobLocationMenuActivity"
             android:label="@string/title_activity_administrator_menu"
             android:parentActivityName=".AdministratorMenuActivity"
             android:windowSoftInputMode="adjustPan" >

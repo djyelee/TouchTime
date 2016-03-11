@@ -7,13 +7,13 @@
     android:paddingRight="5dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
-    tools:context="com.svw.touchtime.JobLocationMenuActivity">
+    tools:context="com.svw.touchtime.CompanyJobLocationMenuActivity">
 
     <ListView
         android:id="@+id/company_list_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.8"
+        android:layout_weight="0.6"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
@@ -27,15 +27,11 @@
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_weight="1.2">
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
+        android:layout_weight="1.4">
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.3">
+                android:layout_weight="1">
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/selection"
                     android:layout_width="0dp"
@@ -47,7 +43,7 @@
                         android:paddingRight="10dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1"
                         android:text="@string/radio_job"
                         android:textSize="@dimen/medium_text_size"
                         android:onClick="onRadioButtonClicked"
@@ -59,13 +55,29 @@
                         android:paddingRight="10dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="1.5"
                         android:text="@string/radio_loc"
                         android:textSize="@dimen/medium_text_size"
                         android:onClick="onRadioButtonClicked"
                         android:layout_gravity="center_vertical"
                         android:clickable="true" />
                 </RadioGroup>
+                <EditText
+                    android:id="@+id/job_location_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:textSize="@dimen/medium_text_size"
+                    android:inputType="text"
+                    android:hint="@string/hint_add_job_item"
+                    android:textColor="@color/svw_black"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"/>
+             </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
                 <Button
                     android:id="@+id/btn_new"
                     android:layout_width="0dp"
@@ -74,41 +86,53 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/roundshapebtn"
+                    android:layout_marginLeft="1dp"
                     android:layout_marginRight="10dp"
                     android:text="@string/button_new"
                     android:textSize="@dimen/medium_text_size"/>
                 <Button
                     android:id="@+id/btn_del"
                     android:layout_width="0dp"
-                    android:layout_weight="1.2"
+                    android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/roundshapebtn"
                     android:text="@string/button_del"
                     android:textSize="@dimen/medium_text_size"
                     android:onClick="onDeleteButtonClicked"
                     android:clickable="true" />
-            </TableRow>
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.4">
-                <EditText
-                    android:id="@+id/job_location_text"
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/roundshapebtn"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/button_clear_all"
                     android:textSize="@dimen/medium_text_size"
-                    android:inputType="text"
-                    android:hint="@string/hint_add_job_item"
-                    android:textColor="@color/svw_black"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"/>
+                    android:onClick="onClearButtonClicked"
+                    android:clickable="true" />
+                <Button
+                    android:id="@+id/btn_copy_to"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/roundshapebtn"
+                    android:text="@string/button_copy_to"
+                    android:textSize="@dimen/medium_text_size"
+                    android:onClick="onCopyToButtonClicked"
+                    android:clickable="true" />
             </TableRow>
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7.3">
+                android:layout_weight="8">
                 <ListView
                     android:id="@+id/job_location_list_view"
                     android:layout_width="match_parent"
@@ -122,5 +146,4 @@
                     android:listSelector="@android:color/darker_gray"/>
             </TableRow>
         </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

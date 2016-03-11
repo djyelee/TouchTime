@@ -19,17 +19,17 @@ public class CompanyJobLocationList {
 
     // constructors
     public CompanyJobLocationList() {
-        this.Name = null;
-        this.Street = null;
-        this.City = null;
-        this.State = null;
-        this.ZipCode = null;
-        this.Country = null;
-        this.Phone = null;
-        this.Contact = null;
-        this.Email = null;
-        this.Job = null;
-        this.Location = null;
+        this.Name = "";
+        this.Street = "";
+        this.City = "";
+        this.State = "";
+        this.ZipCode = "";
+        this.Country = "";
+        this.Phone = "";
+        this.Contact = "";
+        this.Email = "";
+        this.Job = "";
+        this.Location = "";
     }
 
     public CompanyJobLocationList(CompanyJobLocationList Company) {
@@ -48,37 +48,37 @@ public class CompanyJobLocationList {
 
     // setters
     public void setName(String Name) {
-        if (Name != null) this.Name = Name;
+        if (!Name.isEmpty()) this.Name = Name;
     }
     public void setStreet(String Street) {
-        if (Street != null) this.Street = Street;
+        if (!Street.isEmpty()) this.Street = Street;
     }
     public void setCity(String City) {
-        if (City != null) this.City = City;
+        if (!City.isEmpty()) this.City = City;
     }
     public void setState(String State) {
-        if (State != null) this.State = State;
+        if (!State.isEmpty()) this.State = State;
     }
     public void setZipCode(String ZipCode) {
-        if (ZipCode != null) this.ZipCode = ZipCode;
+        if (!ZipCode.isEmpty()) this.ZipCode = ZipCode;
     }
     public void setCountry(String Country) {
-        if (Country != null) this.Country = Country;
+        if (!Country.isEmpty()) this.Country = Country;
     }
     public void setPhone(String Phone) {
-        if (Phone != null) this.Phone = Phone;
+        if (!Phone.isEmpty()) this.Phone = Phone;
     }
     public void setContact(String Contact) {
-        if (Contact != null) this.Contact = Contact;
+        if (!Contact.isEmpty()) this.Contact = Contact;
     }
     public void setEmail(String Email) {
-        if (Email != null) this.Email = Email;
+        if (!Email.isEmpty()) this.Email = Email;
     }
     public void setJob(String Job) {
-        if (Job != null) this.Job = Job;
+        if (!Job.isEmpty()) this.Job = Job;
     }
     public void setLocation(String Location) {
-        if (Location != null) this.Location = Location;
+        if (!Location.isEmpty()) this.Location = Location;
     }
 
     // getters

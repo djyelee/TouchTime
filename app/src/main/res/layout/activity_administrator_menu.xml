@@ -9,6 +9,7 @@
     android:paddingBottom="20dp">
 
     <TextView
+        android:id="@+id/main_menu"
         android:textSize="@dimen/large_text_size"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -28,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
             <Button
+                android:id="@+id/company_profile_menu"
                 android:text="@string/company_profile_menu"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
@@ -53,7 +55,7 @@
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
-                android:onClick="JobLocationMenu" />
+                android:onClick="CompanyJobLocationMenu" />
             <Button
                 android:text="@string/employee_profile_menu"
                 android:textSize="@dimen/medium_text_size"

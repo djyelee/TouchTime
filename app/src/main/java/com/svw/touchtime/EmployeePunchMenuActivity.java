@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,8 +69,8 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -107,7 +108,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.employee_selection_item_group).toString(), all_employee_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_employee_lists.get(i).getGroup()));
                 map.put(getText(R.string.employee_selection_item_status).toString(), all_employee_lists.get(i).getStatus() == 0 ? getText(R.string.out).toString() : getText(R.string.in).toString());
                 feedEmployeeList.add(map);
-                if (itemEmployee < 0 && map.get(getText(R.string.employee_selection_item_status).toString()) == getText(R.string.out).toString()) itemEmployee = i;
+                if (itemEmployee < 0 && map.get(getText(R.string.employee_selection_item_status).toString()).equals(getText(R.string.out).toString())) itemEmployee = i;
             } while (++i < all_employee_lists.size());
             if (itemEmployee < 0) itemEmployee = 0;        // all employees are punched in, then display the first one
             Employee = dbGroup.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
@@ -131,6 +132,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
             builder.setMessage(R.string.no_employee_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.closeDB();
+                    dbActivity.closeDB();
+                    dbCompany.closeDB();
                     finish();
                 }
             });
@@ -163,6 +167,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
             builder.setMessage(R.string.no_company_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.closeDB();
+                    dbActivity.closeDB();
+                    dbCompany.closeDB();
                     finish();
                 }
             });
@@ -236,7 +243,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     public void getCompanyJobLocation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         int i;
-        if (Employee.getCompany() == null) {
+        if (Employee.getCompany().isEmpty()) {
             builder.setMessage(R.string.select_company_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -267,6 +274,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 builder.setMessage(R.string.no_location_message).setTitle(R.string.empty_entry_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        dbGroup.closeDB();
+                        dbActivity.closeDB();
+                        dbCompany.closeDB();
                         finish();
                     }
                 });
@@ -293,6 +303,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 builder.setMessage(R.string.no_job_message).setTitle(R.string.empty_entry_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        dbGroup.closeDB();
+                        dbActivity.closeDB();
+                        dbCompany.closeDB();
                         finish();
                     }
                 });
@@ -303,7 +316,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
             universal_list_view.setAdapter(adapter_employee);
             universal_list_view.setItemChecked(itemEmployee, true);
@@ -367,7 +380,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     public void markSelectedItems() {
         int i=0;
         while(i < feedEmployeeList.size()) {
-            if (feedEmployeeList.get(i).get(getText(R.string.employee_selection_item_id).toString()) == String.valueOf(Employee.getEmployeeID())) {
+            if (feedEmployeeList.get(i).get(getText(R.string.employee_selection_item_id).toString()).equals(String.valueOf(Employee.getEmployeeID()))) {
                 itemEmployee = i;
                 universal_list_view.setItemChecked(itemEmployee, true);   // it is single choice so no need to erase the previous selection
                 break;      // only one can be highlighted
@@ -377,7 +390,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     }
 
     public void onPunchInButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (Employee.getStatus() == 1) {
             builder.setMessage(R.string.employee_already_punched_in_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -407,7 +420,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     }
 
     public void onPunchOutButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (Employee.getStatus() == 0) {
             builder.setMessage(R.string.employee_not_punched_in_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -431,7 +444,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     }
 
     public void onMoveJobButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemCompany < 0 || itemLocation < 0 || itemJob < 0) {
             builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -472,9 +485,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         Activity = new DailyActivityList();
         Employee = dbGroup.getEmployeeList(Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_id).toString())));
         Employee.setStatus(1);
-        if (unique_com.get(itemCompany) != null) Employee.setCompany(unique_com.get(itemCompany));
-        if (unique_loc.get(itemLocation) != null) Employee.setLocation(unique_loc.get(itemLocation));
-        if (unique_job.get(itemJob) != null) Employee.setJob(unique_job.get(itemJob));
+        if (!unique_com.get(itemCompany).isEmpty()) Employee.setCompany(unique_com.get(itemCompany));
+        if (!unique_loc.get(itemLocation).isEmpty()) Employee.setLocation(unique_loc.get(itemLocation));
+        if (!unique_job.get(itemJob).isEmpty()) Employee.setJob(unique_job.get(itemJob));
         dbGroup.updateEmployeeList(Employee);
 
         feedEmployeeList.remove(itemEmployee);
@@ -497,9 +510,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         Activity.setLastName(Employee.getLastName());
         Activity.setFirstName(Employee.getFirstName());
         if (Employee.getGroup() > 0) Activity.setWorkGroup(dbGroup.getWorkGroupList(Employee.getGroup()).getGroupName());
-        if (Employee.getCompany() != null) Activity.setCompany(Employee.getCompany());
-        if (Employee.getLocation() != null) Activity.setLocation(Employee.getLocation());
-        if (Employee.getJob() != null) Activity.setJob(Employee.getJob());
+        if (!Employee.getCompany().isEmpty()) Activity.setCompany(Employee.getCompany());
+        if (!Employee.getLocation().isEmpty()) Activity.setLocation(Employee.getLocation());
+        if (!Employee.getJob().isEmpty()) Activity.setJob(Employee.getJob());
         Activity.setDate(df.format(Calendar.getInstance().getTime()));
         Activity.setTimeIn(currentDateTimeString);
         dbActivity.createActivityList(Activity);
@@ -554,6 +567,12 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            dbGroup.closeDB();
+            dbActivity.closeDB();
+            dbCompany.closeDB();
+            onBackPressed();
             return true;
         }
 

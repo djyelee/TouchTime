@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,8 +76,8 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -130,6 +131,9 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
             builder.setMessage(R.string.no_work_group_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.closeDB();
+                    dbActivity.closeDB();
+                    dbCompany.closeDB();
                     finish();
                 }
             });
@@ -170,7 +174,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.group_selection_item_name).toString(), unique_com.get(i++));
                 feedCompanyList.add(map);
             };
-            if (WorkGroup.getCompany() != null && unique_com.indexOf(WorkGroup.getCompany()) >= 0) {
+            if (!WorkGroup.getCompany().isEmpty() && unique_com.indexOf(WorkGroup.getCompany()) >= 0) {
                 getCompanyJobLocation();
             } else {
                 itemCompany = 0;
@@ -178,10 +182,13 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 itemJob = 0;
             }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.no_company_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.closeDB();
+                    dbActivity.closeDB();
+                    dbCompany.closeDB();
                     finish();
                 }
             });
@@ -254,7 +261,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                     public void run() {
                         WorkGroup = dbGroup.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup - 1)));
                         displayWorkGroup();
-                        if (WorkGroup.getCompany() != null && unique_com.indexOf(WorkGroup.getCompany()) >= 0) {
+                        if (!WorkGroup.getCompany().isEmpty() && unique_com.indexOf(WorkGroup.getCompany()) >= 0) {
                             getCompanyJobLocation();
                             getEmployeeList();
                         } else {
@@ -284,7 +291,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     public void getEmployeeList() {
         feedEmployeeList.clear();     // clear the old list
         unique_employee.clear();      // c lear the old list
-        if (WorkGroup.getEmployees() != null) {
+        if (!WorkGroup.getEmployees().isEmpty()) {
             String[] array = WorkGroup.getEmployees().split(",");
             for (String s : array) {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
@@ -302,10 +309,13 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 feedEmployeeList.add(map);
             }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(R.string.empty_employee_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.closeDB();
+                    dbActivity.closeDB();
+                    dbCompany.closeDB();
                     finish();
                 }
             });
@@ -316,9 +326,9 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void getCompanyJobLocation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         int i;
-        if (WorkGroup.getCompany() == null) {
+        if (WorkGroup.getCompany().isEmpty()) {
             builder.setMessage(R.string.select_company_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -350,6 +360,9 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 builder.setMessage(R.string.no_location_message).setTitle(R.string.empty_entry_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        dbGroup.closeDB();
+                        dbActivity.closeDB();
+                        dbCompany.closeDB();
                         finish();
                     }
                 });
@@ -376,6 +389,9 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 builder.setMessage(R.string.no_job_message).setTitle(R.string.empty_entry_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        dbGroup.closeDB();
+                        dbActivity.closeDB();
+                        dbCompany.closeDB();
                         finish();
                     }
                 });
@@ -386,7 +402,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void onRadioButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
             getEmployeeList();
             universal_list_view.setAdapter(adapter_employee);
@@ -423,7 +439,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void onAssignButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemCompany <= 0 || itemLocation <= 0 || itemJob <= 0) {
             builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -447,7 +463,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void onPunchInButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (WorkGroup.getStatus() == 1) {
             builder.setMessage(R.string.group_already_punched_in_message).setTitle(R.string.work_group_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -477,7 +493,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void onPunchOutButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (WorkGroup.getStatus() == 0) {
             builder.setMessage(R.string.group_not_punched_in_message).setTitle(R.string.work_group_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -501,7 +517,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void onMoveJobButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemCompany <= 0 || itemLocation <= 0 || itemJob <= 0) {
             builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -539,9 +555,9 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     public void groupAssign() {
         for (String s : unique_employee) {          // create one record for each employee
             Employee = dbGroup.getEmployeeList(Integer.parseInt(s));
-            if (WorkGroup.getCompany() != null) Employee.setCompany(WorkGroup.getCompany());
-            if (WorkGroup.getLocation() != null) Employee.setLocation(WorkGroup.getLocation());
-            if (WorkGroup.getJob() != null) Employee.setJob(WorkGroup.getJob());
+            if (!WorkGroup.getCompany().isEmpty()) Employee.setCompany(WorkGroup.getCompany());
+            if (!WorkGroup.getLocation().isEmpty()) Employee.setLocation(WorkGroup.getLocation());
+            if (!WorkGroup.getJob().isEmpty()) Employee.setJob(WorkGroup.getJob());
             dbGroup.updateEmployeeList(Employee);
         }
         dbGroup.updateWorkGroupList(WorkGroup);
@@ -559,27 +575,27 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
 
         dbGroup.updateWorkGroupList(WorkGroup);
         Activity = new DailyActivityList();
-        if (WorkGroup.getGroupName() != null) Activity.setWorkGroup(WorkGroup.getGroupName());
-        if (WorkGroup.getCompany() != null) Activity.setCompany(WorkGroup.getCompany());
-        if (WorkGroup.getLocation() != null) Activity.setLocation(WorkGroup.getLocation());
-        if (WorkGroup.getJob() != null) Activity.setJob(WorkGroup.getJob());
-        if (WorkGroup.getSupervisor() != null) Activity.setSupervisor(WorkGroup.getSupervisor());
+        if (!WorkGroup.getGroupName().isEmpty()) Activity.setWorkGroup(WorkGroup.getGroupName());
+        if (!WorkGroup.getCompany().isEmpty()) Activity.setCompany(WorkGroup.getCompany());
+        if (!WorkGroup.getLocation().isEmpty()) Activity.setLocation(WorkGroup.getLocation());
+        if (!WorkGroup.getJob().isEmpty()) Activity.setJob(WorkGroup.getJob());
+        if (!WorkGroup.getSupervisor().isEmpty()) Activity.setSupervisor(WorkGroup.getSupervisor());
         Activity.setDate(df.format(Calendar.getInstance().getTime()));
         Activity.setTimeIn(currentDateTimeString);
         for (String s : unique_employee) {          // create one record for each employee
             Employee = dbGroup.getEmployeeList(Integer.parseInt(s));
             if (Employee.getStatus() == 0) {
                 Employee.setStatus(1);
-                if (WorkGroup.getCompany() != null) Employee.setCompany(WorkGroup.getCompany());
-                if (WorkGroup.getLocation() != null) Employee.setLocation(WorkGroup.getLocation());
-                if (WorkGroup.getJob() != null) Employee.setJob(WorkGroup.getJob());
+                if (!WorkGroup.getCompany().isEmpty()) Employee.setCompany(WorkGroup.getCompany());
+                if (!WorkGroup.getLocation().isEmpty()) Employee.setLocation(WorkGroup.getLocation());
+                if (!WorkGroup.getJob().isEmpty()) Employee.setJob(WorkGroup.getJob());
                 dbGroup.updateEmployeeList(Employee);
                 Activity.setEmployeeID(dbGroup.getEmployeeList(Integer.parseInt(s)).getEmployeeID());
                 Activity.setLastName(dbGroup.getEmployeeList(Integer.parseInt(s)).getLastName());
                 Activity.setFirstName(dbGroup.getEmployeeList(Integer.parseInt(s)).getFirstName());
                 dbActivity.createActivityList(Activity);
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
                 builder.setMessage("ID#" + String.valueOf(Employee.getEmployeeID()) + " "+ getText(R.string.employee_already_punched_in_message)).setTitle(R.string.work_group_punch_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -617,7 +633,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                     dbActivity.updatePunchedInActivityList(Activity);
                 }
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
                 builder.setMessage("ID#" + String.valueOf(Employee.getEmployeeID()) + " "+ getText(R.string.employee_already_punched_out_message)).setTitle(R.string.work_group_punch_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -645,6 +661,12 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            dbGroup.closeDB();
+            dbActivity.closeDB();
+            dbCompany.closeDB();
+            onBackPressed();
             return true;
         }
 

@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private EditText LastNameEdit, FirstNameEdit;
     private EditText StreetEdit, CityEdit, StateEdit, ZipCodeEdit;
     private EditText CountryEdit, PhoneEdit, EmailEdit, SSNumberEdit;
+    private EditText HourlyRateEdit, PieceRateEdit;
     private EditText EmployeeIDEdit, CommentsEdit;
     private Button DocExpButton, DoBButton, DoHButton;
     private RadioGroup radioGroupActive, radioGroupCurrent;
@@ -35,12 +37,10 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private RadioButton currentYesButton;
     private ImageView photoView;
     private DatePickerDialog dialog;
-    private Calendar calendar;
-    private int dateButtonID, employeeID;
+    private int dateButtonID;
     private boolean newEmployeeProfile;
-
+    private int Caller;
     EmployeeProfileList Employee;
-    boolean ret;
     private EmployeeWorkGroupDBWrapper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,8 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_employee_profile_menu).toString()));
         setContentView(R.layout.activity_employee_detail);
 
+        Calendar calendar;
+        int employeeID;
         LastNameEdit = (EditText) findViewById(R.id.employee_last_name_text);
         FirstNameEdit = (EditText) findViewById(R.id.employee_first_name_text);
         StreetEdit = (EditText) findViewById(R.id.company_street_text);
@@ -57,6 +59,8 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         CountryEdit = (EditText) findViewById(R.id.company_country_text);
         PhoneEdit = (EditText) findViewById(R.id.company_phone_text);
         EmailEdit = (EditText) findViewById(R.id.company_email_text);
+        HourlyRateEdit = (EditText) findViewById(R.id.employee_hourly_rate_text);
+        PieceRateEdit = (EditText) findViewById(R.id.employee_piece_rate_text);
         SSNumberEdit = (EditText) findViewById(R.id.employee_ss_text);
         EmployeeIDEdit = (EditText) findViewById(R.id.employee_id_text);
         DocExpButton = (Button) findViewById(R.id.doc_exp_button);
@@ -71,13 +75,24 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
         // get current date information
         calendar = Calendar.getInstance();
-        dialog = new DatePickerDialog(this, myDateListener, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        dialog = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+                myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         // database and other data
         db = new EmployeeWorkGroupDBWrapper(this);
         Employee = new EmployeeProfileList();
-        employeeID = getIntent().getIntExtra("EmployeeID", -1);
+
+        int [] Data = new int[2];
+        Data = getIntent().getIntArrayExtra("EmployeeID");
+        employeeID = Data[1];
+        Caller = Data[0];
+        if (Caller != R.id.caller_administrator) {
+            HourlyRateEdit.setFocusable(false);
+            PieceRateEdit.setFocusable(false);
+            HourlyRateEdit.setBackgroundColor(getResources().getColor(R.color.svw_gray));
+            PieceRateEdit.setBackgroundColor(getResources().getColor(R.color.svw_gray));
+        }
+
         if (employeeID > 0) {
             newEmployeeProfile = false;     // receive a valid employeeID, it is for update
             Employee = db.getEmployeeList(employeeID);
@@ -120,6 +135,29 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
     public void onSetDateButtonClicked(View view) {
         dateButtonID = view.getId();
+        switch (dateButtonID) {
+            case R.id.dob_button:
+                if (!Employee.getDoB().isEmpty()) {
+                    int y = Integer.parseInt(Employee.getDoB().substring(0, 4));
+                    int m = Integer.parseInt(Employee.getDoB().substring(5, 7));
+                    int d = Integer.parseInt(Employee.getDoB().substring(8, 10));
+                    dialog.updateDate(Integer.parseInt(Employee.getDoB().substring(0, 4)),
+                            Integer.parseInt(Employee.getDoB().substring(5, 7))-1, Integer.parseInt(Employee.getDoB().substring(8, 10)));
+                }
+                break;
+            case R.id.doh_button:
+                if (!Employee.getDoH().isEmpty()) {
+                    dialog.updateDate(Integer.parseInt(Employee.getDoH().substring(0, 4)),
+                            Integer.parseInt(Employee.getDoH().substring(5, 7))-1, Integer.parseInt(Employee.getDoH().substring(8, 10)));
+                }
+                break;
+            case R.id.doc_exp_button:
+                if (!Employee.getDocExp().isEmpty()) {
+                    dialog.updateDate(Integer.parseInt(Employee.getDocExp().substring(0, 4)),
+                            Integer.parseInt(Employee.getDocExp().substring(5, 7)), Integer.parseInt(Employee.getDocExp().substring(8, 10)));
+                }
+                break;
+        }
         dialog.show();
     }
 
@@ -160,7 +198,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
      public void onDoneButtonClicked(View view) {
         getWindow().setSoftInputMode ( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN );
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (LastNameEdit.getText().toString().isEmpty()) {              // must have the last name
             builder.setMessage(R.string.last_name_empty_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -194,6 +232,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                         setResult(RESULT_OK, returnIntent);
+                        db.closeDB();
                         finish();
                     }
                 });
@@ -210,6 +249,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                         setResult(RESULT_OK, returnIntent);
+                        db.closeDB();
                         finish();
                     }
                 });
@@ -228,6 +268,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                         setResult(RESULT_OK, returnIntent);
+                        db.closeDB();
                         finish();
                     }
                 });
@@ -237,6 +278,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                          Intent returnIntent = new Intent();
                          returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                          setResult(RESULT_OK, returnIntent);
+                         db.closeDB();
                          finish();
                      }
                 });
@@ -259,40 +301,48 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
     public void displayEmployeeProfile() {
         EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
-        LastNameEdit.setText(Employee.getLastName() == null ? "" : Employee.getLastName());
-        FirstNameEdit.setText(Employee.getFirstName() == null ? "" : Employee.getFirstName());
-        StreetEdit.setText(Employee.getStreet() == null ? "" : Employee.getStreet());
-        CityEdit.setText(Employee.getCity() == null ? "" : Employee.getCity());
-        StateEdit.setText(Employee.getState() == null ? "" : Employee.getState());
-        ZipCodeEdit.setText(Employee.getZipCode() == null ? "" : Employee.getZipCode());
-        CountryEdit.setText(Employee.getCountry() == null ? "" : Employee.getCountry());
-        PhoneEdit.setText(Employee.getPhone() == null ? "" : Employee.getPhone());
-        EmailEdit.setText(Employee.getEmail() == null ? "" : Employee.getEmail());
-        SSNumberEdit.setText(Employee.getSSNumber() == null ? "" : Employee.getSSNumber());
-        DoBButton.setText(Employee.getDoB() == null ? "" : Employee.getDoB());
-        DoHButton.setText(Employee.getDoH() == null ? "" : Employee.getDoH());
-        DocExpButton.setText(Employee.getDocExp() == null ? "" : Employee.getDocExp());
-        CommentsEdit.setText(Employee.getComments() == null ? "" : Employee.getComments());
+        LastNameEdit.setText(Employee.getLastName().isEmpty() ? "" : Employee.getLastName());
+        FirstNameEdit.setText(Employee.getFirstName().isEmpty() ? "" : Employee.getFirstName());
+        StreetEdit.setText(Employee.getStreet().isEmpty() ? "" : Employee.getStreet());
+        CityEdit.setText(Employee.getCity().isEmpty() ? "" : Employee.getCity());
+        StateEdit.setText(Employee.getState().isEmpty() ? "" : Employee.getState());
+        ZipCodeEdit.setText(Employee.getZipCode().isEmpty() ? "" : Employee.getZipCode());
+        CountryEdit.setText(Employee.getCountry().isEmpty() ? "" : Employee.getCountry());
+        PhoneEdit.setText(Employee.getPhone().isEmpty() ? "" : Employee.getPhone());
+        EmailEdit.setText(Employee.getEmail().isEmpty() ? "" : Employee.getEmail());
+        if (Caller == R.id.caller_administrator) {
+            HourlyRateEdit.setText(String.valueOf(Employee.getHourlyRate() <= 0.0 ? 10.0 : Employee.getHourlyRate()));
+            PieceRateEdit.setText(String.valueOf(Employee.getPieceRate() <= 0.0 ? 10.0 : Employee.getPieceRate()));
+        }
+        SSNumberEdit.setText(Employee.getSSNumber().isEmpty() ? "" : Employee.getSSNumber());
+        DoBButton.setText(Employee.getDoB().isEmpty() ? "" : Employee.getDoB());
+        DoHButton.setText(Employee.getDoH().isEmpty() ? "" : Employee.getDoH());
+        DocExpButton.setText(Employee.getDocExp().isEmpty() ? "" : Employee.getDocExp());
+        CommentsEdit.setText(Employee.getComments().isEmpty() ? "" : Employee.getComments());
         radioGroupActive.check(Employee.getActive() == 1 ? R.id.radio_active_yes : R.id.radio_active_no);
         radioGroupCurrent.check(Employee.getCurrent() == 1 ? R.id.radio_current_yes : R.id.radio_current_no);
         photoView.setImageBitmap(Employee.getPhoto());
     }
 
     public void addUpdateProfile(boolean Add) {
-        Employee.setLastName((LastNameEdit.getText().toString() == null) ? "" : LastNameEdit.getText().toString());
-        Employee.setFirstName((FirstNameEdit.getText().toString() == null) ? "" : FirstNameEdit.getText().toString());
-        Employee.setStreet((StreetEdit.getText().toString() == null) ? "" : StreetEdit.getText().toString());
-        Employee.setCity((CityEdit.getText().toString() == null) ? "" : CityEdit.getText().toString());
-        Employee.setState((StateEdit.getText().toString() == null) ? "" : StateEdit.getText().toString());
-        Employee.setZipCode((ZipCodeEdit.getText().toString() == null) ? "" : ZipCodeEdit.getText().toString());
-        Employee.setCountry((CountryEdit.getText().toString() == null) ? "" : CountryEdit.getText().toString());
-        Employee.setPhone((PhoneEdit.getText().toString() == null) ? "" : PhoneEdit.getText().toString());
-        Employee.setEmail((EmailEdit.getText().toString() == null) ? "" : EmailEdit.getText().toString());
-        Employee.setSSNumber((SSNumberEdit.getText().toString() == null) ? "" : SSNumberEdit.getText().toString());
-        Employee.setDoB((DoBButton.getText().toString() == null) ? "" : DoBButton.getText().toString());
-        Employee.setDoH((DoHButton.getText().toString() == null) ? "" : DoHButton.getText().toString());
-        Employee.setDocExp((DocExpButton.getText().toString() == null) ? "" : DocExpButton.getText().toString());
-        Employee.setComments((CommentsEdit.getText().toString() == null) ? "" : CommentsEdit.getText().toString());
+        Employee.setLastName((LastNameEdit.getText().toString().isEmpty()) ? "" : LastNameEdit.getText().toString());
+        Employee.setFirstName((FirstNameEdit.getText().toString().isEmpty()) ? "" : FirstNameEdit.getText().toString());
+        Employee.setStreet((StreetEdit.getText().toString().isEmpty()) ? "" : StreetEdit.getText().toString());
+        Employee.setCity((CityEdit.getText().toString().isEmpty()) ? "" : CityEdit.getText().toString());
+        Employee.setState((StateEdit.getText().toString().isEmpty()) ? "" : StateEdit.getText().toString());
+        Employee.setZipCode((ZipCodeEdit.getText().toString().isEmpty()) ? "" : ZipCodeEdit.getText().toString());
+        Employee.setCountry((CountryEdit.getText().toString().isEmpty()) ? "" : CountryEdit.getText().toString());
+        Employee.setPhone((PhoneEdit.getText().toString().isEmpty()) ? "" : PhoneEdit.getText().toString());
+        Employee.setEmail((EmailEdit.getText().toString().isEmpty()) ? "" : EmailEdit.getText().toString());
+        if (Caller == R.id.caller_administrator) {
+            Employee.setHourlyRate((HourlyRateEdit.getText().toString().isEmpty()) ? 10.0 : Double.parseDouble(HourlyRateEdit.getText().toString()));
+            Employee.setPieceRate((PieceRateEdit.getText().toString().isEmpty()) ? 10.0 : Double.parseDouble(PieceRateEdit.getText().toString()));
+        }
+        Employee.setSSNumber((SSNumberEdit.getText().toString().isEmpty()) ? "" : SSNumberEdit.getText().toString());
+        Employee.setDoB((DoBButton.getText().toString().isEmpty()) ? "" : DoBButton.getText().toString());
+        Employee.setDoH((DoHButton.getText().toString().isEmpty()) ? "" : DoHButton.getText().toString());
+        Employee.setDocExp((DocExpButton.getText().toString().isEmpty()) ? "" : DocExpButton.getText().toString());
+        Employee.setComments((CommentsEdit.getText().toString().isEmpty()) ? "" : CommentsEdit.getText().toString());
         Employee.setActive(radioGroupActive.getCheckedRadioButtonId() == activeYesButton.getId() ? 1 : 0);
         Employee.setCurrent(radioGroupCurrent.getCheckedRadioButtonId() == currentYesButton.getId() ? 1 : 0);
         BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
@@ -307,46 +357,47 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         displayEmployeeProfile();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
- //       android.support.v7.app.ActionBar actionBar = getSupportActionBar();
- //       if (actionBar != null) {
- //         actionBar.setHomeButtonEnabled(false); // disable the button
- //          actionBar.setDisplayHomeAsUpEnabled(false); // remove the left caret
- //          actionBar.setDisplayShowHomeEnabled(false); // remove the icon
- //       }
+            @Override
+            public boolean onCreateOptionsMenu(Menu menu) {
+                //       android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+                //       if (actionBar != null) {
+                //         actionBar.setHomeButtonEnabled(false); // disable the button
+                //          actionBar.setDisplayHomeAsUpEnabled(false); // remove the left caret
+                //          actionBar.setDisplayShowHomeEnabled(false); // remove the icon
+                //       }
 //  Add the above lines to remove back button on action bar
 
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_employee_detail, menu);
-        return true;
-    }
+                // Inflate the menu; this adds items to the action bar if it is present.
+                getMenuInflater().inflate(R.menu.menu_employee_detail, menu);
+                return true;
+            }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-           AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_profile_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    onBackPressed();
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                // Handle action bar item clicks here. The action bar will
+                // automatically handle clicks on the Home/Up button, so long
+                // as you specify a parent activity in AndroidManifest.xml.
+                int id = item.getItemId();
+                //noinspection SimplifiableIfStatement
+                if (id == R.id.action_settings) {
+                    return true;
+                } else if (id == android.R.id.home) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+                    builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_profile_title);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            db.closeDB();
+                            onBackPressed();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
                 }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return true;
+                return super.onOptionsItemSelected(item);
+            }
         }
-        return super.onOptionsItemSelected(item);
-    }
-}

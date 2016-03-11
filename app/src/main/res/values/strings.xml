@@ -64,6 +64,8 @@
 <string name="button_upd">Update</string>
 <string name="button_sub">Submit</string>
 <string name="button_sel">Select</string>
+<string name="button_clear_all">Clear Company</string>
+<string name="button_copy_to">Copy To</string>
 <string name="button_go">Go</string>
 <string name="button_emp">Employees</string>
 <string name="button_move_job">Move Job</string>
@@ -96,9 +98,10 @@
 <string name="company_contact_text">Contact:</string>
 <string name="company_phone_text">Tel:</string>
 <string name="company_email_text">Email:</string>
-<string name="new_company_message">Create company profile ?</string>
-<string name="change_company_message">Update company name ?</string>
+<string name="new_company_message">Create new company profile ?</string>
+<string name="change_company_message">Update company name and profile?</string>
 <string name="update_company_message">Update company profile ?</string>
+<string name="duplicate_company_message">Company already exists, enter a new name ?</string>
 <string name="confirm_delete_company_message">Delete company permanently ?</string>
 
 <!-- Job and Location Menu -->
@@ -115,6 +118,8 @@
 <string name="employee_last_name_text">Last Name</string>
 <string name="employee_first_name_text">First Name</string>
 <string name="employee_comma_name_text"> , </string>
+<string name="employee_hourly_rate_text">Hourly Rate:</string>
+<string name="employee_piece_rate_text">Piece Rate:</string>
 <string name="employee_ss_number_text">SS#:</string>
 <string name="employee_birth_date_text">DoB:</string>
 <string name="employee_hire_date_text">DoHire:</string>
@@ -122,7 +127,7 @@
 <string name="employee_expiration_text">Doc Exp:</string>
 <string name="employee_current_text">Current</string>
 
-<string name="employee_done_text">Done</string>
+<string name="employee_save_text">Save</string>
 <string name="hint_employee_id_text">Employee ID</string>
 <string name="hint_employee_comments_text">Comments</string>
 <string name="confirm_delete_employee_message">Delete employee permanently ?</string>
@@ -142,8 +147,6 @@
 <string name="work_group_name_text">Group Name:</string>
 <string name="supervisor_name_text">Supervisor:</string>
 <string name="shift_name_text">Shift Name:</string>
-<string name="hourly_rate_text">Hourly Rate:</string>
-<string name="piece_rate_text">Piece Rate:</string>
 <string name="new_work_group_message">Create work group ?</string>
 <string name="update_work_group_message">Update work group ?</string>
 <string name="confirm_delete_work_group_message">Delete work group permanently ?</string>

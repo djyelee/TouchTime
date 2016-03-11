@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,8 +40,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -120,7 +121,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 feedActivityList.add(map);
             } while (++i < all_activity_lists.size());
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             builder.setMessage(getText(R.string.no_daily_activity_message) + " for " + Values[0] + " !").setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -186,7 +187,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                 String Comments = CommentsEdit.getText().toString();
                                 String G = feedActivityList.get(pos).get(getText(R.string.employee_selection_item_id).toString());
                                 boolean updated = false;
-                                if (G != null&& !G.isEmpty()) ID = Integer.parseInt(G);
+                                if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                 if (ID > 0) {
                                     ArrayList<DailyActivityList> ActivityList;
                                     Activity = new DailyActivityList();
@@ -203,7 +204,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                     ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
                                     Activity = ActivityList.get(0);   // should only return one, take the first one
                                     if (!Lunch.isEmpty() && Long.parseLong(Lunch) >= 0) {
-                                        if (Activity.TimeIn != null) {
+                                        if (!Activity.TimeIn.isEmpty()) {
                                             long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
                                             diff = (diff > 0 && diff >= Long.parseLong(Lunch)) ? diff-Long.parseLong(Lunch) : 0;
                                             Activity.setHours(diff);
@@ -329,6 +330,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            dbActivity.closeDB();
+            onBackPressed();
             return true;
         }
 

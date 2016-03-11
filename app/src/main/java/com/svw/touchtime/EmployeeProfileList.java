@@ -19,6 +19,8 @@ public class EmployeeProfileList {
     String Country;
     String Phone;
     String Email;
+    double HourlyRate;
+    double PieceRate;
     String SSNumber;
     String DoB;
     String DoH;
@@ -37,26 +39,28 @@ public class EmployeeProfileList {
     // constructors
     public EmployeeProfileList() {
         this.EmployeeID = 1;            // starts from 0
-        this.LastName = null;
-        this.FirstName = null;
-        this.Street = null;
-        this.City = null;
-        this.State = null;
-        this.ZipCode = null;
-        this.Country = null;
-        this.Phone = null;
-        this.Email = null;
-        this.SSNumber = null;
-        this.DoB = null;
-        this.DoH = null;
+        this.LastName ="";
+        this.FirstName ="";
+        this.Street ="";
+        this.City ="";
+        this.State ="";
+        this.ZipCode ="";
+        this.Country ="";
+        this.Phone ="";
+        this.Email ="";
+        this.HourlyRate = 10.0;
+        this.PieceRate = 10.0;
+        this.SSNumber ="";
+        this.DoB ="";
+        this.DoH ="";
         this.Active = 0;
-        this.DocExp = null;
+        this.DocExp ="";
         this.Current = 0;
-        this.Comments = null;
+        this.Comments ="";
         this.Group = 0;
-        this.Company = null;
-        this.Location = null;
-        this.Job =null;
+        this.Company ="";
+        this.Location ="";
+        this.Job ="";
         this.Status = 0;
         this.Photo = null;
     }
@@ -72,6 +76,8 @@ public class EmployeeProfileList {
         this.Country = Employee.Country;
         this.Phone = Employee.Phone;
         this.Email = Employee.Email;
+        this.HourlyRate = Employee.HourlyRate;
+        this.PieceRate = Employee.PieceRate;
         this.SSNumber = Employee.SSNumber;
         this.DoB = Employee.DoB;
         this.DoH = Employee.DoH;
@@ -92,64 +98,73 @@ public class EmployeeProfileList {
         if (EmployeeID != 0) this.EmployeeID = EmployeeID;
     }       // must be at least 1
     public void setLastName(String LastName) {
-        if (LastName != null) this.LastName = LastName;
+        if (!LastName.isEmpty()) this.LastName = LastName;
     }
     public void setFirstName(String FirstName) {
-        if (FirstName != null) this.FirstName = FirstName;
+        if (!FirstName.isEmpty()) this.FirstName = FirstName;
     }
     public void setStreet(String Street) {
-        if (Street != null) this.Street = Street;
+        if (!Street.isEmpty()) this.Street = Street;
     }
     public void setCity(String City) {
-        if (City != null) this.City = City;
+        if (!City.isEmpty()) this.City = City;
     }
     public void setState(String State) {
-        if (State != null) this.State = State;
+        if (!State.isEmpty()) this.State = State;
     }
     public void setZipCode(String ZipCode) {
-        if (ZipCode != null) this.ZipCode = ZipCode;
+        if (!ZipCode.isEmpty()) this.ZipCode = ZipCode;
     }
     public void setCountry(String Country) {
-        if (Country != null) this.Country = Country;
+        if (!Country.isEmpty()) this.Country = Country;
     }
     public void setPhone(String Phone) {
-        if (Phone != null) this.Phone = Phone;
+        if (!Phone.isEmpty()) this.Phone = Phone;
     }
     public void setEmail(String Email) {
-        if (Email != null) this.Email = Email;
+        if (!Email.isEmpty()) this.Email = Email;
+    }
+    public void setHourlyRate(double HourlyRate) {
+        if (HourlyRate > 0.0) this.HourlyRate = HourlyRate;
+    }
+    public void setPieceRate(double PieceRate) {
+        if (PieceRate > 0.0) this.PieceRate = PieceRate;
     }
     public void setSSNumber(String SSNumber) {
-        if (SSNumber != null) this.SSNumber = SSNumber;
+        if (!SSNumber.isEmpty()) this.SSNumber = SSNumber;
     }
     public void setDoB(String DoB) {
-        if (DoB != null) this.DoB = DoB;
+        if (!DoB.isEmpty()) this.DoB = DoB;
     }
     public void setDoH(String DoH) {
-        if (DoH != null) this.DoH = DoH;
+        if (!DoH.isEmpty()) this.DoH = DoH;
     }
     public void setActive(int Active) {
         this.Active = Active;
     }
     public void setDocExp(String DocExp) {
-        if (DocExp != null) this.DocExp = DocExp;
+        if (!DocExp.isEmpty()) this.DocExp = DocExp;
     }
     public void setCurrent(int Current) {
         this.Current = Current;
     }
     public void setComments(String Comments) {
-        if (Comments != null) this.Comments = Comments;
+        if (!Comments.isEmpty()) this.Comments = Comments;
     }
     public void setGroup(int Group) {
         this.Group = Group;
     }
     public void setCompany(String Company) {
-        if (Company != null) this.Company = Company;
+        // this.Company = "";
+        if (!Company.isEmpty()) this.Company = Company;
     }
     public void setLocation(String Location) {
-        if (Location != null) this.Location = Location;
+        // this.Location = "";
+        if (!Location.isEmpty()) this.Location = Location;
     }
     public void setJob(String Job) {
-        if (Job != null) this.Job = Job;
+        // this.Job = "";
+        if (!Job.isEmpty()) this.Job = Job;
     }
     public void setStatus(int Status) {
         this.Status = Status;
@@ -168,6 +183,8 @@ public class EmployeeProfileList {
     public String getCountry() { return this.Country; }
     public String getPhone() { return this.Phone; }
     public String getEmail() { return this.Email; }
+    public double getHourlyRate() { return this.HourlyRate; }
+    public double getPieceRate() { return this.PieceRate; }
     public String getSSNumber() { return this.SSNumber; }
     public String getDoB() { return this.DoB; }
     public String getDoH() { return this.DoH; }

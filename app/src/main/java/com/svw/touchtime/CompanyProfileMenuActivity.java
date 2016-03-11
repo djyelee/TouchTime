@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,8 +37,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
@@ -141,7 +142,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         Company.Location = "";
 
         if (unique_com.size() > 0) {        // check if empty
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
             if (General.checkDuplicates(unique_com, Company.getName()) == 0) {
                 if (view.getId() == R.id.btn_new) {   // no duplicate
                     builder.setMessage(R.string.new_company_message).setTitle(R.string.company_profile_title);
@@ -206,18 +207,26 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                     });
                 }
             } else {
-                builder.setMessage(R.string.update_company_message).setTitle(R.string.company_profile_title);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        displayCompanyProfile();                             // name is already there
-                        db.updateCompanyList(Company);
-                    }
-                });
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
+                if (view.getId() == R.id.btn_new) {
+                    builder.setMessage(R.string.duplicate_company_message).setTitle(R.string.company_profile_title);
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                } else if (view.getId() == R.id.btn_upd) {
+                    builder.setMessage(R.string.update_company_message).setTitle(R.string.company_profile_title);
+                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            displayCompanyProfile();                             // name is already there
+                            db.updateCompanyList(Company);
+                        }
+                    });
+                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+                }
             }
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -236,7 +245,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onDeleteButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (unique_com.size() > 0) {
             builder.setMessage(R.string.confirm_delete_company_message).setTitle(R.string.confirm_delete_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -253,7 +262,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                     adapter_com.notifyDataSetChanged();
                     all_lists = db.getAllCompanyLists();
                     if (all_lists.size() > 0) {
-                        Company = db.getCompanyList(all_lists.get(0).getName());
+                        item = (item > 0) ? item-1 : 0;
+                        Company = db.getCompanyList(all_lists.get(item).getName());
                         displayCompanyProfile();
                     } else {
                         NameEdit.setText("");
@@ -294,6 +304,10 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            db.closeDB();
+            onBackPressed();
             return true;
         }
 

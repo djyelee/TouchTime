@@ -22,7 +22,7 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
     private static final String LOG = EmployeeWorkGroupDBWrapper.class.getName();
 
     // Database Version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
 
     // Database Name
     private static final String DATABASE_NAME = "EmployeeWorkGroupDB";
@@ -42,18 +42,16 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
     private static final String KEY_COUNTRY = "country_column";
     private static final String KEY_PHONE = "phone_column";
     private static final String KEY_EMAIL= "email_column";
-    private static final String KEY_SS_NUMBER = "ss_number_column";
+    private static final String KEY_PIECE_RATE = "piece_rate_column";
+    private static final String KEY_HOURLY_RATE = "hourly_rate_column";
+    private static final String KEY_EMPLOYEES = "employees_column";
     private static final String KEY_DOB = "dob_column";
+    private static final String KEY_SS_NUMBER = "ss_number_column";
     private static final String KEY_DOH = "doh_column";
     private static final String KEY_ACTIVE = "active_column";
     private static final String KEY_DOC_EXP = "doc_exp_column";
     private static final String KEY_CURRENT = "current_column";
     private static final String KEY_COMMENTS = "comments_column";
-    private static final String KEY_GROUP = "group_column";
-    private static final String KEY_COMPANY = "company_column";
-    private static final String KEY_LOCATION = "location_column";
-    private static final String KEY_JOB = "job_column";
-    private static final String KEY_STATUS = "status_column";
     private static final String KEY_PHOTO = "photo_column";
 
     // Work Group Table - column names
@@ -61,28 +59,56 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
     private static final String KEY_GROUP_NAME = "group_name_column";
     private static final String KEY_SUPERVISOR = "supervisor_column";
     private static final String KEY_SHIFT_NAME = "shift_name_column";
-    private static final String KEY_HOURLY_RATE = "hourly_rate_column";
-    private static final String KEY_PIECE_RATE = "piece_rate_column";
-    private static final String KEY_EMPLOYEES = "employees_column";
+    private static final String KEY_GROUP = "group_column";
+    private static final String KEY_COMPANY = "company_column";
+    private static final String KEY_LOCATION = "location_column";
+    private static final String KEY_JOB = "job_column";
+    private static final String KEY_STATUS = "status_column";
 
     // Table Create Statements
     // Employee table create statement
     private static final String CREATE_TABLE_EMPLOYEE = "CREATE TABLE "
-            + TABLE_EMPLOYEE + "(" + KEY_EMPLOYEE_ID + " integer primary key," + KEY_LAST_NAME + " TEXT not null," + KEY_FIRST_NAME + " TEXT not null,"
-            + KEY_STREET + " TEXT DEFAULT Street, " + KEY_CITY + " TEXT DEFAULT City, " + KEY_STATE + " TEXT DEFAULT State, "
-            + KEY_ZIP_CODE + " TEXT DEFAULT Zip_Code, " + KEY_COUNTRY + " TEXT DEFAULT USA, " + KEY_PHONE + " TEXT DEFAULT Phone, "
-            + KEY_EMAIL + " TEXT DEFAULT Email, " + KEY_SS_NUMBER + " TEXT DEFAULT SS_Number, " + KEY_DOB + " TEXT DEFAULT Date_of_Birth, "
-            + KEY_DOH + " TEXT DEFAULT Date_of_Hire, " + KEY_ACTIVE + " INTEGER DEFAULT 0, " + KEY_DOC_EXP + " TEXT DEFAULT Expiration, "
-            + KEY_CURRENT + " INTEGER DEFAULT 0, " + KEY_COMMENTS + " TEXT DEFAULT Comments, " + KEY_GROUP + " INTEGER DEFAULT 0, "
-            + KEY_COMPANY + " TEXT DEFAULT Company, " + KEY_LOCATION + " TEXT DEFAULT Location, " + KEY_JOB + " TEXT DEFAULT Job, "
-            + KEY_STATUS + " TEXT DEFAULT Status, " + KEY_PHOTO + " blob" + ")";
+            + TABLE_EMPLOYEE + "("
+            + KEY_EMPLOYEE_ID + " integer primary key,"
+            + KEY_LAST_NAME + " TEXT not null,"
+            + KEY_FIRST_NAME + " TEXT not null,"
+            + KEY_STREET + " TEXT DEFAULT Street, "
+            + KEY_CITY + " TEXT DEFAULT City, "
+            + KEY_STATE + " TEXT DEFAULT State, "
+            + KEY_ZIP_CODE + " TEXT DEFAULT Zip_Code, "
+            + KEY_COUNTRY + " TEXT DEFAULT USA, "
+            + KEY_PHONE + " TEXT DEFAULT Phone, "
+            + KEY_EMAIL + " TEXT DEFAULT Email, "
+            + KEY_HOURLY_RATE + " REAL DEFAULT 1.0, "
+            + KEY_PIECE_RATE + " REAL DEFAULT 1.0, "
+            + KEY_SS_NUMBER + " TEXT DEFAULT SS_Number, "
+            + KEY_DOB + " TEXT DEFAULT Date_of_Birth, "
+            + KEY_DOH + " TEXT DEFAULT Date_of_Hire, "
+            + KEY_ACTIVE + " INTEGER DEFAULT 0, "
+            + KEY_DOC_EXP + " TEXT DEFAULT Expiration, "
+            + KEY_CURRENT + " INTEGER DEFAULT 0, "
+            + KEY_COMMENTS + " TEXT DEFAULT Comments, "
+            + KEY_GROUP + " INTEGER DEFAULT 0, "
+            + KEY_COMPANY + " TEXT DEFAULT Company, "
+            + KEY_LOCATION + " TEXT DEFAULT Location, "
+            + KEY_JOB + " TEXT DEFAULT Job, "
+            + KEY_STATUS + " TEXT DEFAULT Status, "
+            + KEY_PHOTO + " blob"
+            + ")";
 
     // Work Group table create statement
     private static final String CREATE_TABLE_WORK_GROUP = "CREATE TABLE "
-            + TABLE_WORK_GROUP + "(" + KEY_WORK_GROUP_ID + " integer primary key," + KEY_GROUP_NAME + " TEXT not null," + KEY_SUPERVISOR + " TEXT not null,"
-            + KEY_SHIFT_NAME + " TEXT DEFAULT Shift, " + KEY_HOURLY_RATE + " REAL DEFAULT 1.0, " + KEY_PIECE_RATE + " REAL DEFAULT 1.0, "
-            + KEY_COMPANY + " TEXT DEFAULT Company, " + KEY_LOCATION + " TEXT DEFAULT Location, " + KEY_JOB + " TEXT DEFAULT Job, "
-            + KEY_STATUS + " TEXT DEFAULT Status, " + KEY_EMPLOYEES + " TEXT" + ")";
+            + TABLE_WORK_GROUP + "("
+            + KEY_WORK_GROUP_ID + " integer primary key,"
+            + KEY_GROUP_NAME + " TEXT not null,"
+            + KEY_SUPERVISOR + " TEXT not null,"
+            + KEY_SHIFT_NAME + " TEXT DEFAULT Shift, "
+            + KEY_COMPANY + " TEXT DEFAULT Company, "
+            + KEY_LOCATION + " TEXT DEFAULT Location, "
+            + KEY_JOB + " TEXT DEFAULT Job, "
+            + KEY_STATUS + " TEXT DEFAULT Status, "
+            + KEY_EMPLOYEES + " TEXT"
+            + ")";
 
     public EmployeeWorkGroupDBWrapper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -120,6 +146,8 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
         values.put(KEY_COUNTRY, Employee.Country);
         values.put(KEY_PHONE, Employee.Phone);
         values.put(KEY_EMAIL, Employee.Email);
+        values.put(KEY_HOURLY_RATE, Employee.HourlyRate);
+        values.put(KEY_PIECE_RATE, Employee.PieceRate);
         values.put(KEY_SS_NUMBER, Employee.SSNumber);
         values.put(KEY_DOB, Employee.DoB);
         values.put(KEY_DOH, Employee.DoH);
@@ -153,6 +181,8 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
             Employee.setCountry(c.getString(c.getColumnIndex(KEY_COUNTRY)));
             Employee.setPhone(c.getString(c.getColumnIndex(KEY_PHONE)));
             Employee.setEmail(c.getString(c.getColumnIndex(KEY_EMAIL)));
+            Employee.setHourlyRate(c.getDouble(c.getColumnIndex(KEY_HOURLY_RATE)));
+            Employee.setPieceRate(c.getDouble(c.getColumnIndex(KEY_PIECE_RATE)));
             Employee.setSSNumber(c.getString(c.getColumnIndex(KEY_SS_NUMBER)));
             Employee.setDoB(c.getString(c.getColumnIndex(KEY_DOB)));
             Employee.setDoH(c.getString(c.getColumnIndex(KEY_DOH)));
@@ -228,6 +258,8 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
                 Employee.setCountry(c.getString(c.getColumnIndex(KEY_COUNTRY)));
                 Employee.setPhone(c.getString(c.getColumnIndex(KEY_PHONE)));
                 Employee.setEmail(c.getString(c.getColumnIndex(KEY_EMAIL)));
+                Employee.setHourlyRate(c.getDouble(c.getColumnIndex(KEY_HOURLY_RATE)));
+                Employee.setPieceRate(c.getDouble(c.getColumnIndex(KEY_PIECE_RATE)));
                 Employee.setSSNumber(c.getString(c.getColumnIndex(KEY_SS_NUMBER)));
                 Employee.setDoB(c.getString(c.getColumnIndex(KEY_DOB)));
                 Employee.setDoH(c.getString(c.getColumnIndex(KEY_DOH)));
@@ -276,6 +308,8 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
         values.put(KEY_COUNTRY, Employee.Country);
         values.put(KEY_PHONE, Employee.Phone);
         values.put(KEY_EMAIL, Employee.Email);
+        values.put(KEY_HOURLY_RATE, Employee.HourlyRate);
+        values.put(KEY_PIECE_RATE, Employee.PieceRate);
         values.put(KEY_SS_NUMBER, Employee.SSNumber);
         values.put(KEY_DOB, Employee.DoB);
         values.put(KEY_DOH, Employee.DoH);
@@ -318,8 +352,6 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
         values.put(KEY_GROUP_NAME, WorkGroup.GroupName);
         values.put(KEY_SUPERVISOR, WorkGroup.Supervisor);
         values.put(KEY_SHIFT_NAME, WorkGroup.ShiftName);
-        values.put(KEY_HOURLY_RATE, WorkGroup.HourlyRate);
-        values.put(KEY_PIECE_RATE, WorkGroup.PieceRate);
         values.put(KEY_COMPANY, WorkGroup.Company);
         values.put(KEY_LOCATION, WorkGroup.Location);
         values.put(KEY_JOB, WorkGroup.Job);
@@ -339,8 +371,6 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
             WorkGroup.setGroupName(c.getString(c.getColumnIndex(KEY_GROUP_NAME)));
             WorkGroup.setSupervisor(c.getString(c.getColumnIndex(KEY_SUPERVISOR)));
             WorkGroup.setShiftName(c.getString(c.getColumnIndex(KEY_SHIFT_NAME)));
-            WorkGroup.setHourlyRate(c.getDouble(c.getColumnIndex(KEY_HOURLY_RATE)));
-            WorkGroup.setPieceRate(c.getDouble(c.getColumnIndex(KEY_PIECE_RATE)));
             WorkGroup.setCompany(c.getString(c.getColumnIndex(KEY_COMPANY)));
             WorkGroup.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
             WorkGroup.setJob(c.getString(c.getColumnIndex(KEY_JOB)));
@@ -400,8 +430,6 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
                 WorkGroup.setGroupName(c.getString(c.getColumnIndex(KEY_GROUP_NAME)));
                 WorkGroup.setSupervisor(c.getString(c.getColumnIndex(KEY_SUPERVISOR)));
                 WorkGroup.setShiftName(c.getString(c.getColumnIndex(KEY_SHIFT_NAME)));
-                WorkGroup.setHourlyRate(c.getDouble(c.getColumnIndex(KEY_HOURLY_RATE)));
-                WorkGroup.setPieceRate(c.getDouble(c.getColumnIndex(KEY_PIECE_RATE)));
                 WorkGroup.setCompany(c.getString(c.getColumnIndex(KEY_COMPANY)));
                 WorkGroup.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
                 WorkGroup.setJob(c.getString(c.getColumnIndex(KEY_JOB)));
@@ -437,8 +465,6 @@ public class EmployeeWorkGroupDBWrapper extends SQLiteOpenHelper {
         values.put(KEY_GROUP_NAME, WorkGroup.GroupName);
         values.put(KEY_SUPERVISOR, WorkGroup.Supervisor);
         values.put(KEY_SHIFT_NAME, WorkGroup.ShiftName);
-        values.put(KEY_HOURLY_RATE, WorkGroup.HourlyRate);
-        values.put(KEY_PIECE_RATE, WorkGroup.PieceRate);
         values.put(KEY_COMPANY, WorkGroup.Company);
         values.put(KEY_LOCATION, WorkGroup.Location);
         values.put(KEY_JOB, WorkGroup.Job);

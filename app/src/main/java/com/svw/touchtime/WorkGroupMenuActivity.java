@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +25,7 @@ import java.util.HashSet;
 
 public class WorkGroupMenuActivity extends ActionBarActivity {
     private ListView work_group_list_view;
-    private ListView employee_list_view;
     private EditText GroupNameEdit, SupervisorEdit, ShiftNameEdit;
-    private EditText HourlyRateEdit, PieceRateEdit;
     private ArrayList<WorkGroupList> all_work_group_lists;
     private ArrayList<String> unique_group;
     private ArrayList<String> unique_employee;
@@ -47,20 +46,20 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String caller = getIntent().getStringExtra("Caller");
-        if (caller.equals(getText(R.string.supervisor_menu).toString()))
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_supervisor)
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         else
             setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_work_group_menu);
+
+        ListView employee_list_view;
 
         work_group_list_view = (ListView) findViewById(R.id.work_group_list_view);
         employee_list_view = (ListView) findViewById(R.id.employee_list_view);
         GroupNameEdit = (EditText) findViewById(R.id.work_group_name_text);
         SupervisorEdit = (EditText) findViewById(R.id.supervisor_name_text);
         ShiftNameEdit = (EditText) findViewById(R.id.shift_name_text);
-        HourlyRateEdit = (EditText) findViewById(R.id.hourly_rate_text);
-        PieceRateEdit = (EditText) findViewById(R.id.piece_rate_text);
         feedGroupList= new ArrayList<HashMap<String, String>>();
         feedEmployeeList= new ArrayList<HashMap<String, String>>();
         // database and other data
@@ -140,7 +139,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             startActivityForResult(intent, PICK_GROUP_REQUEST);
         } else {
              // put the dialog inside so it will not dim the screen when returns.
-             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
              builder.setMessage(R.string.no_work_group_message).setTitle(R.string.empty_entry_title);
              builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -168,8 +167,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             }
         }
     }
+
     public void onAddUpdateButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (GroupNameEdit.getText().toString().isEmpty()) {              // must have the group name
             builder.setMessage(R.string.group_name_empty_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -181,11 +181,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             return;
         }
         WorkGroup.setGroupName(GroupNameEdit.getText().toString());
-        WorkGroup.setSupervisor((SupervisorEdit.getText() == null) ? "" : SupervisorEdit.getText().toString());
-        WorkGroup.setShiftName((ShiftNameEdit.getText() == null) ? "" : ShiftNameEdit.getText().toString());
-        WorkGroup.setHourlyRate((HourlyRateEdit.getText() == null) ? 1.0 : Float.parseFloat(HourlyRateEdit.getText().toString()));
-        WorkGroup.setPieceRate((PieceRateEdit.getText() == null) ? 1.0 : Float.parseFloat(PieceRateEdit.getText().toString()));
-        if (view.getId() == R.id.add_work_group) {
+        WorkGroup.setSupervisor((SupervisorEdit.getText().toString().isEmpty()) ? "" : SupervisorEdit.getText().toString());
+        WorkGroup.setShiftName((ShiftNameEdit.getText().toString().isEmpty()) ? "" : ShiftNameEdit.getText().toString());
+         if (view.getId() == R.id.add_work_group) {
             builder.setMessage(R.string.new_work_group_message).setTitle(R.string.work_group_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -248,7 +246,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void onDeleteButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemWorkGroup > 0) {
             if (WorkGroup.getStatus() != 0) {
                 builder.setMessage(R.string.group_must_punch_out_message).setTitle(R.string.confirm_delete_title);
@@ -261,7 +259,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // reset employee group to 0 before the group is deleted
-                        if (WorkGroup.getEmployees() != null) {
+                        if (!WorkGroup.getEmployees().isEmpty()) {
                             String[] array = WorkGroup.Employees.split(",");
                             for (String s : array) {
                                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
@@ -309,11 +307,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
 
     public void displayWorkGroup() {
         int i = 0;
-        GroupNameEdit.setText(WorkGroup.getGroupName() == null ? "" : WorkGroup.getGroupName());
-        SupervisorEdit.setText(WorkGroup.getSupervisor() == null ? "" : WorkGroup.getSupervisor());
-        ShiftNameEdit.setText(WorkGroup.getShiftName() == null ? "" : WorkGroup.getShiftName());
-        HourlyRateEdit.setText(String.valueOf(WorkGroup.getHourlyRate()));
-        PieceRateEdit.setText(String.valueOf(WorkGroup.getPieceRate()));
+        GroupNameEdit.setText(WorkGroup.getGroupName().isEmpty() ? "" : WorkGroup.getGroupName());
+        SupervisorEdit.setText(WorkGroup.getSupervisor().isEmpty() ? "" : WorkGroup.getSupervisor());
+        ShiftNameEdit.setText(WorkGroup.getShiftName().isEmpty() ? "" : WorkGroup.getShiftName());
         feedGroupList.clear();     // clear the old list
         while (i < unique_group.size()) {
             map = new HashMap<String, String>();
@@ -327,7 +323,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     public void displayEmployee() {
         feedEmployeeList.clear();     // clear the old list
         unique_employee.clear();      // c lear the old list
-        if (WorkGroup.getEmployees() != null) {
+        if (!WorkGroup.getEmployees().isEmpty()) {
             String[] array = WorkGroup.getEmployees().split(",");
             for (String s : array) {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
@@ -395,6 +391,10 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            db.closeDB();
+            onBackPressed();
             return true;
         }
 
