@@ -37,12 +37,12 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_company_profile_menu);
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         company_list_view = (ListView) findViewById(R.id.company_profile_list_view);
         NameEdit = (EditText) findViewById(R.id.company_name_text);
@@ -89,7 +89,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         list_items[0] = getText(R.string.company_selection_item_name).toString();
         list_id[0] = R.id.companyDisplayID;
         company_list_view.setItemsCanFocus(true);
-        company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
+        // company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
         adapter_com = new SimpleAdapter(this, feedCompanyList, R.layout.company_display_view, list_items, list_id);
         company_list_view.setAdapter(adapter_com);
         if (all_lists.size() > 0) {
@@ -100,7 +100,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         company_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                item = position-1;
+                item = position;
                 view.animate().setDuration(30).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override
@@ -124,124 +124,132 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         PhoneEdit.setText(Company.getPhone());
         ContactEdit.setText(Company.getContact());
         EmailEdit.setText(Company.getEmail());
-        company_list_view.setItemChecked(item + 1, true);
+        company_list_view.setItemChecked(item, true);
     }
 
     public void onNewUpdateButtonClicked(View view) {
-        if (NameEdit.getText().toString().isEmpty()) return;    // must have at least the name
-        Company.setName(NameEdit.getText().toString());
-        Company.setStreet((StreetEdit.getText().toString().isEmpty()) ? "" : StreetEdit.getText().toString());
-        Company.setCity((CityEdit.getText().toString().isEmpty()) ? "" : CityEdit.getText().toString());
-        Company.setState((StateEdit.getText().toString().isEmpty()) ? "" : StateEdit.getText().toString());
-        Company.setZipCode((ZipCodeEdit.getText().toString().isEmpty()) ? "" : ZipCodeEdit.getText().toString());
-        Company.setCountry((CountryEdit.getText().toString().isEmpty()) ? "" : CountryEdit.getText().toString());
-        Company.setPhone((PhoneEdit.getText().toString().isEmpty()) ? "" : PhoneEdit.getText().toString());
-        Company.setContact((ContactEdit.getText().toString().isEmpty()) ? "" : ContactEdit.getText().toString());
-        Company.setEmail((EmailEdit.getText().toString().isEmpty()) ? "" : EmailEdit.getText().toString());
-        Company.Job = "";
-        Company.Location = "";
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        if (NameEdit.getText().toString().isEmpty()) {
+            builder.setMessage(R.string.no_company_name_message).setTitle(R.string.company_profile_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+        } else {
+            Company.setName(NameEdit.getText().toString());
+            Company.setStreet((StreetEdit.getText().toString().isEmpty()) ? "" : StreetEdit.getText().toString());
+            Company.setCity((CityEdit.getText().toString().isEmpty()) ? "" : CityEdit.getText().toString());
+            Company.setState((StateEdit.getText().toString().isEmpty()) ? "" : StateEdit.getText().toString());
+            Company.setZipCode((ZipCodeEdit.getText().toString().isEmpty()) ? "" : ZipCodeEdit.getText().toString());
+            Company.setCountry((CountryEdit.getText().toString().isEmpty()) ? "" : CountryEdit.getText().toString());
+            Company.setPhone((PhoneEdit.getText().toString().isEmpty()) ? "" : PhoneEdit.getText().toString());
+            Company.setContact((ContactEdit.getText().toString().isEmpty()) ? "" : ContactEdit.getText().toString());
+            Company.setEmail((EmailEdit.getText().toString().isEmpty()) ? "" : EmailEdit.getText().toString());
+            Company.Job = "";
+            Company.Location = "";
 
-        if (unique_com.size() > 0) {        // check if empty
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            if (General.checkDuplicates(unique_com, Company.getName()) == 0) {
-                if (view.getId() == R.id.btn_new) {   // no duplicate
-                    builder.setMessage(R.string.new_company_message).setTitle(R.string.company_profile_title);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // add new name to the list
-                            unique_com.add(Company.getName());
-                            Collections.sort(unique_com, new Comparator<String>() {
-                                @Override
-                                public int compare(String o1, String o2) {
-                                    return o1.compareToIgnoreCase(o2);
-                                }
-                            });
-                            int i = 0;
-                            feedCompanyList.clear();
-                            do {
-                                map = new HashMap<String, String>();
-                                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
-                                feedCompanyList.add(map);
-                            } while (++i < unique_com.size());
-                            db.createCompanyList(Company);
-                            adapter_com.notifyDataSetChanged();
-                            item = unique_com.indexOf(Company.getName());       // get the index of the new company
-                            displayCompanyProfile();
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-                } else if (view.getId() == R.id.btn_upd) {
-                    builder.setMessage(R.string.change_company_message).setTitle(R.string.company_profile_title);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // add new name to the list
-                            db.deleteCompanyList(unique_com.get(item));
-                            unique_com.remove(item);
-                            unique_com.add(Company.getName());
-                            Collections.sort(unique_com, new Comparator<String>() {
-                                @Override
-                                public int compare(String o1, String o2) {
-                                    return o1.compareToIgnoreCase(o2);
-                                }
-                            });
-                            int i = 0;
-                            feedCompanyList.clear();
-                            do {
-                                map = new HashMap<String, String>();
-                                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
-                                feedCompanyList.add(map);
-                            } while (++i < unique_com.size());
-                            db.createCompanyList(Company);
-                            adapter_com.notifyDataSetChanged();
-                            displayCompanyProfile();
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
+            if (unique_com.size() > 0) {        // check if empty
+                //            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+                if (General.checkDuplicates(unique_com, Company.getName()) == 0) {
+                    if (view.getId() == R.id.btn_new) {   // no duplicate
+                        builder.setMessage(R.string.new_company_message).setTitle(R.string.company_profile_title);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // add new name to the list
+                                unique_com.add(Company.getName());
+                                Collections.sort(unique_com, new Comparator<String>() {
+                                    @Override
+                                    public int compare(String o1, String o2) {
+                                        return o1.compareToIgnoreCase(o2);
+                                    }
+                                });
+                                int i = 0;
+                                feedCompanyList.clear();
+                                do {
+                                    map = new HashMap<String, String>();
+                                    map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                                    feedCompanyList.add(map);
+                                } while (++i < unique_com.size());
+                                db.createCompanyList(Company);
+                                adapter_com.notifyDataSetChanged();
+                                item = unique_com.indexOf(Company.getName());       // get the index of the new company
+                                displayCompanyProfile();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                    } else if (view.getId() == R.id.btn_upd) {
+                        builder.setMessage(R.string.change_company_message).setTitle(R.string.company_profile_title);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // add new name to the list
+                                db.deleteCompanyList(unique_com.get(item));
+                                unique_com.remove(item);
+                                unique_com.add(Company.getName());
+                                Collections.sort(unique_com, new Comparator<String>() {
+                                    @Override
+                                    public int compare(String o1, String o2) {
+                                        return o1.compareToIgnoreCase(o2);
+                                    }
+                                });
+                                int i = 0;
+                                feedCompanyList.clear();
+                                do {
+                                    map = new HashMap<String, String>();
+                                    map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                                    feedCompanyList.add(map);
+                                } while (++i < unique_com.size());
+                                db.createCompanyList(Company);
+                                adapter_com.notifyDataSetChanged();
+                                displayCompanyProfile();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                    }
+                } else {
+                    if (view.getId() == R.id.btn_new) {
+                        builder.setMessage(R.string.duplicate_company_message).setTitle(R.string.company_profile_title);
+                        builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                    } else if (view.getId() == R.id.btn_upd) {
+                        builder.setMessage(R.string.update_company_message).setTitle(R.string.company_profile_title);
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                displayCompanyProfile();                             // name is already there
+                                db.updateCompanyList(Company);
+                            }
+                        });
+                        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                    }
                 }
             } else {
-                if (view.getId() == R.id.btn_new) {
-                    builder.setMessage(R.string.duplicate_company_message).setTitle(R.string.company_profile_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-                } else if (view.getId() == R.id.btn_upd) {
-                    builder.setMessage(R.string.update_company_message).setTitle(R.string.company_profile_title);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            displayCompanyProfile();                             // name is already there
-                            db.updateCompanyList(Company);
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-                }
+                // It is empty.  No checking duplicates and no sorting are necessary
+                unique_com.add(Company.getName());
+                feedCompanyList.clear();
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(0));
+                feedCompanyList.add(map);
+                db.createCompanyList(Company);
+                all_lists = db.getAllCompanyLists();
             }
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        } else {
-            // It is empty.  No checking duplicates and no sorting are necessary
-            unique_com.add(Company.getName());
-            feedCompanyList.clear();
-            map = new HashMap<String, String>();
-            map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(0));
-            feedCompanyList.add(map);
-            db.createCompanyList(Company);
-            all_lists = db.getAllCompanyLists();
+            adapter_com.notifyDataSetChanged();
+            displayCompanyProfile();             // display after SetAdapter to show the checked item
         }
-        adapter_com.notifyDataSetChanged();
-        displayCompanyProfile();             // display after SetAdapter to show the checked item
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void onDeleteButtonClicked(View view) {

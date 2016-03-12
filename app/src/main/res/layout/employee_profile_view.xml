@@ -7,9 +7,10 @@
     <TextView
         android:id="@+id/textDisplayID"
         android:focusable="false"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:layout_marginLeft="10dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:layout_centerVertical="true"
@@ -17,12 +18,11 @@
         />
     <TextView
         android:id="@+id/textDisplayLastName"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="3"
+        android:layout_weight="3.2"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
-        android:paddingRight="5dp"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:singleLine="true"
@@ -30,12 +30,11 @@
 
     <TextView
         android:id="@+id/textDisplayFirstName"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="3"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
-        android:paddingRight="5dp"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:singleLine="true"

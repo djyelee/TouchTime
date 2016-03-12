@@ -28,7 +28,8 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     boolean sort_last_name_ascend = true;
     ArrayList<HashMap<String, String>> feedList;
     HashMap<String, String> map;
-    EmployeeSelectionAdapter adapter_employee;
+    TouchTimeGeneralAdapter adapter_employee;
+    int itemSelected = 0;
     ArrayList<String> employeeIDList;
     int selectedGroup, employeeGroup, displayGroup;
     WorkGroupList WorkGroup;
@@ -66,7 +67,8 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
                 getText(R.string.employee_selection_item_first_name).toString(), getText(R.string.employee_selection_item_group).toString(),
                 getText(R.string.employee_selection_item_active).toString(), getText(R.string.employee_selection_item_current).toString()};
         int [] list_id = {R.id.textViewID, R.id.textViewLastName, R.id.textViewFirstName, R.id.textViewGroup, R.id.textViewActive, R.id.textViewCurrent};
-        adapter_employee = new EmployeeSelectionAdapter(this, R.layout.employee_selection_view, feedList, list_items, list_id);
+        adapter_employee = new TouchTimeGeneralAdapter(this, feedList, R.layout.employee_selection_view, list_items, list_id);
+        // lv.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false), null, false);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         lv.setAdapter(adapter_employee);
         lv.setItemsCanFocus(true);
@@ -79,17 +81,18 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                String G = feedList.get(position).get(getText(R.string.employee_selection_item_group).toString());
+                itemSelected = position;
+                String G = feedList.get(itemSelected).get(getText(R.string.employee_selection_item_group).toString());
                 displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);
                 if (selectedGroup != displayGroup) {   // already selected but different or not selected, need to be reset to selected group
-                    feedList.get(position).put(getText(R.string.employee_selection_item_group).toString(), String.valueOf(selectedGroup));
+                    feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), String.valueOf(selectedGroup));
                 } else {        // already selected, need to be reset to 0 or restore to the original group
-                    EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(position).get(getText(R.string.employee_selection_item_id).toString())));
+                    EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.employee_selection_item_id).toString())));
                     employeeGroup = Employee.getGroup();
                     if (displayGroup == employeeGroup) {
-                        feedList.get(position).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
+                        feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
                     } else {
-                        feedList.get(position).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
+                        feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
                     }
                 }
                 markSelectedItems();
@@ -104,12 +107,17 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             lv.setItemChecked(i, !G.isEmpty() && selectedGroup == Integer.parseInt(G));
             i++;
         }
+        adapter_employee.setSelectedItem(itemSelected);
+        adapter_employee.notifyDataSetChanged();
     }
 
     public void onSortIDButtonClicked(View view) {
         String Items;
         Items = getText(R.string.employee_selection_item_id).toString();
+        int ID = Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.employee_selection_item_id).toString()));
         General.SortIntegerList(feedList, Items, sort_id_ascend);
+        itemSelected = General.GetIntegerIndex(feedList, Items, ID);
+        adapter_employee.setSelectedItem(itemSelected);
         sort_last_name_ascend = false;
         sort_id_ascend = !sort_id_ascend;
         adapter_employee.notifyDataSetChanged();
@@ -118,9 +126,14 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
 
     public void onSortLastNameButtonClicked(View view) {
         String [] Items = new String[2];
-        Items [0] = getText(R.string.employee_selection_item_last_name).toString();
-        Items [1] = getText(R.string.employee_selection_item_first_name).toString();
+        String [] Data = new String[2];
+        Items[0] = getText(R.string.employee_selection_item_last_name).toString();
+        Items[1] = getText(R.string.employee_selection_item_first_name).toString();
+        Data[0] = feedList.get(itemSelected).get(getText(R.string.employee_selection_item_last_name).toString());
+        Data [1] =feedList.get(itemSelected).get(getText(R.string.employee_selection_item_first_name).toString());
         General.SortStringList(feedList, Items, sort_last_name_ascend);
+        itemSelected = General.GetStringIndex(feedList, Items, Data);
+        adapter_employee.setSelectedItem(itemSelected);
         sort_id_ascend = false;
         sort_last_name_ascend = !sort_last_name_ascend;
         adapter_employee.notifyDataSetChanged();
@@ -236,7 +249,20 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            onBackPressed();
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_selection_title);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    db.closeDB();
+                    onBackPressed();
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
             return true;
         }
 

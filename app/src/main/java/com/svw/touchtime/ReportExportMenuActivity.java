@@ -11,12 +11,12 @@ public class ReportExportMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_report_export_menu);
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
     }
 
 

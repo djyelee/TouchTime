@@ -33,8 +33,8 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private EditText EmployeeIDEdit, CommentsEdit;
     private Button DocExpButton, DoBButton, DoHButton;
     private RadioGroup radioGroupActive, radioGroupCurrent;
-    private RadioButton activeYesButton;
-    private RadioButton currentYesButton;
+    private RadioButton activeYesButton, activeNoButton;
+    private RadioButton currentYesButton, currentNoButton;
     private ImageView photoView;
     private DatePickerDialog dialog;
     private int dateButtonID;
@@ -69,8 +69,10 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         CommentsEdit = (EditText) findViewById(R.id.employee_comments_text);
         radioGroupActive = (RadioGroup) findViewById(R.id.selection_active);
         activeYesButton = (RadioButton) findViewById(R.id.radio_active_yes);
+        activeNoButton = (RadioButton) findViewById(R.id.radio_active_no);
         radioGroupCurrent = (RadioGroup) findViewById(R.id.selection_current);
         currentYesButton = (RadioButton) findViewById(R.id.radio_current_yes);
+        currentNoButton = (RadioButton) findViewById(R.id.radio_current_no);
         photoView = (ImageView) findViewById(R.id.photo);
 
         // get current date information
@@ -89,9 +91,16 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         if (Caller != R.id.caller_administrator) {
             HourlyRateEdit.setFocusable(false);
             PieceRateEdit.setFocusable(false);
+            SSNumberEdit.setFocusable(false);
             HourlyRateEdit.setBackgroundColor(getResources().getColor(R.color.svw_gray));
             PieceRateEdit.setBackgroundColor(getResources().getColor(R.color.svw_gray));
+            SSNumberEdit.setBackgroundColor(getResources().getColor(R.color.svw_gray));
+            activeYesButton.setClickable(false);
+            currentYesButton.setClickable(false);
+            activeNoButton.setClickable(false);
+            currentNoButton.setClickable(false);
         }
+        EmployeeIDEdit.setFocusable(false);   // should not be changed
 
         if (employeeID > 0) {
             newEmployeeProfile = false;     // receive a valid employeeID, it is for update
@@ -222,12 +231,12 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         if (newEmployeeProfile) {       // add a new employee profile
             int ID = EmployeeIDEdit.getText().toString().isEmpty() ? 1 : Integer.parseInt(EmployeeIDEdit.getText().toString());
             if (db.checkEmployeeID(ID)) {      // employee ID already exists
+                // generate a new ID
+                Employee.setEmployeeID(db.getAvailableEmployeeID());                        // get an unused ID
+                EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
                 builder.setMessage(R.string.existing_employee_ID_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // generate a new ID
-                        Employee.setEmployeeID(db.getAvailableEmployeeID());                        // get an unused ID
-                        EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
                         addUpdateProfile(true);
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
@@ -241,10 +250,10 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                     }
                 });
             } else {
+                Employee.setEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()));
                 builder.setMessage(R.string.new_employee_ID_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Employee.setEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()));
                         addUpdateProfile(true);
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
@@ -313,9 +322,9 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         if (Caller == R.id.caller_administrator) {
             HourlyRateEdit.setText(String.valueOf(Employee.getHourlyRate() <= 0.0 ? 10.0 : Employee.getHourlyRate()));
             PieceRateEdit.setText(String.valueOf(Employee.getPieceRate() <= 0.0 ? 10.0 : Employee.getPieceRate()));
+            SSNumberEdit.setText(Employee.getSSNumber().isEmpty() ? "" : Employee.getSSNumber());
         }
-        SSNumberEdit.setText(Employee.getSSNumber().isEmpty() ? "" : Employee.getSSNumber());
-        DoBButton.setText(Employee.getDoB().isEmpty() ? "" : Employee.getDoB());
+         DoBButton.setText(Employee.getDoB().isEmpty() ? "" : Employee.getDoB());
         DoHButton.setText(Employee.getDoH().isEmpty() ? "" : Employee.getDoH());
         DocExpButton.setText(Employee.getDocExp().isEmpty() ? "" : Employee.getDocExp());
         CommentsEdit.setText(Employee.getComments().isEmpty() ? "" : Employee.getComments());
@@ -337,8 +346,8 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         if (Caller == R.id.caller_administrator) {
             Employee.setHourlyRate((HourlyRateEdit.getText().toString().isEmpty()) ? 10.0 : Double.parseDouble(HourlyRateEdit.getText().toString()));
             Employee.setPieceRate((PieceRateEdit.getText().toString().isEmpty()) ? 10.0 : Double.parseDouble(PieceRateEdit.getText().toString()));
+            Employee.setSSNumber((SSNumberEdit.getText().toString().isEmpty()) ? "" : SSNumberEdit.getText().toString());
         }
-        Employee.setSSNumber((SSNumberEdit.getText().toString().isEmpty()) ? "" : SSNumberEdit.getText().toString());
         Employee.setDoB((DoBButton.getText().toString().isEmpty()) ? "" : DoBButton.getText().toString());
         Employee.setDoH((DoHButton.getText().toString().isEmpty()) ? "" : DoHButton.getText().toString());
         Employee.setDocExp((DocExpButton.getText().toString().isEmpty()) ? "" : DocExpButton.getText().toString());

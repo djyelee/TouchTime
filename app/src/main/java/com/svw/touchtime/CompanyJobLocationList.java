@@ -47,38 +47,36 @@ public class CompanyJobLocationList {
     }
 
     // setters
-    public void setName(String Name) {
-        if (!Name.isEmpty()) this.Name = Name;
-    }
+    public void setName(String Name) { this.Name = Name; }
     public void setStreet(String Street) {
-        if (!Street.isEmpty()) this.Street = Street;
+        this.Street = Street;
     }
     public void setCity(String City) {
-        if (!City.isEmpty()) this.City = City;
+        this.City = City;
     }
     public void setState(String State) {
-        if (!State.isEmpty()) this.State = State;
+        this.State = State;
     }
     public void setZipCode(String ZipCode) {
-        if (!ZipCode.isEmpty()) this.ZipCode = ZipCode;
+        this.ZipCode = ZipCode;
     }
     public void setCountry(String Country) {
-        if (!Country.isEmpty()) this.Country = Country;
+        this.Country = Country;
     }
     public void setPhone(String Phone) {
-        if (!Phone.isEmpty()) this.Phone = Phone;
+        this.Phone = Phone;
     }
     public void setContact(String Contact) {
-        if (!Contact.isEmpty()) this.Contact = Contact;
+        this.Contact = Contact;
     }
     public void setEmail(String Email) {
-        if (!Email.isEmpty()) this.Email = Email;
+        this.Email = Email;
     }
     public void setJob(String Job) {
-        if (!Job.isEmpty()) this.Job = Job;
+        this.Job = Job;
     }
     public void setLocation(String Location) {
-        if (!Location.isEmpty()) this.Location = Location;
+        this.Location = Location;
     }
 
     // getters

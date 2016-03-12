@@ -41,32 +41,24 @@ public class WorkGroupList {
 
     // setters
     public void setGroupID(int GroupID) {
-        if (GroupID != 0) this.GroupID = GroupID;
+        if (GroupID > 0) this.GroupID = GroupID;
     }       // must be at least 1
-    public void setGroupName(String GroupName) {
-        if (!GroupName.isEmpty()) this.GroupName = GroupName;
-    }
-    public void setSupervisor(String Supervisor) {
-        if (!Supervisor.isEmpty()) this.Supervisor = Supervisor;
-    }
-    public void setShiftName(String ShiftName) {
-        if (!ShiftName.isEmpty()) this.ShiftName = ShiftName;
-    }
+    public void setGroupName(String GroupName) { this.GroupName = GroupName; }
+    public void setSupervisor(String Supervisor) { this.Supervisor = Supervisor; }
+    public void setShiftName(String ShiftName) { this.ShiftName = ShiftName; }
     public void setCompany(String Company) {
-        if (!Company.isEmpty()) this.Company = Company;
+        this.Company = Company;
     }
     public void setLocation(String Location) {
-        if (!Location.isEmpty()) this.Location = Location;
+        this.Location = Location;
     }
     public void setJob(String Job) {
-        if (!Job.isEmpty()) this.Job = Job;
+        this.Job = Job;
     }
     public void setStatus(int Status) {
        this.Status = Status;
     }
-    public void setEmployees(String Employees) {
-        if (!Employees.isEmpty()) this.Employees = Employees;
-    }
+    public void setEmployees(String Employees) { this.Employees = Employees; }
 
      // getters
     public int getGroupID() { return this.GroupID; }

@@ -6,15 +6,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -26,69 +22,45 @@ import java.util.HashMap;
 
 
 public class EmployeePunchMenuActivity extends ActionBarActivity {
+    public TextView Company_selection;
+    public TextView Location_selection;
+    public TextView Job_selection;
     public TextView Current_date;
     public TextView Current_time;
     private ListView universal_list_view;
-    private RadioGroup radioGroup;
-    private RadioButton employeeButton, companyButton, jobButton, locationButton;
     EmployeeProfileList Employee;
-    private ArrayList<String> unique_com;
-    private ArrayList<String> unique_loc;
-    private ArrayList<String> unique_job;
-    private SimpleAdapter adapter_employee;
-    private SimpleAdapter adapter_com;
-    private SimpleAdapter adapter_job;
-    private SimpleAdapter adapter_loc;
+    private TouchTimeGeneralAdapter adapter_employee;
     ArrayList<HashMap<String, String>> feedEmployeeList;
-    ArrayList<HashMap<String, String>> feedCompanyList;
-    ArrayList<HashMap<String, String>> feedJobList;
-    ArrayList<HashMap<String, String>> feedLocationList;
     HashMap<String, String> map;
-    CompanyJobLocationList Company;
     DailyActivityList Activity;
 
     String[] employee_item = new String[5];
     int[] employee_id = new int[5];
-    String[] company_item = new String[5];      // The followings must be different for each adapter
-    int[] company_id = new int[5];
-    String[] job_item = new String[5];
-    int[] job_id = new int[5];
-    String[] location_item = new String[5];
-    int[] location_id = new int[5];
     private int itemEmployee = -1;
-    private int itemCompany = -1;
-    private int itemLocation = -1;
-    private int itemJob = -1;
     boolean sort_id_ascend = true;
     boolean sort_last_name_ascend = true;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeWorkGroupDBWrapper dbGroup;
-    private CompanyJobLocationDBWrapper dbCompany;
     private DailyActivityDBWrapper dbActivity;
     Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_employee_punch_menu);
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         universal_list_view = (ListView) findViewById(R.id.universal_list_view);
-        radioGroup = (RadioGroup) findViewById(R.id.selection);
-        employeeButton = (RadioButton) findViewById(R.id.radio_employee);
-        companyButton = (RadioButton) findViewById(R.id.radio_company);
-        locationButton = (RadioButton) findViewById(R.id.radio_loc);
-        jobButton = (RadioButton) findViewById(R.id.radio_job);
         feedEmployeeList = new ArrayList<HashMap<String, String>>();
-        feedCompanyList = new ArrayList<HashMap<String, String>>();
-        feedLocationList = new ArrayList<HashMap<String, String>>();
-        feedJobList = new ArrayList<HashMap<String, String>>();
         ArrayList<EmployeeProfileList> all_employee_lists;
-        ArrayList<CompanyJobLocationList> all_company_lists;
         context = this;
+
+        Company_selection = (TextView) findViewById(R.id.company_selection_text);
+        Location_selection = (TextView) findViewById(R.id.location_selection_text);
+        Job_selection = (TextView) findViewById(R.id.job_selection_text);
 
         DateFormat yf = new SimpleDateFormat("yyyy");
         int year = Integer.parseInt(yf.format(Calendar.getInstance().getTime()));
@@ -112,6 +84,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
             } while (++i < all_employee_lists.size());
             if (itemEmployee < 0) itemEmployee = 0;        // all employees are punched in, then display the first one
             Employee = dbGroup.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
+            Company_selection.setText(Employee.getCompany());
+            Location_selection.setText(Employee.getLocation());
+            Job_selection.setText(Employee.getJob());
             employee_item[0] = getText(R.string.employee_selection_item_id).toString();
             employee_item[1] = getText(R.string.employee_selection_item_last_name).toString();
             employee_item[2] = getText(R.string.employee_selection_item_first_name).toString();
@@ -124,7 +99,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
             employee_id[4] = R.id.textViewStatus;
             universal_list_view.setItemsCanFocus(true);
             // universal_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_punch_header, null, false), null, false);
-            adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_punch_view, employee_item, employee_id);
+            adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_punch_view, employee_item, employee_id);
+            // universal_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_punch_header, null, false), null, false);
+            universal_list_view.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             universal_list_view.setAdapter(adapter_employee);
             universal_list_view.setItemChecked(itemEmployee, true);
         } else {
@@ -134,61 +111,12 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     dbGroup.closeDB();
                     dbActivity.closeDB();
-                    dbCompany.closeDB();
                     finish();
                 }
             });
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-
-        // retrieve company lists
-        dbCompany = new CompanyJobLocationDBWrapper(this);
-        all_company_lists = dbCompany.getAllCompanyLists();
-        Company = new CompanyJobLocationList();
-        unique_com = new ArrayList<String>();
-        unique_job = new ArrayList<String>();
-        unique_loc = new ArrayList<String>();
-        if (all_company_lists.size() > 0) {
-            i = 0;
-            do {
-                unique_com.add(all_company_lists.get(i++).getName());
-            } while (i < all_company_lists.size());
-            feedCompanyList.clear();
-            i = 0;
-            while (i < unique_com.size()) {
-                map = new HashMap<String, String>();
-                map.put(getText(R.string.group_selection_item_name).toString(), unique_com.get(i++));
-                feedCompanyList.add(map);
-            };
-            getCompanyJobLocation();
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.no_company_message).setTitle(R.string.empty_entry_title);
-            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dbGroup.closeDB();
-                    dbActivity.closeDB();
-                    dbCompany.closeDB();
-                    finish();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        company_item[0] = getText(R.string.group_selection_item_name).toString();
-        company_id[0] = R.id.groupDisplayID;
-//      universal_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
-        adapter_com = new SimpleAdapter(this, feedCompanyList, R.layout.group_display_view, company_item, company_id);
-
-        // set up location & job
-        job_item[0] = getText(R.string.group_selection_item_name).toString();
-        job_id[0] = R.id.groupDisplayID;
-        adapter_job = new SimpleAdapter(this, feedJobList, R.layout.group_display_view, job_item, job_id);
-
-        location_item[0] = getText(R.string.group_selection_item_name).toString();
-        location_id[0] = R.id.groupDisplayID;
-        adapter_loc = new SimpleAdapter(this, feedLocationList, R.layout.group_display_view, location_item, location_id);
 
         Current_date = (TextView) findViewById(R.id.current_date);
         Current_time = (TextView) findViewById(R.id.current_time);
@@ -209,39 +137,21 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         universal_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
-                    itemEmployee = position;
-                    Employee = dbGroup.getEmployeeList(Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_id).toString())));
-                    getCompanyJobLocation();
-                } else if (radioGroup.getCheckedRadioButtonId() == companyButton.getId()) {
-                    itemCompany = position;
-                    if (unique_com.size() > itemCompany && itemCompany >= 0) Employee.setCompany(unique_com.get(itemCompany));
-                    getCompanyJobLocation();
-                    dbGroup.updateEmployeeList(Employee);
-                } else if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
-                    itemJob = position;
-                    if (unique_job.size() > itemJob && itemJob >= 0) Employee.setJob(unique_job.get(itemJob));
-                    dbGroup.updateEmployeeList(Employee);
-                } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
-                    itemLocation = position;
-                    if (unique_loc.size() > itemLocation && itemLocation >= 0) Employee.setLocation(unique_loc.get(itemLocation));
-                    dbGroup.updateEmployeeList(Employee);
-                }
-                // store current location because switching adapter will lose track of the location
-                int index = universal_list_view.getFirstVisiblePosition();
-                View v = universal_list_view.getChildAt(0);
-                int top = (v == null) ? 0 : v.getTop();
-                onRadioButtonClicked(view);
-                // restore current location
-                universal_list_view.setSelectionFromTop(index, top);
-
-                // onRadioButtonClicked(view);
+                itemEmployee = position;
+                Employee = dbGroup.getEmployeeList(Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_id).toString())));
+                HighlightListItem(itemEmployee);
+                getCompanyJobLocation();
             }
         });
     }
 
+    private void HighlightListItem(int position) {
+        adapter_employee.setSelectedItem(position);
+        adapter_employee.notifyDataSetChanged();
+    }
+
     public void getCompanyJobLocation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+ /*       AlertDialog.Builder builder = new AlertDialog.Builder(this);
         int i;
         if (Employee.getCompany().isEmpty()) {
             builder.setMessage(R.string.select_company_message).setTitle(R.string.empty_entry_title);
@@ -313,68 +223,37 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 dialog.show();
             }
         }
-    }
-
-    public void onRadioButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-        if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
-            universal_list_view.setAdapter(adapter_employee);
-            universal_list_view.setItemChecked(itemEmployee, true);
-        } else if (radioGroup.getCheckedRadioButtonId() == companyButton.getId()) {
-            if(!feedCompanyList.isEmpty()) universal_list_view.setAdapter(adapter_com);
-            if (itemCompany >= 0) universal_list_view.setItemChecked(itemCompany, true);
-        } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
-            if (itemCompany < 0) {
-                builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else {
-                universal_list_view.setAdapter(adapter_loc);
-                if (itemLocation >= 0) universal_list_view.setItemChecked(itemLocation, true);
-            }
-        } else if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
-            if (itemCompany < 0) {
-                builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else {
-                universal_list_view.setAdapter(adapter_job);
-                if (itemJob >= 0) universal_list_view.setItemChecked(itemJob, true);
-            }
-        }
+        */
     }
 
     public void onSortIDButtonClicked(View view) {
-        if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
-            String Items;
-            Items = getText(R.string.employee_selection_item_id).toString();
-            General.SortIntegerList(feedEmployeeList, Items, sort_id_ascend);
-            sort_last_name_ascend = false;
-            sort_id_ascend = !sort_id_ascend;
-            adapter_employee.notifyDataSetChanged();
-            markSelectedItems();
-        }
+        String Items;
+        Items = getText(R.string.employee_selection_item_id).toString();
+        int ID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_id).toString()));
+        General.SortIntegerList(feedEmployeeList, Items, sort_id_ascend);
+        itemEmployee = General.GetIntegerIndex(feedEmployeeList, Items, ID);
+        // adapter_employee.setSelectedItem(itemEmployee);
+        markSelectedItems();
+        sort_last_name_ascend = false;
+        sort_id_ascend = !sort_id_ascend;
+        adapter_employee.notifyDataSetChanged();
     }
 
+
     public void onSortLastNameButtonClicked(View view) {
-        if (radioGroup.getCheckedRadioButtonId() == employeeButton.getId()) {
-            String[] Items = new String[2];
-            Items[0] = getText(R.string.employee_selection_item_last_name).toString();
-            Items[1] = getText(R.string.employee_selection_item_first_name).toString();
-            General.SortStringList(feedEmployeeList, Items, sort_last_name_ascend);
-            sort_id_ascend = false;
-            sort_last_name_ascend = !sort_last_name_ascend;
-            adapter_employee.notifyDataSetChanged();
-            markSelectedItems();
-        }
+        String [] Items = new String[2];
+        String [] Data = new String[2];
+        Items[0] = getText(R.string.employee_selection_item_last_name).toString();
+        Items[1] = getText(R.string.employee_selection_item_first_name).toString();
+        Data [0] = feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_last_name).toString());
+        Data [1] = feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_first_name).toString());
+        General.SortStringList(feedEmployeeList, Items, sort_last_name_ascend);
+        itemEmployee = General.GetStringIndex(feedEmployeeList, Items, Data);
+        // adapter_employee.setSelectedItem(itemEmployee);
+        markSelectedItems();
+        sort_id_ascend = false;
+        sort_last_name_ascend = !sort_last_name_ascend;
+        adapter_employee.notifyDataSetChanged();
     }
 
     public void markSelectedItems() {
@@ -390,7 +269,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     }
 
     public void onPunchInButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+  /*      AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (Employee.getStatus() == 1) {
             builder.setMessage(R.string.employee_already_punched_in_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -417,10 +296,11 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         }
         AlertDialog dialog = builder.create();
         dialog.show();
+        */
     }
 
     public void onPunchOutButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+ /*       AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (Employee.getStatus() == 0) {
             builder.setMessage(R.string.employee_not_punched_in_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -441,10 +321,11 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         }
         AlertDialog dialog = builder.create();
         dialog.show();
+        */
     }
 
     public void onMoveJobButtonClicked(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+  /*      AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemCompany < 0 || itemLocation < 0 || itemJob < 0) {
             builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -477,6 +358,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         }
         AlertDialog dialog = builder.create();
         dialog.show();
+        */
     }
 
     public void employeePunchIn(View view) {
@@ -485,9 +367,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         Activity = new DailyActivityList();
         Employee = dbGroup.getEmployeeList(Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_id).toString())));
         Employee.setStatus(1);
-        if (!unique_com.get(itemCompany).isEmpty()) Employee.setCompany(unique_com.get(itemCompany));
-        if (!unique_loc.get(itemLocation).isEmpty()) Employee.setLocation(unique_loc.get(itemLocation));
-        if (!unique_job.get(itemJob).isEmpty()) Employee.setJob(unique_job.get(itemJob));
         dbGroup.updateEmployeeList(Employee);
 
         feedEmployeeList.remove(itemEmployee);
@@ -498,13 +377,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         map.put(getText(R.string.employee_selection_item_group).toString(), Employee.getGroup() <= 0 ? "" : String.valueOf(Employee.getGroup()));
         map.put(getText(R.string.employee_selection_item_status).toString(), Employee.getStatus() == 0 ? getText(R.string.out).toString() : getText(R.string.in).toString());
         feedEmployeeList.add(itemEmployee, map);
-        // store current location
-        int index = universal_list_view.getFirstVisiblePosition();
-        View v = universal_list_view.getChildAt(0);
-        int top = (v == null) ? 0 : v.getTop();
-        onRadioButtonClicked(view);
-        // restore current location
-        universal_list_view.setSelectionFromTop(index, top);
 
         Activity.setEmployeeID(Employee.getEmployeeID());
         Activity.setLastName(Employee.getLastName());
@@ -533,13 +405,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         map.put(getText(R.string.employee_selection_item_group).toString(), Employee.getGroup() <= 0 ? "" : String.valueOf(Employee.getGroup()));
         map.put(getText(R.string.employee_selection_item_status).toString(), Employee.getStatus() == 0 ? getText(R.string.out).toString() : getText(R.string.in).toString());
         feedEmployeeList.add(itemEmployee, map);
-        // store current location
-        int index = universal_list_view.getFirstVisiblePosition();
-        View v = universal_list_view.getChildAt(0);
-        int top = (v == null) ? 0 : v.getTop();
-        onRadioButtonClicked(view);
-        // restore current location
-        universal_list_view.setSelectionFromTop(index, top);
 
         Activity = dbActivity.getPunchedInActivityList(Employee.getEmployeeID());
         if (Activity != null && Activity.getEmployeeID() > 0) {
@@ -571,7 +436,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         } else if (id == android.R.id.home) {
             dbGroup.closeDB();
             dbActivity.closeDB();
-            dbCompany.closeDB();
             onBackPressed();
             return true;
         }

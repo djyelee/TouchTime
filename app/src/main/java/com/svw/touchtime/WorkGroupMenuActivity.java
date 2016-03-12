@@ -34,7 +34,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     ArrayList<HashMap<String, String>> feedGroupList;
     ArrayList<HashMap<String, String>> feedEmployeeList;
     HashMap<String, String> map;
-    private int itemWorkGroup = 0;
+    private int itemWorkGroup = -1;
     WorkGroupList WorkGroup;
     String[] group_item = new String[5];
     int[] group_id = new int[5];
@@ -46,12 +46,12 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_work_group_menu);
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         ListView employee_list_view;
 
@@ -89,12 +89,12 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 feedGroupList.add(map);
             };
             WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(0)));
-            itemWorkGroup = 1;
+            itemWorkGroup = 0;
         }
         group_item[0] = getText(R.string.group_selection_item_name).toString();
         group_id[0] = R.id.groupDisplayID;
         work_group_list_view.setItemsCanFocus(true);
-        work_group_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
+        // work_group_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
         adapter_group = new SimpleAdapter(this, feedGroupList, R.layout.group_display_view, group_item, group_id);
         work_group_list_view.setAdapter(adapter_group);
         displayWorkGroup();
@@ -109,7 +109,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         employee_id[1] = R.id.textDisplayLastName;
         employee_id[2] = R.id.textDisplayFirstName;
         employee_list_view.setItemsCanFocus(true);
-        employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_display_header, null, false), null, false);
+        // employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_display_header, null, false), null, false);
         adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_display_view, employee_item, employee_id);
         employee_list_view.setAdapter(adapter_employee);
         displayEmployee();
@@ -121,7 +121,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 view.animate().setDuration(100).alpha(0).withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup-1)));
+                                WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
                                 displayWorkGroup();
                                 displayEmployee();
                                 view.setAlpha(1);
@@ -133,9 +133,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void onEmployeeButtonClicked(View view) {
-         if (itemWorkGroup > 0) {
+         if (itemWorkGroup >= 0) {
             Intent intent = new Intent(this, EmployeeSelectionActivity.class);
-            intent.putExtra("SelectedGroup", itemWorkGroup);
+            intent.putExtra("SelectedGroup", Integer.parseInt(unique_group.get(itemWorkGroup)));
             startActivityForResult(intent, PICK_GROUP_REQUEST);
         } else {
              // put the dialog inside so it will not dim the screen when returns.
@@ -200,7 +200,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                         }
                     });
                     db.createWorkGroupList(WorkGroup);
-                    itemWorkGroup = unique_group.indexOf(String.valueOf(WorkGroup.getGroupID())) + 1;
+                    itemWorkGroup = unique_group.indexOf(String.valueOf(WorkGroup.getGroupID()));
                     displayWorkGroup();
                     displayEmployee();
                 }
@@ -213,19 +213,19 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         } else if (view.getId() == R.id.update_work_group) {
-            if (itemWorkGroup <= 0) {
-                builder.setMessage(R.string.select_work_group_message).setTitle(R.string.empty_entry_title);
+            if (itemWorkGroup < 0) {
+                builder.setMessage(R.string.select_work_group_message).setTitle(R.string.work_group_warning_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
             } else if (WorkGroup.getStatus() != 0) {
-                builder.setMessage(R.string.group_must_punch_out_message).setTitle(R.string.confirm_delete_title);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.group_must_punch_out_message).setTitle(R.string.work_group_warning_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-            } else if (db.checkWorkGroupID(itemWorkGroup)) {
+           } else if (db.checkWorkGroupID(Integer.parseInt(unique_group.get(itemWorkGroup)))) {
                 builder.setMessage(R.string.update_work_group_message).setTitle(R.string.work_group_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -247,7 +247,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
 
     public void onDeleteButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-        if (itemWorkGroup > 0) {
+        if (itemWorkGroup >= 0) {
             if (WorkGroup.getStatus() != 0) {
                 builder.setMessage(R.string.group_must_punch_out_message).setTitle(R.string.confirm_delete_title);
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -274,14 +274,15 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                             }
                         }
                         // delete group and update list
-                        db.deleteWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup - 1)));
-                        unique_group.remove(itemWorkGroup - 1);
+                        db.deleteWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
+                        unique_group.remove(itemWorkGroup);
                         adapter_group.notifyDataSetChanged();
                         all_work_group_lists = db.getAllWorkGroupLists();
                         if (all_work_group_lists.size() > 0) {
-                            itemWorkGroup = 1;
-                            WorkGroup = db.getWorkGroupList(itemWorkGroup);
+                            itemWorkGroup = itemWorkGroup >= 1 ? itemWorkGroup-1 : 0;
+                            WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
                         } else {
+                            itemWorkGroup = -1;
                             WorkGroup = new WorkGroupList();
                         }
                         displayWorkGroup();
@@ -329,7 +330,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                 if (!ss.isEmpty()) {
                     if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                        unique_employee.add(ss);
+                        if (db.getEmployeeList(Integer.parseInt(ss)).getGroup() == WorkGroup.getGroupID()) {
+                            unique_employee.add(ss);
+                        }
                     }
                 }
             }

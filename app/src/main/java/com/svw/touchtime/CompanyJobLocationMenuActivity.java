@@ -52,12 +52,12 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_company_job_location_menu);
+        int Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
         // layout id information
         Button button_new;
         ArrayList<CompanyJobLocationList> all_lists;
@@ -148,12 +148,12 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
         list_items[0] = getText(R.string.company_selection_item_name).toString();
         list_id[0] = R.id.companyDisplayID;
         company_list_view.setItemsCanFocus(true);
-        company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
+        // company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
         adapter_com = new SimpleAdapter(this, feedCompanyList, R.layout.company_display_view, list_items, list_id);
         company_list_view.setAdapter(adapter_com);
         if (all_lists.size() > 0) {
             item = olditem = 0;
-            company_list_view.setItemChecked(item+1, true);
+            company_list_view.setItemChecked(item, true);
             Company = db.getCompanyList(unique_com.get(0));
         }
 
@@ -162,7 +162,7 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 olditem = item;
-                item = position-1;
+                item = position;
                 company_list_view.setItemChecked(position, true);
                 view.animate().setDuration(100).alpha(0)   // dim the selection
                         .withEndAction(new Runnable() {

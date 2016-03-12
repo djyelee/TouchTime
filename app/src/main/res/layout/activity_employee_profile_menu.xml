@@ -11,17 +11,17 @@
     <TableRow
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp">
 
         <Button
+            android:id="@+id/delete_employee"
             android:text="@string/button_del"
             android:textSize="@dimen/medium_text_size"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/roundshapebtn"
             android:clickable="true"
             android:onClick="onDeleteButtonClicked"
@@ -34,8 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/roundshapebtn"
             android:clickable="true"
             android:onClick="onUpdateButtonClicked"
@@ -48,19 +46,64 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:background="@drawable/roundshapebtn"
             android:clickable="true"
             android:onClick="onAddButtonClicked"
             android:layout_gravity="center_vertical" />
     </TableRow>
+    <TableRow
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+        <Button
+            android:id="@+id/sort_id"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/employee_selection_item_id"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortIDButtonClicked"
+            android:gravity="center_vertical|center" />
 
+        <Button
+            android:id="@+id/sort_last_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/employee_selection_item_last_name"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortLastNameButtonClicked"
+            android:gravity="center_vertical|center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="5dp"
+            android:text="@string/employee_selection_item_first_name"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center_vertical|center"
+            android:paddingRight="5dp" />
+
+    </TableRow>
     <ListView
         android:id="@+id/employee_profile_list_view"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_weight="6.5"
         android:background="@drawable/list_view_border"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"

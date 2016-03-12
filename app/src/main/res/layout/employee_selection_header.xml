@@ -8,7 +8,7 @@
     <Button
         android:id="@+id/sort_id"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1.5"
         android:paddingLeft="10dp"
         android:layout_marginRight="10dp"
@@ -23,7 +23,7 @@
     <Button
         android:id="@+id/sort_last_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="5"
         android:paddingLeft="10dp"
         android:layout_marginRight="10dp"
@@ -37,7 +37,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="5.5"
         android:paddingLeft="5dp"
         android:text="@string/employee_selection_item_first_name"
@@ -48,7 +48,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1.5"
         android:text="@string/employee_selection_item_active"
         android:textSize="@dimen/medium_text_size"
@@ -58,7 +58,7 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1.8"
         android:text="@string/employee_selection_item_current"
         android:textSize="@dimen/medium_text_size"

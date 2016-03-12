@@ -31,8 +31,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     boolean sort_last_name_ascend = true;
     boolean selectEmployee = true;
     ArrayList<HashMap<String, String>> feedEmployeeList;
-    //private SimpleAdapter adapter_employee;
-    EmployeeProfileAdapter adapter_employee;
+    TouchTimeGeneralAdapter adapter_employee;
     HashMap<String, String> map;
     private int itemEmployee = -1;
     private ArrayList<EmployeeProfileList> all_employee_lists;
@@ -46,12 +45,16 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Caller = getIntent().getIntExtra("Caller", -1);
-        if (Caller == R.id.caller_supervisor)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
-        else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         setContentView(R.layout.activity_employee_profile_menu);
+        Caller = getIntent().getIntExtra("Caller", -1);
+        if (Caller == R.id.caller_administrator)
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+        else {
+            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+            Button delete_employee = (Button) findViewById(R.id.delete_employee);
+            delete_employee.setClickable(false);
+            delete_employee.setBackgroundColor(getResources().getColor(R.color.svw_dark_gray));
+        }
 
         employee_list_view = (ListView) findViewById(R.id.employee_profile_list_view);
         sort_id = (Button) findViewById(R.id.sort_id);
@@ -76,9 +79,9 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
          }
         // display selected employees
         // adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
-        adapter_employee = new EmployeeProfileAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
+        adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
         employee_list_view.setItemsCanFocus(true);
-        employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_profile_header, null, false), null, false);
+        // employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_profile_header, null, false), null, false);
         // use adaptor to display, must be done after the header is added
         employee_list_view.setAdapter(adapter_employee);
         HighlightListItem(itemEmployee);
@@ -86,7 +89,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         employee_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                itemEmployee = position - 1;      // offset the row for header
+                itemEmployee = position;      // offset the row for header
                 view.animate().setDuration(100).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override
@@ -103,7 +106,6 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     }
     private void HighlightListItem(int position) {
         adapter_employee.setSelectedItem(position);
-        // employee_list_view.setAdapter(adapter_employee);
         adapter_employee.notifyDataSetChanged();
     }
 
@@ -174,6 +176,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onDeleteButtonClicked(View view) {
+ //       if (Caller != R.id.caller_administrator) return;
         getWindow().setSoftInputMode ( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN );
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (itemEmployee >= 0) {
@@ -224,7 +227,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         Items[0] = getText(R.string.employee_selection_item_last_name).toString();
         Items[1] = getText(R.string.employee_selection_item_first_name).toString();
         Data [0] = feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_last_name).toString());
-        Data [1] =feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_first_name).toString());
+        Data [1] = feedEmployeeList.get(itemEmployee).get(getText(R.string.employee_selection_item_first_name).toString());
         General.SortStringList(feedEmployeeList, Items, sort_last_name_ascend);
         itemEmployee = General.GetStringIndex(feedEmployeeList, Items, Data);
         adapter_employee.setSelectedItem(itemEmployee);

@@ -98,74 +98,61 @@ public class EmployeeProfileList {
         if (EmployeeID != 0) this.EmployeeID = EmployeeID;
     }       // must be at least 1
     public void setLastName(String LastName) {
-        if (!LastName.isEmpty()) this.LastName = LastName;
+        this.LastName = LastName;
     }
-    public void setFirstName(String FirstName) {
-        if (!FirstName.isEmpty()) this.FirstName = FirstName;
-    }
+    public void setFirstName(String FirstName) { this.FirstName = FirstName; }
     public void setStreet(String Street) {
-        if (!Street.isEmpty()) this.Street = Street;
+        this.Street = Street;
     }
     public void setCity(String City) {
-        if (!City.isEmpty()) this.City = City;
+        this.City = City;
     }
     public void setState(String State) {
-        if (!State.isEmpty()) this.State = State;
+        this.State = State;
     }
     public void setZipCode(String ZipCode) {
-        if (!ZipCode.isEmpty()) this.ZipCode = ZipCode;
+        this.ZipCode = ZipCode;
     }
     public void setCountry(String Country) {
-        if (!Country.isEmpty()) this.Country = Country;
+        this.Country = Country;
     }
     public void setPhone(String Phone) {
-        if (!Phone.isEmpty()) this.Phone = Phone;
+        this.Phone = Phone;
     }
     public void setEmail(String Email) {
-        if (!Email.isEmpty()) this.Email = Email;
+        this.Email = Email;
     }
-    public void setHourlyRate(double HourlyRate) {
-        if (HourlyRate > 0.0) this.HourlyRate = HourlyRate;
-    }
+    public void setHourlyRate(double HourlyRate) { if (HourlyRate > 0.0) this.HourlyRate = HourlyRate; }
     public void setPieceRate(double PieceRate) {
         if (PieceRate > 0.0) this.PieceRate = PieceRate;
     }
     public void setSSNumber(String SSNumber) {
-        if (!SSNumber.isEmpty()) this.SSNumber = SSNumber;
+        this.SSNumber = SSNumber;
     }
     public void setDoB(String DoB) {
-        if (!DoB.isEmpty()) this.DoB = DoB;
+        this.DoB = DoB;
     }
     public void setDoH(String DoH) {
-        if (!DoH.isEmpty()) this.DoH = DoH;
+        this.DoH = DoH;
     }
     public void setActive(int Active) {
         this.Active = Active;
     }
     public void setDocExp(String DocExp) {
-        if (!DocExp.isEmpty()) this.DocExp = DocExp;
+        this.DocExp = DocExp;
     }
     public void setCurrent(int Current) {
         this.Current = Current;
     }
     public void setComments(String Comments) {
-        if (!Comments.isEmpty()) this.Comments = Comments;
+        this.Comments = Comments;
     }
     public void setGroup(int Group) {
         this.Group = Group;
     }
-    public void setCompany(String Company) {
-        // this.Company = "";
-        if (!Company.isEmpty()) this.Company = Company;
-    }
-    public void setLocation(String Location) {
-        // this.Location = "";
-        if (!Location.isEmpty()) this.Location = Location;
-    }
-    public void setJob(String Job) {
-        // this.Job = "";
-        if (!Job.isEmpty()) this.Job = Job;
-    }
+    public void setCompany(String Company) { this.Company = Company; }
+    public void setLocation(String Location) { this.Location = Location; }
+    public void setJob(String Job) { this.Job = Job; }
     public void setStatus(int Status) {
         this.Status = Status;
     }

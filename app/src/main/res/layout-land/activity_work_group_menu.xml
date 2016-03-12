@@ -9,39 +9,98 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:background="?android:attr/activatedBackgroundIndicator">
-
-        <ListView
-            android:id="@+id/work_group_list_view"
+        <TableLayout
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:background="@drawable/list_view_border"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:choiceMode="singleChoice"
-            android:listSelector="@android:color/darker_gray"/>
-
-        <ListView
-            android:id="@+id/employee_list_view"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp"
+                android:text="@string/group_name_header"
+                android:textSize="@dimen/medium_text_size"
+                android:textStyle="bold|italic"
+                android:focusable="false"
+                android:textColor="@color/svw_black"
+                android:background="@color/svw_orange"
+                android:gravity="center_horizontal" />
+            <ListView
+                android:id="@+id/work_group_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="15"
+                android:background="@drawable/list_view_border"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:choiceMode="singleChoice"
+                android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
+        </TableLayout>
+        <TableLayout
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="4.5"
-            android:background="@drawable/list_view_border"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:choiceMode="singleChoice"
-            android:listSelector="@android:color/darker_gray"/>
+            android:layout_weight="5"
+            android:layout_height="match_parent">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:paddingLeft="5dp"
+                    android:text="@string/employee_selection_item_id"
+                    android:textSize="@dimen/medium_text_size"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_black"
+                    android:background="@color/svw_orange"/>
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:paddingLeft="5dp"
+                    android:text="@string/employee_selection_item_last_name"
+                    android:textSize="@dimen/medium_text_size"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_black"
+                    android:background="@color/svw_orange"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:paddingLeft="5dp"
+                    android:text="@string/employee_selection_item_first_name"
+                    android:textSize="@dimen/medium_text_size"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_black"
+                    android:background="@color/svw_orange"/>
+            </TableRow>
+
+            <ListView
+                android:id="@+id/employee_list_view"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="15"
+                android:background="@drawable/list_view_border"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:choiceMode="singleChoice"
+                android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
+        </TableLayout>
         <TableLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1.5"
             >
                 <TextView
