@@ -172,7 +172,7 @@
                 android:paddingBottom="5dp"
                 android:background="@drawable/list_view_border"
                 android:choiceMode="singleChoice"
-                android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
+                android:listSelector="@color/svw_gray"/>
         </TableRow>
 
     </TableLayout>

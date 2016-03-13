@@ -123,7 +123,7 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             i=0;
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
                 feedCompanyList.add(map);
             } while (++i < unique_com.size());
             adapter_job = new ArrayAdapter<String>(this, R.layout.company_job_location_listview, unique_job);
@@ -145,7 +145,7 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        list_items[0] = getText(R.string.company_selection_item_name).toString();
+        list_items[0] = getText(R.string.employee_selection_item_company).toString();
         list_id[0] = R.id.companyDisplayID;
         company_list_view.setItemsCanFocus(true);
         // company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
@@ -168,11 +168,11 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.company_selection_item_name).toString()));
+                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.employee_selection_item_company).toString()));
                                 if (copy_flag) {
                                     CompanyJobLocationList OldCompany;
                                     // OldCompany = new CompanyJobLocationList();
-                                    OldCompany = db.getCompanyList(feedCompanyList.get(olditem).get(getText(R.string.company_selection_item_name).toString()));
+                                    OldCompany = db.getCompanyList(feedCompanyList.get(olditem).get(getText(R.string.employee_selection_item_company).toString()));
                                     Company.Job = OldCompany.getJob();
                                     Company.Location = OldCompany.getLocation();
                                     db.updateCompanyList(Company);

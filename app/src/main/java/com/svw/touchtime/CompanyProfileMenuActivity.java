@@ -81,12 +81,12 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             i=0;
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
                 feedCompanyList.add(map);
             } while (++i < unique_com.size());
             Company = db.getCompanyList(unique_com.get(0));
         }
-        list_items[0] = getText(R.string.company_selection_item_name).toString();
+        list_items[0] = getText(R.string.employee_selection_item_company).toString();
         list_id[0] = R.id.companyDisplayID;
         company_list_view.setItemsCanFocus(true);
         // company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
@@ -105,7 +105,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.company_selection_item_name).toString()));
+                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.employee_selection_item_company).toString()));
                                 displayCompanyProfile();
                                 view.setAlpha(1);
                             }
@@ -167,7 +167,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                 feedCompanyList.clear();
                                 do {
                                     map = new HashMap<String, String>();
-                                    map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                                    map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
                                     feedCompanyList.add(map);
                                 } while (++i < unique_com.size());
                                 db.createCompanyList(Company);
@@ -199,7 +199,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                 feedCompanyList.clear();
                                 do {
                                     map = new HashMap<String, String>();
-                                    map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i));
+                                    map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
                                     feedCompanyList.add(map);
                                 } while (++i < unique_com.size());
                                 db.createCompanyList(Company);
@@ -240,7 +240,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                 unique_com.add(Company.getName());
                 feedCompanyList.clear();
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(0));
+                map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(0));
                 feedCompanyList.add(map);
                 db.createCompanyList(Company);
                 all_lists = db.getAllCompanyLists();
@@ -258,13 +258,13 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             builder.setMessage(R.string.confirm_delete_company_message).setTitle(R.string.confirm_delete_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                    db.deleteCompanyList(feedCompanyList.get(item).get(getText(R.string.company_selection_item_name).toString()));
+                    db.deleteCompanyList(feedCompanyList.get(item).get(getText(R.string.employee_selection_item_company).toString()));
                     unique_com.remove(item);
                     int i = 0;
                     feedCompanyList.clear();
                     while (i < unique_com.size()) {
                         map = new HashMap<String, String>();
-                        map.put(getText(R.string.company_selection_item_name).toString(), unique_com.get(i++));
+                        map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i++));
                         feedCompanyList.add(map);
                     } ;
                     adapter_com.notifyDataSetChanged();

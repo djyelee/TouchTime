@@ -3,9 +3,11 @@ package com.svw.touchtime;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +24,6 @@ import java.util.HashMap;
 
 
 public class EmployeePunchMenuActivity extends ActionBarActivity {
-    public TextView Company_selection;
-    public TextView Location_selection;
-    public TextView Job_selection;
     public TextView Current_date;
     public TextView Current_time;
     private ListView universal_list_view;
@@ -34,8 +33,8 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     HashMap<String, String> map;
     DailyActivityList Activity;
 
-    String[] employee_item = new String[5];
-    int[] employee_id = new int[5];
+    String[] employee_item = new String[8];
+    int[] employee_id = new int[8];
     private int itemEmployee = -1;
     boolean sort_id_ascend = true;
     boolean sort_last_name_ascend = true;
@@ -43,6 +42,8 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     private EmployeeWorkGroupDBWrapper dbGroup;
     private DailyActivityDBWrapper dbActivity;
     Context context;
+    static final int PICK_JOB_REQUEST = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +59,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         ArrayList<EmployeeProfileList> all_employee_lists;
         context = this;
 
-        Company_selection = (TextView) findViewById(R.id.company_selection_text);
-        Location_selection = (TextView) findViewById(R.id.location_selection_text);
-        Job_selection = (TextView) findViewById(R.id.job_selection_text);
-
         DateFormat yf = new SimpleDateFormat("yyyy");
         int year = Integer.parseInt(yf.format(Calendar.getInstance().getTime()));
         dbActivity = new DailyActivityDBWrapper(this, year);
@@ -70,33 +67,39 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         // retrieve employee lists
         Employee = new EmployeeProfileList();
         all_employee_lists = dbGroup.getAllEmployeeLists();
+        employee_item[0] = getText(R.string.employee_selection_item_id).toString();
+        employee_item[1] = getText(R.string.employee_selection_item_status).toString();
+        employee_item[2] = getText(R.string.employee_selection_item_group).toString();
+        employee_item[3] = getText(R.string.employee_selection_item_last_name).toString();
+        employee_item[4] = getText(R.string.employee_selection_item_first_name).toString();
+        employee_item[5] = getText(R.string.employee_selection_item_company).toString();
+        employee_item[6] = getText(R.string.employee_selection_item_location).toString();
+        employee_item[7] = getText(R.string.employee_selection_item_job).toString();
+        employee_id[0] = R.id.textViewID;
+        employee_id[1] = R.id.textViewStatus;
+        employee_id[2] = R.id.textViewGroup;
+        employee_id[3] = R.id.textViewLastName;
+        employee_id[4] = R.id.textViewFirstName;
+        employee_id[5] = R.id.textViewCompany;
+        employee_id[6] = R.id.textViewLocation;
+        employee_id[7] = R.id.textViewJob;
         int i = 0;
         if (all_employee_lists.size() > 0) {
             do {
                 map = new HashMap<String, String>();
                 map.put(getText(R.string.employee_selection_item_id).toString(), String.valueOf(all_employee_lists.get(i).getEmployeeID()));
+                map.put(getText(R.string.employee_selection_item_status).toString(), all_employee_lists.get(i).getStatus() == 0 ? "" : getText(R.string.y).toString());
+                map.put(getText(R.string.employee_selection_item_group).toString(), all_employee_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_employee_lists.get(i).getGroup()));
                 map.put(getText(R.string.employee_selection_item_last_name).toString(), all_employee_lists.get(i).getLastName());
                 map.put(getText(R.string.employee_selection_item_first_name).toString(), all_employee_lists.get(i).getFirstName());
-                map.put(getText(R.string.employee_selection_item_group).toString(), all_employee_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_employee_lists.get(i).getGroup()));
-                map.put(getText(R.string.employee_selection_item_status).toString(), all_employee_lists.get(i).getStatus() == 0 ? getText(R.string.out).toString() : getText(R.string.in).toString());
+                map.put(getText(R.string.employee_selection_item_company).toString(), all_employee_lists.get(i).getCompany());
+                map.put(getText(R.string.employee_selection_item_location).toString(), all_employee_lists.get(i).getLocation());
+                map.put(getText(R.string.employee_selection_item_job).toString(), all_employee_lists.get(i).getJob());
                 feedEmployeeList.add(map);
                 if (itemEmployee < 0 && map.get(getText(R.string.employee_selection_item_status).toString()).equals(getText(R.string.out).toString())) itemEmployee = i;
             } while (++i < all_employee_lists.size());
             if (itemEmployee < 0) itemEmployee = 0;        // all employees are punched in, then display the first one
             Employee = dbGroup.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
-            Company_selection.setText(Employee.getCompany());
-            Location_selection.setText(Employee.getLocation());
-            Job_selection.setText(Employee.getJob());
-            employee_item[0] = getText(R.string.employee_selection_item_id).toString();
-            employee_item[1] = getText(R.string.employee_selection_item_last_name).toString();
-            employee_item[2] = getText(R.string.employee_selection_item_first_name).toString();
-            employee_item[3] = getText(R.string.employee_selection_item_group).toString();
-            employee_item[4] = getText(R.string.employee_selection_item_status).toString();
-            employee_id[0] = R.id.textViewID;
-            employee_id[1] = R.id.textViewLastName;
-            employee_id[2] = R.id.textViewFirstName;
-            employee_id[3] = R.id.textViewGroup;
-            employee_id[4] = R.id.textViewStatus;
             universal_list_view.setItemsCanFocus(true);
             // universal_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_punch_header, null, false), null, false);
             adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_punch_view, employee_item, employee_id);
@@ -324,42 +327,77 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         */
     }
 
-    public void onMoveJobButtonClicked(final View view) {
-  /*      AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-        if (itemCompany < 0 || itemLocation < 0 || itemJob < 0) {
-            builder.setMessage(R.string.no_company_location_job_message).setTitle(R.string.empty_entry_title);
+    public void onSelectJobButtonClicked(final View view) {
+        if (itemEmployee >= 0) {
+            Intent intent = new Intent(this, CompanyJobLocationSelectionActivity.class);
+            ArrayList<String> CompanyLocationJob = new ArrayList<>();
+            CompanyLocationJob.add(getText(R.string.title_activity_employee_punch_menu).toString());        // caller
+            CompanyLocationJob.add(Employee.getCompany());              // company
+            CompanyLocationJob.add(Employee.getLocation());             // location
+            CompanyLocationJob.add(Employee.getJob());                  // job
+            intent.putStringArrayListExtra("CompanyLocationJob", CompanyLocationJob);
+            startActivityForResult(intent, PICK_JOB_REQUEST);
+        } else {
+            // put the dialog inside so it will not dim the screen when returns.
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+            builder.setMessage(R.string.no_employee_message).setTitle(R.string.empty_entry_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
-        } else if (Employee.getStatus() == 0) {
-            builder.setMessage(R.string.employee_move_anyway_message).setTitle(R.string.employee_punch_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                employeePunchIn(view);
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            });
-        } else {
-            builder.setMessage(R.string.employee_move_message).setTitle(R.string.employee_punch_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                employeePunchOut(view);
-                employeePunchIn(view);
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        */
     }
+
+    public void onRemoveJobButtonClicked(final View view) {
+        if (itemEmployee >= 0) {
+            Employee.setCompany("");
+            Employee.setLocation("");
+            Employee.setJob("");
+            map = new HashMap<String, String>();
+            map.put(getText(R.string.employee_selection_item_id).toString(), String.valueOf(Employee.getEmployeeID()));
+            map.put(getText(R.string.employee_selection_item_status).toString(), Employee.getStatus() == 0 ? "" : getText(R.string.y).toString());
+            map.put(getText(R.string.employee_selection_item_group).toString(), Employee.getGroup() <= 0 ? "" : String.valueOf(Employee.getGroup()));
+            map.put(getText(R.string.employee_selection_item_last_name).toString(), Employee.getLastName());
+            map.put(getText(R.string.employee_selection_item_first_name).toString(), Employee.getFirstName());
+            map.put(getText(R.string.employee_selection_item_company).toString(), Employee.getCompany());
+            map.put(getText(R.string.employee_selection_item_location).toString(), Employee.getLocation());
+            map.put(getText(R.string.employee_selection_item_job).toString(), Employee.getJob());
+            feedEmployeeList.set(itemEmployee, map);
+            universal_list_view.setAdapter(adapter_employee);
+            dbGroup.updateEmployeeList(Employee);
+         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Check which request we're responding to
+        if (requestCode == PICK_JOB_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                ArrayList<String> CompanyLocationJob = new ArrayList<String>();
+                CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
+                Employee.setCompany(CompanyLocationJob.get(1));
+                Employee.setLocation(CompanyLocationJob.get(2));
+                Employee.setJob(CompanyLocationJob.get(3));
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.employee_selection_item_id).toString(), String.valueOf(Employee.getEmployeeID()));
+                map.put(getText(R.string.employee_selection_item_status).toString(), Employee.getStatus() == 0 ? "" : getText(R.string.y).toString());
+                map.put(getText(R.string.employee_selection_item_group).toString(), Employee.getGroup() <= 0 ? "" : String.valueOf(Employee.getGroup()));
+                map.put(getText(R.string.employee_selection_item_last_name).toString(), Employee.getLastName());
+                map.put(getText(R.string.employee_selection_item_first_name).toString(), Employee.getFirstName());
+                map.put(getText(R.string.employee_selection_item_company).toString(), Employee.getCompany());
+                map.put(getText(R.string.employee_selection_item_location).toString(), Employee.getLocation());
+                map.put(getText(R.string.employee_selection_item_job).toString(), Employee.getJob());
+                feedEmployeeList.set(itemEmployee, map);
+                dbGroup.updateEmployeeList(Employee);
+             }
+            universal_list_view.setAdapter(adapter_employee);
+        }
+    }
+
 
     public void employeePunchIn(View view) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

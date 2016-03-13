@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://www.gueei.com/android-binding/"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:background="?android:attr/activatedBackgroundIndicator">
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:id="@+id/employee_selection_group"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/company_job_selection_title"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:layout_weight="5"
+            android:gravity="center" />
+        <Button
+            android:text="@string/button_sel"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:clickable="true"
+            android:onClick="onSelectJobButtonClicked"
+            android:layout_gravity="center_vertical" />
+    </TableRow>
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:text="@string/report_selection_company"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:text="@string/report_selection_location"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:text="@string/report_selection_job"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="14"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+
+        <ListView
+            android:id="@+id/company_selection_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:choiceMode="multipleChoiceModal"
+            android:listSelector="@android:color/darker_gray"/>
+
+        <ListView
+            android:id="@+id/location_selection_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:choiceMode="multipleChoiceModal"
+            android:listSelector="@android:color/darker_gray"/>
+
+        <ListView
+            android:id="@+id/job_selection_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/list_view_border"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:choiceMode="multipleChoiceModal"
+            android:listSelector="@android:color/darker_gray"/>
+
+    </TableRow>
+</LinearLayout>

@@ -108,6 +108,23 @@ public class CompanyJobLocationDBWrapper extends SQLiteOpenHelper {
         return Company;
     }
 
+    public int getCompanyListPosition (String Name) {
+        String selectQuery = "SELECT  * FROM " + TABLE_COMPANY;
+        int i = 0;
+        boolean found = false;
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                if (c.getString(c.getColumnIndex(KEY_NAME)).equals(Name)) {
+                    found = true;
+                    break;
+                } i++;
+            } while (c.moveToNext());
+        }
+        return (found) ? i : -1;
+    }
+
     // getting all company lists
     public ArrayList<CompanyJobLocationList> getAllCompanyLists() {
         ArrayList<CompanyJobLocationList> Companylists = new ArrayList<CompanyJobLocationList>();
