@@ -59,6 +59,17 @@
                 android:orientation="horizontal"
                 android:layout_column="0">
                 <RadioButton
+                    android:id="@+id/radio_loc"
+                    android:paddingRight="10dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.75"
+                    android:text="@string/radio_location"
+                    android:textSize="@dimen/medium_text_size"
+                    android:onClick="onRadioButtonClicked"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="true" />
+                <RadioButton
                     android:id="@+id/radio_job"
                     android:paddingRight="10dp"
                     android:layout_width="0dp"
@@ -69,17 +80,6 @@
                     android:onClick="onRadioButtonClicked"
                     android:layout_gravity="center_vertical"
                     android:checked="true"
-                    android:clickable="true" />
-                <RadioButton
-                    android:id="@+id/radio_loc"
-                    android:paddingRight="10dp"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.75"
-                    android:text="@string/radio_loc"
-                    android:textSize="@dimen/medium_text_size"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_gravity="center_vertical"
                     android:clickable="true" />
             </RadioGroup>
             <EditText
@@ -172,7 +172,7 @@
                 android:paddingBottom="5dp"
                 android:background="@drawable/list_view_border"
                 android:choiceMode="singleChoice"
-                android:listSelector="@color/svw_gray"/>
+                android:listSelector="@color/svw_gray"/>   <!-- Set to the same color as the background so it does not highlight-->
         </TableRow>
 
     </TableLayout>

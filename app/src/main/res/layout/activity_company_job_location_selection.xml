@@ -10,7 +10,7 @@
     android:background="?android:attr/activatedBackgroundIndicator">
 
     <TableRow
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
@@ -20,7 +20,7 @@
             android:textSize="@dimen/medium_text_size"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/company_job_selection_title"
+            android:text="@string/company_location_job_selection_title"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_blue"
             android:layout_weight="5"
@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="5dp"
-            android:text="@string/report_selection_company"
+            android:text="@string/column_key_company"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -59,7 +59,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="5dp"
-            android:text="@string/report_selection_location"
+            android:text="@string/column_key_location"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -71,7 +71,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginRight="5dp"
-            android:text="@string/report_selection_job"
+            android:text="@string/column_key_job"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -81,7 +81,7 @@
     </TableRow>
 
     <TableRow
-        android:layout_weight="14"
+        android:layout_weight="13.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="5dp">

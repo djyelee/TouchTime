@@ -18,24 +18,24 @@
     <color name="svw_view_selector">#ffa0a0a0</color>
 
     <!-- These are used for database keys.  Can only use English -->
-    <string name="employee_selection_item_id">ID</string>
-    <string name="employee_selection_item_last_name">Last Name</string>
-    <string name="employee_selection_item_first_name">First Name</string>v
-    <string name="employee_selection_item_active">Active</string>
-    <string name="employee_selection_item_current">Current</string>
-    <string name="employee_selection_item_group">Group</string>
-    <string name="employee_selection_item_status">In</string>
+    <string name="column_key_id">ID</string>
+    <string name="column_key_last">Last Name</string>
+    <string name="column_key_first">First Name</string>v
+    <string name="column_key_active">Active</string>
+    <string name="column_key_current">Current</string>
+    <string name="column_key_group">Group</string>
+    <string name="column_key_status">In</string>
     <string name="group_selection_item_name">Group</string>
-    <string name="employee_selection_item_company">Company</string>
-    <string name="employee_selection_item_location">Location</string>
-    <string name="employee_selection_item_job">Job</string>
-    <string name="employee_selection_item_date">Date</string>
-    <string name="employee_selection_item_timein">Time In</string>
-    <string name="employee_selection_item_timeout">Time Out</string>
-    <string name="employee_selection_item_lunch">Lunch</string>
-    <string name="employee_selection_item_hours">Hours</string>
-    <string name="employee_selection_item_supervisor">Supervisor</string>
-    <string name="employee_selection_item_comments">Comments</string>
+    <string name="column_key_company">Company</string>
+    <string name="column_key_location">Location</string>
+    <string name="column_key_job">Job</string>
+    <string name="column_key_date">Date</string>
+    <string name="column_key_timein">Time In</string>
+    <string name="column_key_timeout">Time Out</string>
+    <string name="column_key_lunch">Lunch</string>
+    <string name="column_key_hours">Hours</string>
+    <string name="column_key_supervisor">Supervisor</string>
+    <string name="column_key_comments">Comments</string>
 
     <!-- Main Menus -->
     <string name="app_name">Touch Time - Smart Vision Works, LLC.</string>
@@ -172,7 +172,7 @@
     <string name="employee_move_anyway_message">Employee has not been punched in. Punch in now ?</string>
     <string name="no_company_location_job_message">Assign company, location, and job !</string>
     <string name="assign_employee_message">Assign company, location, and job to employee ?</string>
-    <string name="company_job_selection_title">Company, Location and Job Selections</string>
+    <string name="company_location_job_selection_title">Company, Location and Job Selections</string>
 
     <!-- Work Group Punch In -->
     <string name="button_select_location">Location</string>
@@ -199,9 +199,6 @@
     <string name="report_selection_start_date">Start Date</string>
     <string name="report_selection_end_date">End Date</string>
     <string name="report_selection_group">Group</string>
-    <string name="report_selection_company">Company</string>
-    <string name="report_selection_location">Location</string>
-    <string name="report_selection_job">Job</string>
 
     <!-- Daily Activity -->
     <string name="no_daily_activity_message">No activity </string>
@@ -209,7 +206,7 @@
     <string name="enter_comment_hint">Enter comment...</string>
     <string name="enter_supervisor_hint">Enter supervisor..</string>
     <string name="enter_lunch_hint">Lunch..</string>
-    <string name="employee_selection_item_no_selection">No Selection</string>
+    <string name="column_key_no_selection">No Selection</string>
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
     <string name="id_hint">Enter 4-Digit Employee ID : </string>
@@ -219,7 +216,7 @@
 
     <!-- Main Activity Names -->
     <string name="action_settings">Settings</string>
-    <string name="title_back">BACK to </string>
+    <string name="back_to">BACK to </string>
     <string name="title_activity_main">Touch Time Main Menu</string>
     <string name="title_activity_administrator_menu">Administrator Menu</string>
     <string name="title_activity_supervisor_menu">Supervisor Menu</string>

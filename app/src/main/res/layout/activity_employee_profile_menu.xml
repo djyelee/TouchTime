@@ -9,7 +9,7 @@
     android:background="?android:attr/activatedBackgroundIndicator">
 
     <TableRow
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp">
@@ -52,7 +52,7 @@
             android:layout_gravity="center_vertical" />
     </TableRow>
     <TableRow
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
@@ -64,7 +64,7 @@
             android:layout_weight="1"
             android:layout_marginRight="10dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/employee_selection_item_id"
+            android:text="@string/column_key_id"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
@@ -78,7 +78,7 @@
             android:layout_weight="3"
             android:layout_marginRight="10dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/employee_selection_item_last_name"
+            android:text="@string/column_key_last"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
@@ -90,7 +90,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:layout_marginRight="5dp"
-            android:text="@string/employee_selection_item_first_name"
+            android:text="@string/column_key_first"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -103,7 +103,7 @@
         android:id="@+id/employee_profile_list_view"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="6.5"
+        android:layout_weight="13.5"
         android:background="@drawable/list_view_border"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"

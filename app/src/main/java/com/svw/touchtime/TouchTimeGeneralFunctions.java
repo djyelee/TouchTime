@@ -59,8 +59,8 @@ public class TouchTimeGeneralFunctions {
                 int Second;
                 int i = 0;
                 if (ItemList != null) {
-                    First = Integer.parseInt(o1.get(ItemList));
-                    Second = Integer.parseInt(o2.get(ItemList));
+                    First = (o1.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList));
+                    Second = (o2.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList));
                     if (!Ascend) {
                         return (First < Second ? -1 : (First == Second ? 0 : 1));
                     } else {
@@ -91,17 +91,17 @@ public class TouchTimeGeneralFunctions {
                 int i = 0, result = 0;
                 String First[] = new String[ItemList.length];
                 String Second[] = new String[ItemList.length];
-                for (i = 0; ItemList[i] != null; i++) {
+                for (i = 0; i<ItemList.length; i++) {
                     First[i] = o1.get(ItemList[i]);
                     Second[i] = o2.get(ItemList[i]);
-                    if (First[i] == null && Second[i] == null) return 0;
+                    if (First[i].isEmpty() && Second[i].isEmpty()) return 0;
                     if (!Ascend) {
-                        if (First[i] == null && Second[i] != null) return 1;
-                        if (First[i] != null && Second[i] == null) return -1;
+                        if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
+                        if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                         result = First[i].compareToIgnoreCase(Second[i]);
                     } else {
-                        if (First[i] == null && Second[i] != null) return -1;
-                        if (First[i] != null && Second[i] == null) return 1;
+                        if (First[i].isEmpty() && !Second[i].isEmpty()) return -1;
+                        if (!First[i].isEmpty() && Second[i].isEmpty()) return 1;
                         result = Second[i].compareToIgnoreCase(First[i]);
                     }
                     if (result != 0) return result;
@@ -132,8 +132,8 @@ public class TouchTimeGeneralFunctions {
                 String Second[] = new String[ItemList.length];
                 for (i = 0; ItemList[i] != null; i++) {
                     if (i == 0) {
-                        int one = Integer.parseInt(o1.get(ItemList[i]));
-                        int two = Integer.parseInt(o2.get(ItemList[i]));
+                        int one = (o1.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList[i]));
+                        int two = (o2.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList[i]));
                         if (!Ascend) {
                             result = (one < two ? -1 : (one == two ? 0 : 1));
                         } else {
@@ -143,14 +143,14 @@ public class TouchTimeGeneralFunctions {
                     } else {
                         First[i] = o1.get(ItemList[i]);
                         Second[i] = o2.get(ItemList[i]);
-                        if (First[i] == null && Second[i] == null) return 0;
+                        if (First[i].isEmpty() && Second[i].isEmpty()) return 0;
                         if (!Ascend) {
-                            if (First[i] == null && Second[i] != null) return 1;
-                            if (First[i] != null && Second[i] == null) return -1;
+                            if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
+                            if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                             result = First[i].compareToIgnoreCase(Second[i]);
                         } else {
-                            if (First[i] == null && Second[i] != null) return -1;
-                            if (First[i] != null && Second[i] == null) return 1;
+                            if (First[i].isEmpty() && !Second[i].isEmpty()) return -1;
+                            if (!First[i].isEmpty() && Second[i].isEmpty()) return 1;
                             result = Second[i].compareToIgnoreCase(First[i]);
                         }
                         if (result != 0) return result;
@@ -176,9 +176,9 @@ public class TouchTimeGeneralFunctions {
         Collections.sort(list, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null && o2 != null) return 1;
-                if (o1 != null && o2 == null) return -1;
+                if (o1.isEmpty() && o2.isEmpty()) return 0;
+                if (o1.isEmpty() && !o2.isEmpty()) return 1;
+                if (!o1.isEmpty() && o2.isEmpty()) return -1;
                 return o1.compareToIgnoreCase(o2);
             }
         });

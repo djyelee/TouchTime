@@ -37,7 +37,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     ArrayList<String> CompanyLocationJob = new ArrayList<String>();
     // Database Wrapper
-    private CompanyJobLocationDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
 
         CompanyLocationJob = getIntent().getStringArrayListExtra("CompanyLocationJob");
         if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_employee_punch_menu)))     // first item is the caller, then company, location, and job
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_employee_punch_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_employee_punch_menu).toString()));
         else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_work_group_punch_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_work_group_punch_menu).toString()));
 
         company_list_view = (ListView) findViewById(R.id.company_selection_view);
         location_list_view = (ListView) findViewById(R.id.location_selection_view);
@@ -57,20 +57,20 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         feedLocationList= new ArrayList<HashMap<String, String>>();
         feedJobList= new ArrayList<HashMap<String, String>>();
         // get record from database
-        db = new CompanyJobLocationDBWrapper(this);
+        db = new EmployeeGroupCompanyDBWrapper(this);
         all_lists = db.getAllCompanyLists();
         // read the record first company
         if (all_lists.size() > 0) {
             int i=0;
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.employee_selection_item_company).toString(), all_lists.get(i).getName());
+                map.put(getText(R.string.column_key_company).toString(), all_lists.get(i).getName());
                 feedCompanyList.add(map);
             } while (++i < all_lists.size());
             itemCompany = db.getCompanyListPosition(CompanyLocationJob.get(1));     // Company name is stored in (1)
          } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.no_company_message).setTitle(R.string.company_warning_title);
+            builder.setMessage(R.string.no_company_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     finish();
@@ -79,7 +79,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         }
-        company_list_items[0] = getText(R.string.employee_selection_item_company).toString();
+        company_list_items[0] = getText(R.string.column_key_company).toString();
         company_list_id[0] = R.id.singleItemDisplayID;
         company_list_view.setItemsCanFocus(true);
         adapter_company = new TouchTimeGeneralAdapter(this, feedCompanyList, R.layout.general_single_item_view, company_list_items, company_list_id);
@@ -87,14 +87,14 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         company_list_view.setAdapter(adapter_company);
 
         getLocationJob();
-        location_list_items[0] = getText(R.string.employee_selection_item_location).toString();
+        location_list_items[0] = getText(R.string.column_key_location).toString();
         location_list_id[0] = R.id.singleItemDisplayID;
         location_list_view.setItemsCanFocus(true);
         adapter_location = new TouchTimeGeneralAdapter(this, feedLocationList, R.layout.general_single_item_view, location_list_items, location_list_id);
         adapter_location.setSelectedItem(itemLocation);
         location_list_view.setAdapter(adapter_location);
 
-        job_list_items[0] = getText(R.string.employee_selection_item_job).toString();
+        job_list_items[0] = getText(R.string.column_key_job).toString();
         job_list_id[0] = R.id.singleItemDisplayID;
         job_list_view.setItemsCanFocus(true);
         adapter_job = new TouchTimeGeneralAdapter(this, feedJobList, R.layout.general_single_item_view, job_list_items, job_list_id);
@@ -114,9 +114,6 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                                 location_list_view.setAdapter(adapter_location);
                                 company_list_view.setAdapter(adapter_company);
                                 job_list_view.setAdapter(adapter_job);
-                                //adapter_company.notifyDataSetChanged();
-                                //adapter_location.notifyDataSetChanged();
-                                //adapter_job.notifyDataSetChanged();
                                 view.setAlpha(1);
                             }
                         });
@@ -169,7 +166,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                 if (!ss.isEmpty()) {
                     if (ss.equals(CompanyLocationJob.get(2))) itemLocation = index;     // location is passed into this activity as the second item
                     map = new HashMap<String, String>();
-                    map.put(getText(R.string.employee_selection_item_location).toString(), ss);
+                    map.put(getText(R.string.column_key_location).toString(), ss);
                     feedLocationList.add(map);
                     index++;
                 }
@@ -182,7 +179,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                 if (!ss.isEmpty()) {
                     if (ss.equals(CompanyLocationJob.get(3))) itemJob = index;   // location is passed into this activity as the third item
                     map = new HashMap<String, String>();
-                    map.put(getText(R.string.employee_selection_item_job).toString(), ss);
+                    map.put(getText(R.string.column_key_job).toString(), ss);
                     feedJobList.add(map);
                     index++;
                 }
@@ -194,9 +191,9 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         Intent returnIntent = new Intent();
         ArrayList<String> CompanyLocationJob = new ArrayList<String>();
         CompanyLocationJob.add(getText(R.string.title_activity_employee_punch_menu).toString());        // caller
-        CompanyLocationJob.add((itemCompany >= 0) ? feedCompanyList.get(itemCompany).get(getText(R.string.employee_selection_item_company).toString()) : "");              // company
-        CompanyLocationJob.add((itemLocation >= 0) ? feedLocationList.get(itemLocation).get(getText(R.string.employee_selection_item_location).toString()) : "");           // location
-        CompanyLocationJob.add((itemJob >= 0) ? feedJobList.get(itemJob).get(getText(R.string.employee_selection_item_job).toString()) : "");                         // job
+        CompanyLocationJob.add((itemCompany >= 0) ? feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()) : "");              // company
+        CompanyLocationJob.add((itemLocation >= 0) ? feedLocationList.get(itemLocation).get(getText(R.string.column_key_location).toString()) : "");           // location
+        CompanyLocationJob.add((itemJob >= 0) ? feedJobList.get(itemJob).get(getText(R.string.column_key_job).toString()) : "");                         // job
         returnIntent.putStringArrayListExtra("CompanyLocationJob", CompanyLocationJob);
         setResult(RESULT_OK, returnIntent);
         finish();
@@ -220,7 +217,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
             return true;
         } else if (id == android.R.id.home) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.company_warning_title);
+            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_punch_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     db.closeDB();

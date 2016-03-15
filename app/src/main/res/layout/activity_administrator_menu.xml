@@ -27,7 +27,9 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
             <Button
                 android:id="@+id/company_profile_menu"
                 android:text="@string/company_profile_menu"
@@ -36,8 +38,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
@@ -50,8 +50,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
@@ -62,8 +60,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
@@ -71,54 +67,52 @@
 
         </TableRow>
 
-         <TableRow
+        <TableRow
             android:layout_weight="0.5"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
-             <Button
-                 android:text="@string/work_group_menu"
-                 android:textSize="@dimen/medium_text_size"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 android:layout_marginRight="10dp"
-                 android:layout_marginTop="5dp"
-                 android:layout_marginBottom="5dp"
-                 android:clickable="true"
-                 android:layout_gravity="center_vertical"
-                 android:background="@drawable/roundshapebtn"
-                 android:onClick="WorkGroupMenu" />
-             <Button
-                android:text="@string/individual_punch_menu"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+            <Button
+                android:text="@string/work_group_menu"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
-                android:onClick="EmployeePunchMenu" />
+                android:onClick="WorkGroupMenu" />
             <Button
                 android:text="@string/work_group_punch_menu"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginRight="10dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
                 android:onClick="WorkGroupPunchMenu" />
-          </TableRow>
+            <Button
+                android:text="@string/individual_punch_menu"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/roundshapebtn"
+                android:onClick="EmployeePunchMenu" />
+        </TableRow>
 
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
             <Button
                 android:text="@string/daily_activity_menu"
                 android:textSize="@dimen/medium_text_size"
@@ -126,8 +120,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
@@ -139,8 +131,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
@@ -152,13 +142,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
                 android:onClick="ReportExportMenu" />
-         </TableRow>
+        </TableRow>
 
     </TableLayout>
 

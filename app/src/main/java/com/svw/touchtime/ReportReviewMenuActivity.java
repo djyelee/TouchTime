@@ -82,9 +82,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         setContentView(R.layout.activity_report_review_menu);
         int Caller = getIntent().getIntExtra("Caller", -1);
         if (Caller == R.id.caller_administrator)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         ListView daily_activity_list_view;
         daily_activity_list_view = (ListView) findViewById(R.id.daily_activity_list_view);
@@ -96,20 +96,20 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         EndDateButton = (Button) findViewById(R.id.report_end_date_button);
         context = this;
 
-        employee_item[0] = getText(R.string.employee_selection_item_id).toString();
-        employee_item[1] = getText(R.string.employee_selection_item_last_name).toString();
-        employee_item[2] = getText(R.string.employee_selection_item_first_name).toString();
-        employee_item[3] = getText(R.string.employee_selection_item_group).toString();
-        employee_item[4] = getText(R.string.employee_selection_item_company).toString();
-        employee_item[5] = getText(R.string.employee_selection_item_location).toString();
-        employee_item[6] = getText(R.string.employee_selection_item_job).toString();
-        employee_item[7] = getText(R.string.employee_selection_item_date).toString();
-        employee_item[8] = getText(R.string.employee_selection_item_timein).toString();
-        employee_item[9] = getText(R.string.employee_selection_item_timeout).toString();
-        employee_item[10] = getText(R.string.employee_selection_item_lunch).toString();
-        employee_item[11] = getText(R.string.employee_selection_item_hours).toString();
-        employee_item[12] = getText(R.string.employee_selection_item_supervisor).toString();
-        employee_item[13] = getText(R.string.employee_selection_item_comments).toString();
+        employee_item[0] = getText(R.string.column_key_id).toString();
+        employee_item[1] = getText(R.string.column_key_last).toString();
+        employee_item[2] = getText(R.string.column_key_first).toString();
+        employee_item[3] = getText(R.string.column_key_group).toString();
+        employee_item[4] = getText(R.string.column_key_company).toString();
+        employee_item[5] = getText(R.string.column_key_location).toString();
+        employee_item[6] = getText(R.string.column_key_job).toString();
+        employee_item[7] = getText(R.string.column_key_date).toString();
+        employee_item[8] = getText(R.string.column_key_timein).toString();
+        employee_item[9] = getText(R.string.column_key_timeout).toString();
+        employee_item[10] = getText(R.string.column_key_lunch).toString();
+        employee_item[11] = getText(R.string.column_key_hours).toString();
+        employee_item[12] = getText(R.string.column_key_supervisor).toString();
+        employee_item[13] = getText(R.string.column_key_comments).toString();
         employee_id[0] = R.id.textViewID;
         employee_id[1] = R.id.textViewLastName;
         employee_id[2] = R.id.textViewFirstName;
@@ -143,7 +143,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         list_job = new ArrayList<String>();
         itemsSelected = new ArrayList<String>();
         ObjectKeys = new ArrayList<String>();
-        noSelection = getText(R.string.employee_selection_item_no_selection).toString();
+        noSelection = getText(R.string.column_key_no_selection).toString();
         int i;
         for (i = 0; i < NUMBER_YEARS && i + STARTING_YEAR <= CurrentYear; i++) list_year.add(String.valueOf(i + STARTING_YEAR));
         for (i = 0; i < NUMBER_ITEMS; i++) InitialSelect[i] = true;
@@ -211,11 +211,11 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         int ID = 0;
-                                        String G = feedActivityList.get(item).get(getText(R.string.employee_selection_item_id).toString());
+                                        String G = feedActivityList.get(item).get(getText(R.string.column_key_id).toString());
                                         if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                         if (ID > 0) {
-                                            String TI = feedActivityList.get(item).get(getText(R.string.employee_selection_item_timein).toString());
-                                            String DT = feedActivityList.get(item).get(getText(R.string.employee_selection_item_date).toString());
+                                            String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
+                                            String DT = feedActivityList.get(item).get(getText(R.string.column_key_date).toString());
                                             dbActivity.deletePunchedInActivityList(ID, DT, TI);
                                             feedActivityList.remove(item);
                                             adapter_activity.notifyDataSetChanged();
@@ -246,7 +246,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         String Lunch = LunchMinuteEdit.getText().toString();
                         String Supervisor = SupervisorEdit.getText().toString();
                         String Comments = CommentsEdit.getText().toString();
-                        String G = feedActivityList.get(pos).get(getText(R.string.employee_selection_item_id).toString());
+                        String G = feedActivityList.get(pos).get(getText(R.string.column_key_id).toString());
                         boolean updated = false;
                         if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                         if (ID > 0) {
@@ -259,8 +259,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                             Column[1] = dbActivity.getDateColumnKey();
                             Column[2] = dbActivity.getTimeInColumnKey();
                             Values[0] = String.valueOf(ID);
-                            Values[1] = feedActivityList.get(pos).get(getText(R.string.employee_selection_item_date).toString());
-                            Values[2] = feedActivityList.get(pos).get(getText(R.string.employee_selection_item_timein).toString());
+                            Values[1] = feedActivityList.get(pos).get(getText(R.string.column_key_date).toString());
+                            Values[2] = feedActivityList.get(pos).get(getText(R.string.column_key_timein).toString());
                             Compare[0] = Compare[1] = Compare[2] = "=";
                             ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
                             Activity = ActivityList.get(0);   // should only return one, take the first one
@@ -269,25 +269,25 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                                     long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
                                     diff = (diff > 0 && diff >= Long.parseLong(Lunch)) ? diff - Long.parseLong(Lunch) : 0;
                                     Activity.setHours(diff);
-                                    feedActivityList.get(pos).put(getText(R.string.employee_selection_item_hours).toString(),
+                                    feedActivityList.get(pos).put(getText(R.string.column_key_hours).toString(),
                                             String.format("%2s:%2s", String.valueOf(Activity.Hours / 60 % 24),
                                                     String.valueOf(Activity.Hours % 60)).replace(' ', '0'));
                                 }
                                 Activity.setLunch(Long.parseLong(Lunch));
-                                feedActivityList.get(pos).put(getText(R.string.employee_selection_item_lunch).toString(),
+                                feedActivityList.get(pos).put(getText(R.string.column_key_lunch).toString(),
                                         String.format("%2s:%2s", String.valueOf(Activity.Lunch / 60 % 24),
                                                 String.valueOf(Activity.Lunch % 60)).replace(' ', '0'));
                                 // LunchMinuteEdit.setText("");
                                 updated = true;
                             }
                             if (!Supervisor.isEmpty()) {
-                                feedActivityList.get(pos).put(getText(R.string.employee_selection_item_supervisor).toString(), Supervisor);
+                                feedActivityList.get(pos).put(getText(R.string.column_key_supervisor).toString(), Supervisor);
                                 // SupervisorEdit.setText("");
                                 Activity.setSupervisor(Supervisor);
                                 updated = true;
                             }
                             if (!Comments.isEmpty()) {
-                                feedActivityList.get(pos).put(getText(R.string.employee_selection_item_comments).toString(), Comments);
+                                feedActivityList.get(pos).put(getText(R.string.column_key_comments).toString(), Comments);
                                 // CommentsEdit.setText("");
                                 Activity.setComments(Comments);
                                 updated = true;
@@ -475,21 +475,21 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             map = new HashMap<String, String>();
             DailyActivityList Activity;
             Activity = all_activity_lists.get(i);
-            map.put(getText(R.string.employee_selection_item_id).toString(), String.valueOf(Activity.getEmployeeID()));
-            map.put(getText(R.string.employee_selection_item_last_name).toString(), Activity.getLastName());
+            map.put(getText(R.string.column_key_id).toString(), String.valueOf(Activity.getEmployeeID()));
+            map.put(getText(R.string.column_key_last).toString(), Activity.getLastName());
             list_last_name.add(Activity.getLastName());
-            map.put(getText(R.string.employee_selection_item_first_name).toString(), Activity.getFirstName());
+            map.put(getText(R.string.column_key_first).toString(), Activity.getFirstName());
             list_first_name.add(Activity.getFirstName());
-            map.put(getText(R.string.employee_selection_item_group).toString(), Activity.getWorkGroup());
+            map.put(getText(R.string.column_key_group).toString(), Activity.getWorkGroup());
             if (!Activity.getWorkGroup().isEmpty()) list_group.add(Activity.getWorkGroup());
-            map.put(getText(R.string.employee_selection_item_company).toString(), Activity.getCompany());
+            map.put(getText(R.string.column_key_company).toString(), Activity.getCompany());
             list_company.add(Activity.getCompany());
-            map.put(getText(R.string.employee_selection_item_location).toString(), Activity.getLocation());
+            map.put(getText(R.string.column_key_location).toString(), Activity.getLocation());
             list_location.add(Activity.getLocation());
-            map.put(getText(R.string.employee_selection_item_job).toString(), Activity.getJob());
+            map.put(getText(R.string.column_key_job).toString(), Activity.getJob());
             list_job.add(Activity.getJob());
-            map.put(getText(R.string.employee_selection_item_date).toString(), Activity.getDate());
-            map.put(getText(R.string.employee_selection_item_timein).toString(), Activity.getTimeIn());
+            map.put(getText(R.string.column_key_date).toString(), Activity.getDate());
+            map.put(getText(R.string.column_key_timein).toString(), Activity.getTimeIn());
             if (readAll && Activity.getTimeOut().isEmpty() && CurrentDate.compareTo(Activity.getDate()) > 0) {
                 // reading the entire years record the first time, time out is empty and current date > then punch in date
                 Activity.setTimeOut(DEFAULT_CHECKOUT_TIME);
@@ -498,16 +498,16 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 Activity.setHours(diff);
                 dbActivity.updatePunchedInActivityList(Activity);
             }
-            map.put(getText(R.string.employee_selection_item_timeout).toString(), Activity.getTimeOut());
+            map.put(getText(R.string.column_key_timeout).toString(), Activity.getTimeOut());
             // convert from number of minutes to hh:mm
-            map.put(getText(R.string.employee_selection_item_lunch).toString(), String.format("%2s:%2s", String.valueOf(Activity.getLunch() / 60 % 24),
+            map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(Activity.getLunch() / 60 % 24),
                     String.valueOf(Activity.getLunch() % 60)).replace(' ', '0'));
             // convert from number of minutes to hh:mm
-            map.put(getText(R.string.employee_selection_item_hours).toString(), String.format("%2s:%2s", String.valueOf(Activity.getHours() / 60 % 24),
+            map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(Activity.getHours() / 60 % 24),
                     String.valueOf(Activity.getHours() % 60)).replace(' ', '0'));
             total_hours += Activity.getHours();
-            map.put(getText(R.string.employee_selection_item_supervisor).toString(), Activity.getSupervisor());
-            map.put(getText(R.string.employee_selection_item_comments).toString(), Activity.getComments());
+            map.put(getText(R.string.column_key_supervisor).toString(), Activity.getSupervisor());
+            map.put(getText(R.string.column_key_comments).toString(), Activity.getComments());
             feedActivityList.add(map);
             i++;
         };

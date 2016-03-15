@@ -9,7 +9,7 @@
     android:background="?android:attr/activatedBackgroundIndicator">
 
     <TableRow
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp">
@@ -18,7 +18,7 @@
             android:textSize="@dimen/medium_text_size"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/employee_selection_title"
+            android:text="@string/group_select_employee"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_blue"
             android:layout_weight="5"
@@ -37,7 +37,7 @@
             android:layout_gravity="center_vertical" />
     </TableRow>
     <TableRow
-        android:layout_weight="0.6"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
@@ -49,7 +49,7 @@
             android:layout_weight="1.5"
             android:layout_marginRight="10dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/employee_selection_item_id"
+            android:text="@string/column_key_id"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
@@ -63,7 +63,7 @@
             android:layout_weight="5"
             android:layout_marginRight="10dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/employee_selection_item_last_name"
+            android:text="@string/column_key_last"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
@@ -75,7 +75,7 @@
             android:layout_height="match_parent"
             android:layout_weight="5.5"
             android:paddingLeft="10dp"
-            android:text="@string/employee_selection_item_first_name"
+            android:text="@string/column_key_first"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -85,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="@string/employee_selection_item_active"
+            android:text="@string/active_title_text"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -95,7 +95,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.8"
-            android:text="@string/employee_selection_item_current"
+            android:text="@string/current_title_text"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
@@ -106,7 +106,7 @@
         android:id="@+id/employee_selection_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"
+        android:layout_weight="13.5"
         android:background="@drawable/list_view_border"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"

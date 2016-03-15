@@ -37,7 +37,7 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_menu);
         addListenerOnButton();
-        setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_main).toString()));
+        setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_main).toString()));
 
 /*      List<String> list = new ArrayList<String>();
         list.add("list 1");

@@ -33,16 +33,16 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     CompanyJobLocationList Company;
 
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
-    private CompanyJobLocationDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_profile_menu);
         int Caller = getIntent().getIntExtra("Caller", -1);
         if (Caller == R.id.caller_administrator)
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
-            setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         company_list_view = (ListView) findViewById(R.id.company_profile_list_view);
         NameEdit = (EditText) findViewById(R.id.company_name_text);
@@ -58,7 +58,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         feedCompanyList= new ArrayList<HashMap<String, String>>();
 
         // database and other data
-        db = new CompanyJobLocationDBWrapper(this);
+        db = new EmployeeGroupCompanyDBWrapper(this);
         // retrieve jobs and locations from database
         all_lists = db.getAllCompanyLists();
         list_com = new ArrayList<String>();
@@ -81,12 +81,12 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             i=0;
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
+                map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
                 feedCompanyList.add(map);
             } while (++i < unique_com.size());
             Company = db.getCompanyList(unique_com.get(0));
         }
-        list_items[0] = getText(R.string.employee_selection_item_company).toString();
+        list_items[0] = getText(R.string.column_key_company).toString();
         list_id[0] = R.id.companyDisplayID;
         company_list_view.setItemsCanFocus(true);
         // company_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.company_display_header, null, false), null, false);
@@ -105,7 +105,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.employee_selection_item_company).toString()));
+                                Company = db.getCompanyList(feedCompanyList.get(item).get(getText(R.string.column_key_company).toString()));
                                 displayCompanyProfile();
                                 view.setAlpha(1);
                             }
@@ -130,7 +130,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     public void onNewUpdateButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (NameEdit.getText().toString().isEmpty()) {
-            builder.setMessage(R.string.no_company_name_message).setTitle(R.string.company_profile_title);
+            builder.setMessage(R.string.no_company_message).setTitle(R.string.company_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -149,10 +149,10 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             Company.Location = "";
 
             if (unique_com.size() > 0) {        // check if empty
-                //            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+                // AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
                 if (General.checkDuplicates(unique_com, Company.getName()) == 0) {
                     if (view.getId() == R.id.btn_new) {   // no duplicate
-                        builder.setMessage(R.string.new_company_message).setTitle(R.string.company_profile_title);
+                        builder.setMessage(R.string.company_new_message).setTitle(R.string.company_profile_title);
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // add new name to the list
@@ -167,7 +167,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                 feedCompanyList.clear();
                                 do {
                                     map = new HashMap<String, String>();
-                                    map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
+                                    map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
                                     feedCompanyList.add(map);
                                 } while (++i < unique_com.size());
                                 db.createCompanyList(Company);
@@ -182,7 +182,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                             }
                         });
                     } else if (view.getId() == R.id.btn_upd) {
-                        builder.setMessage(R.string.change_company_message).setTitle(R.string.company_profile_title);
+                        builder.setMessage(R.string.company_update_message).setTitle(R.string.company_profile_title);
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // add new name to the list
@@ -199,7 +199,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                 feedCompanyList.clear();
                                 do {
                                     map = new HashMap<String, String>();
-                                    map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i));
+                                    map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
                                     feedCompanyList.add(map);
                                 } while (++i < unique_com.size());
                                 db.createCompanyList(Company);
@@ -215,13 +215,13 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                     }
                 } else {
                     if (view.getId() == R.id.btn_new) {
-                        builder.setMessage(R.string.duplicate_company_message).setTitle(R.string.company_profile_title);
+                        builder.setMessage(R.string.company_duplicate_message).setTitle(R.string.company_profile_title);
                         builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                             }
                         });
                     } else if (view.getId() == R.id.btn_upd) {
-                        builder.setMessage(R.string.update_company_message).setTitle(R.string.company_profile_title);
+                        builder.setMessage(R.string.company_update_message).setTitle(R.string.company_profile_title);
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 displayCompanyProfile();                             // name is already there
@@ -240,7 +240,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                 unique_com.add(Company.getName());
                 feedCompanyList.clear();
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(0));
+                map.put(getText(R.string.column_key_company).toString(), unique_com.get(0));
                 feedCompanyList.add(map);
                 db.createCompanyList(Company);
                 all_lists = db.getAllCompanyLists();
@@ -255,16 +255,16 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     public void onDeleteButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (unique_com.size() > 0) {
-            builder.setMessage(R.string.confirm_delete_company_message).setTitle(R.string.confirm_delete_title);
+            builder.setMessage(R.string.company_delete_confirm_message).setTitle(R.string.company_profile_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                    db.deleteCompanyList(feedCompanyList.get(item).get(getText(R.string.employee_selection_item_company).toString()));
+                    db.deleteCompanyList(feedCompanyList.get(item).get(getText(R.string.column_key_company).toString()));
                     unique_com.remove(item);
                     int i = 0;
                     feedCompanyList.clear();
                     while (i < unique_com.size()) {
                         map = new HashMap<String, String>();
-                        map.put(getText(R.string.employee_selection_item_company).toString(), unique_com.get(i++));
+                        map.put(getText(R.string.column_key_company).toString(), unique_com.get(i++));
                         feedCompanyList.add(map);
                     } ;
                     adapter_com.notifyDataSetChanged();

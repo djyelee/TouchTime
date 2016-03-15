@@ -34,7 +34,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     int selectedGroup, employeeGroup, displayGroup;
     WorkGroupList WorkGroup;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
-    private EmployeeWorkGroupDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,25 +47,25 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         feedList= new ArrayList<HashMap<String, String>>();
 
         ArrayList<EmployeeProfileList> all_lists;
-        db = new EmployeeWorkGroupDBWrapper(this);
+        db = new EmployeeGroupCompanyDBWrapper(this);
         employeeIDList = new ArrayList<String>();
         all_lists = db.getAllEmployeeLists();
         int i = 0;
         if (all_lists.size() > 0) {
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.employee_selection_item_id).toString(), String.valueOf(all_lists.get(i).getEmployeeID()));
-                map.put(getText(R.string.employee_selection_item_last_name).toString(), all_lists.get(i).getLastName());
-                map.put(getText(R.string.employee_selection_item_first_name).toString(), all_lists.get(i).getFirstName());
-                map.put(getText(R.string.employee_selection_item_group).toString(), all_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_lists.get(i).getGroup()));
-                map.put(getText(R.string.employee_selection_item_active).toString(), all_lists.get(i).getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
-                map.put(getText(R.string.employee_selection_item_current).toString(), all_lists.get(i).getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
+                map.put(getText(R.string.column_key_id).toString(), String.valueOf(all_lists.get(i).getEmployeeID()));
+                map.put(getText(R.string.column_key_last).toString(), all_lists.get(i).getLastName());
+                map.put(getText(R.string.column_key_first).toString(), all_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_group).toString(), all_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_lists.get(i).getGroup()));
+                map.put(getText(R.string.column_key_active).toString(), all_lists.get(i).getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
+                map.put(getText(R.string.column_key_current).toString(), all_lists.get(i).getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                 feedList.add(map);
             } while (++i < all_lists.size());
         }
-        String [] list_items = {getText(R.string.employee_selection_item_id).toString(), getText(R.string.employee_selection_item_last_name).toString(),
-                getText(R.string.employee_selection_item_first_name).toString(), getText(R.string.employee_selection_item_group).toString(),
-                getText(R.string.employee_selection_item_active).toString(), getText(R.string.employee_selection_item_current).toString()};
+        String [] list_items = {getText(R.string.column_key_id).toString(), getText(R.string.column_key_last).toString(),
+                getText(R.string.column_key_first).toString(), getText(R.string.column_key_group).toString(),
+                getText(R.string.column_key_active).toString(), getText(R.string.column_key_current).toString()};
         int [] list_id = {R.id.textViewID, R.id.textViewLastName, R.id.textViewFirstName, R.id.textViewGroup, R.id.textViewActive, R.id.textViewCurrent};
         adapter_employee = new TouchTimeGeneralAdapter(this, feedList, R.layout.employee_selection_view, list_items, list_id);
         // lv.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false), null, false);
@@ -77,22 +77,22 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         // receive selected group
         selectedGroup = getIntent().getIntExtra("SelectedGroup", -1);
         markSelectedItems();
-        Title.setText(getText(R.string.employee_selection_title).toString() + " # " + selectedGroup);
+        Title.setText(getText(R.string.group_select_employee).toString() + " # " + selectedGroup);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 itemSelected = position;
-                String G = feedList.get(itemSelected).get(getText(R.string.employee_selection_item_group).toString());
+                String G = feedList.get(itemSelected).get(getText(R.string.column_key_group).toString());
                 displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);
                 if (selectedGroup != displayGroup) {   // already selected but different or not selected, need to be reset to selected group
-                    feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), String.valueOf(selectedGroup));
+                    feedList.get(itemSelected).put(getText(R.string.column_key_group).toString(), String.valueOf(selectedGroup));
                 } else {        // already selected, need to be reset to 0 or restore to the original group
-                    EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.employee_selection_item_id).toString())));
+                    EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.column_key_id).toString())));
                     employeeGroup = Employee.getGroup();
                     if (displayGroup == employeeGroup) {
-                        feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
+                        feedList.get(itemSelected).put(getText(R.string.column_key_group).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
                     } else {
-                        feedList.get(itemSelected).put(getText(R.string.employee_selection_item_group).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
+                        feedList.get(itemSelected).put(getText(R.string.column_key_group).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
                     }
                 }
                 markSelectedItems();
@@ -103,7 +103,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     public void markSelectedItems() {
         int i=0;
         while(i < feedList.size()) {
-            String G = feedList.get(i).get(getText(R.string.employee_selection_item_group).toString());
+            String G = feedList.get(i).get(getText(R.string.column_key_group).toString());
             lv.setItemChecked(i, !G.isEmpty() && selectedGroup == Integer.parseInt(G));
             i++;
         }
@@ -112,9 +112,10 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     }
 
     public void onSortIDButtonClicked(View view) {
+        if (feedList.size() == 0) return;
         String Items;
-        Items = getText(R.string.employee_selection_item_id).toString();
-        int ID = Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.employee_selection_item_id).toString()));
+        Items = getText(R.string.column_key_id).toString();
+        int ID = Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.column_key_id).toString()));
         General.SortIntegerList(feedList, Items, sort_id_ascend);
         itemSelected = General.GetIntegerIndex(feedList, Items, ID);
         adapter_employee.setSelectedItem(itemSelected);
@@ -125,12 +126,13 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     }
 
     public void onSortLastNameButtonClicked(View view) {
+        if (feedList.size() == 0) return;
         String [] Items = new String[2];
         String [] Data = new String[2];
-        Items[0] = getText(R.string.employee_selection_item_last_name).toString();
-        Items[1] = getText(R.string.employee_selection_item_first_name).toString();
-        Data[0] = feedList.get(itemSelected).get(getText(R.string.employee_selection_item_last_name).toString());
-        Data [1] =feedList.get(itemSelected).get(getText(R.string.employee_selection_item_first_name).toString());
+        Items[0] = getText(R.string.column_key_last).toString();
+        Items[1] = getText(R.string.column_key_first).toString();
+        Data[0] = feedList.get(itemSelected).get(getText(R.string.column_key_last).toString());
+        Data [1] =feedList.get(itemSelected).get(getText(R.string.column_key_first).toString());
         General.SortStringList(feedList, Items, sort_last_name_ascend);
         itemSelected = General.GetStringIndex(feedList, Items, Data);
         adapter_employee.setSelectedItem(itemSelected);
@@ -149,8 +151,8 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         int i=0, newGroup;
         if (feedList.size() > 0) {
             do {
-                Employee = db.getEmployeeList(Integer.parseInt(feedList.get(i).get(getText(R.string.employee_selection_item_id).toString())));
-                G = feedList.get(i).get(getText(R.string.employee_selection_item_group).toString());
+                Employee = db.getEmployeeList(Integer.parseInt(feedList.get(i).get(getText(R.string.column_key_id).toString())));
+                G = feedList.get(i).get(getText(R.string.column_key_group).toString());
                 newGroup = G.isEmpty() ? 0 : Integer.parseInt(G);
                 // employee group assignment is either changed or newly assigned
                 if (Employee.getGroup() != newGroup) {
@@ -183,9 +185,9 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
                 }
            } while (++i < feedList.size());
         }
-        if (reassignEmployee) {
+        if (!validEmployee) {   // employee is not current or invalid
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.reassign_employee_selection).setTitle(R.string.employee_selection_title);
+            builder.setMessage(R.string.group_invalid_employee).setTitle(R.string.group_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent returnIntent = new Intent();
@@ -200,9 +202,9 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else if (!validEmployee) {   // employee is not current or invalid
+        } else if (reassignEmployee) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.invalid_employee_selection).setTitle(R.string.employee_selection_title);
+            builder.setMessage(R.string.group_reassign_employee_).setTitle(R.string.group_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Intent returnIntent = new Intent();
@@ -250,7 +252,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             return true;
         } else if (id == android.R.id.home) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_selection_title);
+            builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.group_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     db.closeDB();

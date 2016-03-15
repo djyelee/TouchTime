@@ -54,7 +54,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:paddingLeft="5dp"
-                    android:text="@string/employee_selection_item_id"
+                    android:text="@string/column_key_id"
                     android:textSize="@dimen/medium_text_size"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_black"
@@ -65,7 +65,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:paddingLeft="5dp"
-                    android:text="@string/employee_selection_item_last_name"
+                    android:text="@string/column_key_last"
                     android:textSize="@dimen/medium_text_size"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_black"
@@ -76,7 +76,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:paddingLeft="5dp"
-                    android:text="@string/employee_selection_item_first_name"
+                    android:text="@string/column_key_first"
                     android:textSize="@dimen/medium_text_size"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_black"
@@ -107,7 +107,7 @@
                     android:textSize="@dimen/medium_text_size"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:text="@string/work_group_name_text"
+                    android:text="@string/group_title_text"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_blue"
                     android:layout_weight="0.8" />
@@ -127,7 +127,7 @@
                     android:textSize="@dimen/medium_text_size"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:text="@string/supervisor_name_text"
+                    android:text="@string/supervisor_title_text"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_blue"
                     android:layout_weight="0.8" />
@@ -147,7 +147,7 @@
                     android:textSize="@dimen/medium_text_size"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:text="@string/shift_name_text"
+                    android:text="@string/shift_title_text"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_blue"
                     android:layout_weight="0.8" />
@@ -203,7 +203,7 @@
                     android:onClick="onDeleteButtonClicked"
                     android:layout_gravity="center_vertical" />
                 <Button
-                    android:text="@string/button_emp"
+                    android:text="@string/button_employee"
                     android:textSize="@dimen/medium_text_size"
                     android:layout_weight="1.3"
                     android:layout_width="match_parent"

@@ -14,7 +14,7 @@
     <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:layout_marginBottom="5dp">
             <TextView
                 android:id="@+id/current_date"
@@ -99,38 +99,40 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2.0"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/roundshapebtn"
-                    android:text="@string/employee_selection_item_id"
+                    android:text="@string/column_key_id"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
                     android:clickable="true"
                     android:onClick="onSortIDButtonClicked"
                     android:gravity="center" />
-                <TextView
+                <Button
+                    android:id="@+id/sort_punch_status"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_status"
+                    android:background="@drawable/roundshapebtn"
+                    android:text="@string/column_key_status"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
-                    android:textColor="@color/svw_black"
-                    android:background="@color/svw_orange"
+                    android:clickable="true"
+                    android:onClick="onSortStatusButtonClicked"
                     android:gravity="center" />
-
-                <TextView
+                <Button
+                    android:id="@+id/sort_group"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.2"
                     android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_group"
+                    android:background="@drawable/roundshapebtn"
+                    android:text="@string/column_key_group"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
-                    android:textColor="@color/svw_black"
-                    android:background="@color/svw_orange"
-                    android:gravity="center_horizontal" />
-
+                    android:clickable="true"
+                    android:onClick="onSortGroupButtonClicked"
+                    android:gravity="center" />
                 <Button
                     android:id="@+id/sort_last_name"
                     android:layout_width="0dp"
@@ -138,7 +140,7 @@
                     android:layout_weight="3"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/roundshapebtn"
-                    android:text="@string/employee_selection_item_last_name"
+                    android:text="@string/report_selection_last_name"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
                     android:clickable="true"
@@ -150,7 +152,33 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_first_name"
+                    android:text="@string/report_selection_last_name"
+                    android:textSize="@dimen/medium_small_text_size"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/svw_black"
+                    android:background="@color/svw_orange"
+                    android:gravity="center" />
+
+                <Button
+                    android:id="@+id/sort_company"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/roundshapebtn"
+                    android:text="@string/column_key_company"
+                    android:textSize="@dimen/medium_small_text_size"
+                    android:textStyle="bold|italic"
+                    android:clickable="true"
+                    android:onClick="onSortCompanyButtonClicked"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/column_key_location"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_black"
@@ -162,31 +190,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_company"
-                    android:textSize="@dimen/medium_small_text_size"
-                    android:textStyle="bold|italic"
-                    android:textColor="@color/svw_black"
-                    android:background="@color/svw_orange"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_location"
-                    android:textSize="@dimen/medium_small_text_size"
-                    android:textStyle="bold|italic"
-                    android:textColor="@color/svw_black"
-                    android:background="@color/svw_orange"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:layout_marginRight="5dp"
-                    android:text="@string/employee_selection_item_job"
+                    android:text="@string/column_key_job"
                     android:textSize="@dimen/medium_small_text_size"
                     android:textStyle="bold|italic"
                     android:textColor="@color/svw_black"
@@ -199,7 +203,7 @@
                 android:id="@+id/universal_list_view"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
-                android:layout_weight="14"
+                android:layout_weight="13.5"
                 android:background="@drawable/list_view_border"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"

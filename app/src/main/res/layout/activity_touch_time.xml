@@ -15,7 +15,8 @@
         android:layout_gravity="center_horizontal"
         android:textStyle="bold|italic"
         android:textColor="@color/svw_blue"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center_vertical" />
 
     <TableLayout
         android:layout_width="fill_parent"

@@ -14,19 +14,21 @@
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="1.75"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginRight="5dp">
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_name_text"
+                android:text="@string/name_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/employee_last_name_text"
                 android:layout_width="0dp"
@@ -35,7 +37,6 @@
                 android:inputType="text"
                 android:textColor="@color/svw_black"
                 android:layout_weight="2.4"
-                android:layout_marginBottom="5dp"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -43,10 +44,11 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_comma_name_text"
+                android:text="@string/comma_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="0.2" />
+                android:layout_weight="0.2"
+                android:gravity="center" />
             <EditText
                 android:id="@+id/employee_first_name_text"
                 android:layout_width="0dp"
@@ -55,7 +57,6 @@
                 android:inputType="text"
                 android:textColor="@color/svw_black"
                 android:layout_weight="2.4"
-                android:layout_marginBottom="5dp"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -63,15 +64,16 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_street_text"
+                android:text="@string/street_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/company_street_text"
                 android:layout_width="0dp"
@@ -80,7 +82,6 @@
                 android:inputType="text"
                 android:textColor="@color/svw_black"
                 android:layout_weight="5"
-                android:layout_marginBottom="5dp"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -88,15 +89,16 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_city_text"
+                android:text="@string/city_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/company_city_text"
                 android:layout_width="0dp"
@@ -105,7 +107,6 @@
                 android:inputType="text"
                 android:textColor="@color/svw_black"
                 android:layout_weight="5"
-                android:layout_marginBottom="5dp"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -113,15 +114,16 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_state_text"
+                android:text="@string/state_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="0.68" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/company_state_text"
                 android:layout_width="0dp"
@@ -129,9 +131,7 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="text"
                 android:textColor="@color/svw_black"
-                android:layout_weight="1.5"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="2"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -139,10 +139,12 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_zip_code_text"
+                android:text="@string/zip_code_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="0.85" />
+                android:layout_weight="1.2"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_zip_code_text"
                 android:layout_width="0dp"
@@ -150,8 +152,7 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="0.75"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="1.8"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -159,15 +160,16 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_country_text"
+                android:text="@string/country_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/company_country_text"
                 android:layout_width="0dp"
@@ -175,9 +177,7 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="text"
                 android:textColor="@color/svw_black"
-                android:layout_weight="2.30"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="2"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -185,10 +185,12 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_phone_text"
+                android:text="@string/phone_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="0.55" />
+                android:layout_weight="0.5"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_phone_text"
                 android:layout_width="0dp"
@@ -196,8 +198,7 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="1.95"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="2.5"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -206,15 +207,16 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/company_email_text"
+                android:text="@string/email_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1" />
             <EditText
                 android:id="@+id/company_email_text"
                 android:layout_width="0dp"
@@ -223,7 +225,6 @@
                 android:inputType="textEmailAddress"
                 android:textColor="@color/svw_black"
                 android:layout_weight="5"
-                android:layout_marginBottom="5dp"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
@@ -231,15 +232,17 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_hourly_rate_text"
+                android:text="@string/hourly_rate_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.1" />
+                android:layout_weight="1.4"
+                android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/employee_hourly_rate_text"
                 android:layout_width="0dp"
@@ -247,20 +250,20 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="text"
                 android:textColor="@color/svw_black"
-                android:layout_weight="1.6"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="2"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="center_vertical" />
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_piece_rate_text"
+                android:text="@string/piece_rate_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.0" />
+                android:layout_weight="1.4"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/employee_piece_rate_text"
                 android:layout_width="0dp"
@@ -268,33 +271,33 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="0.95"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="1.2"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="center_vertical" />
         </TableRow>
 
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_birth_date_text"
+                android:text="@string/birth_date_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1" />
+                android:layout_weight="1.4"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical" />
             <Button
                 android:id="@+id/dob_button"
                 android:textSize="@dimen/medium_text_size"
-                android:layout_weight="1.7"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
                 android:background="@color/svw_dark_gray"
                 android:clickable="true"
                 android:onClick="onSetDateButtonClicked"
@@ -303,10 +306,12 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_ss_number_text"
+                android:text="@string/ss_number_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="0.55" />
+                android:layout_weight="0.8"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/employee_ss_text"
                 android:layout_width="0dp"
@@ -314,33 +319,33 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="1.4"
-                android:layout_marginBottom="5dp"
+                android:layout_weight="1.8"
                 android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
+                android:layout_gravity="center_vertical" />
         </TableRow>
 
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_hire_date_text"
+                android:text="@string/hire_date_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1" />
+                android:layout_weight="1.4"
+                android:layout_marginRight="5dp"/>
             <Button
                 android:id="@+id/doh_button"
                 android:textSize="@dimen/medium_text_size"
-                android:layout_weight="1.7"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
                 android:background="@color/svw_dark_gray"
                 android:clickable="true"
                 android:onClick="onSetDateButtonClicked"
@@ -348,15 +353,15 @@
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/selection_active"
                 android:layout_width="0dp"
-                android:layout_weight="1.95"
+                android:layout_weight="2.6"
                 android:layout_height="match_parent"
                 android:orientation="horizontal" >
                 <RadioButton
                     android:id="@+id/radio_active_yes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.6"
-                    android:text="@string/employee_active_text"
+                    android:layout_weight="1.5"
+                    android:text="@string/active_title_text"
                     android:textSize="@dimen/medium_text_size"
                     android:onClick="onRadioButtonClicked"
                     android:layout_gravity="center_vertical"
@@ -378,24 +383,25 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp">
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/employee_expiration_text"
+                android:text="@string/expiration_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
+                android:layout_marginRight="5dp"
                 android:clickable="true" />
             <Button
                 android:id="@+id/doc_exp_button"
                 android:textSize="@dimen/medium_text_size"
-                android:layout_weight="1.7"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
                 android:background="@color/svw_dark_gray"
                 android:clickable="true"
                 android:onClick="onSetDateButtonClicked"
@@ -403,15 +409,15 @@
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/selection_current"
                 android:layout_width="0dp"
-                android:layout_weight="1.95"
+                android:layout_weight="2.6"
                 android:layout_height="match_parent"
                 android:orientation="horizontal" >
                 <RadioButton
                     android:id="@+id/radio_current_yes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.6"
-                    android:text="@string/employee_current_text"
+                    android:layout_weight="1.5"
+                    android:text="@string/current_title_text"
                     android:textSize="@dimen/medium_text_size"
                     android:onClick="onRadioButtonClicked"
                     android:layout_gravity="center_vertical"
@@ -450,7 +456,9 @@
         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
             <EditText
                 android:id="@+id/employee_id_text"
                 android:layout_width="0dp"
@@ -461,20 +469,16 @@
                 android:hint="@string/hint_employee_id_text"
                 android:paddingLeft="5dp"
                 android:layout_weight="1.8"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginRight="3dp"
+                android:layout_marginRight="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="bottom" />
             <Button
-                android:text="@string/employee_save_text"
+                android:text="@string/button_save"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
                 android:clickable="true"
                 android:onClick="onDoneButtonClicked"
                 android:gravity="center_vertical|center_horizontal" />
@@ -496,7 +500,6 @@
                 android:hint="@string/hint_employee_comments_text"
                 android:layout_weight="1.8"
                 android:paddingLeft="5dp"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/list_view_border"
                 android:gravity="top" />

@@ -41,11 +41,11 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private boolean newEmployeeProfile;
     private int Caller;
     EmployeeProfileList Employee;
-    private EmployeeWorkGroupDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_employee_profile_menu).toString()));
+        setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_employee_profile_menu).toString()));
         setContentView(R.layout.activity_employee_detail);
 
         Calendar calendar;
@@ -81,7 +81,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         // database and other data
-        db = new EmployeeWorkGroupDBWrapper(this);
+        db = new EmployeeGroupCompanyDBWrapper(this);
         Employee = new EmployeeProfileList();
 
         int [] Data = new int[2];
@@ -209,7 +209,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         getWindow().setSoftInputMode ( WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN );
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
         if (LastNameEdit.getText().toString().isEmpty()) {              // must have the last name
-            builder.setMessage(R.string.last_name_empty_message).setTitle(R.string.empty_entry_title);
+            builder.setMessage(R.string.empty_last_name_message).setTitle(R.string.employee_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -219,7 +219,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             return;
         }
         if (FirstNameEdit.getText().toString().isEmpty()) {             // must have the first name
-            builder.setMessage(R.string.first_name_empty_message).setTitle(R.string.empty_entry_title);
+            builder.setMessage(R.string.empty_first_name_message).setTitle(R.string.employee_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -234,7 +234,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                 // generate a new ID
                 Employee.setEmployeeID(db.getAvailableEmployeeID());                        // get an unused ID
                 EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
-                builder.setMessage(R.string.existing_employee_ID_message).setTitle(R.string.employee_profile_title);
+                builder.setMessage(R.string.employee_assign_ID_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         addUpdateProfile(true);
@@ -251,7 +251,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                 });
             } else {
                 Employee.setEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()));
-                builder.setMessage(R.string.new_employee_ID_message).setTitle(R.string.employee_profile_title);
+                builder.setMessage(R.string.employee_new_ID_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         addUpdateProfile(true);
@@ -269,7 +269,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             }
         } else {                        // update the employee profile
             if (db.checkEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()))) {      // employee ID already exists
-                builder.setMessage(R.string.update_employee_message).setTitle(R.string.employee_profile_title);
+                builder.setMessage(R.string.employee_update_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Employee.setEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()));          // use the new ID that is already entered.

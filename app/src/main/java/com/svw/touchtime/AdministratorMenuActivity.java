@@ -20,7 +20,7 @@ public class AdministratorMenuActivity extends ActionBarActivity {
         TextView main_menu;
         main_menu = (TextView) findViewById(R.id.main_menu);
         Caller = getIntent().getIntExtra("Caller", -1);
-        setTitle(getText(R.string.title_back).toString().concat(" " + getText(R.string.title_activity_main).toString()));
+        setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_main).toString()));
         if (Caller == R.id.caller_administrator)
             main_menu.setText(getText(R.string.title_activity_administrator_menu).toString());
         else
