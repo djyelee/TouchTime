@@ -96,10 +96,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         EndDateButton = (Button) findViewById(R.id.report_end_date_button);
         context = this;
 
-        employee_item[0] = getText(R.string.column_key_id).toString();
-        employee_item[1] = getText(R.string.column_key_last).toString();
-        employee_item[2] = getText(R.string.column_key_first).toString();
-        employee_item[3] = getText(R.string.column_key_group).toString();
+        employee_item[0] = getText(R.string.column_key_employee_id).toString();
+        employee_item[1] = getText(R.string.column_key_last_name).toString();
+        employee_item[2] = getText(R.string.column_key_first_name).toString();
+        employee_item[3] = getText(R.string.column_key_group_id).toString();
         employee_item[4] = getText(R.string.column_key_company).toString();
         employee_item[5] = getText(R.string.column_key_location).toString();
         employee_item[6] = getText(R.string.column_key_job).toString();
@@ -206,12 +206,12 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-                                builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.confirm_delete_title);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+                                builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.report_review_title);
                                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         int ID = 0;
-                                        String G = feedActivityList.get(item).get(getText(R.string.column_key_id).toString());
+                                        String G = feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString());
                                         if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                         if (ID > 0) {
                                             String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
@@ -227,7 +227,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                                     }
                                 });
                                 AlertDialog dialog = builder.create();
-                                dialog.show();
+                                General.TouchTimeDialog(dialog, view);
                                 view.setAlpha(1);
                             }
                         });
@@ -246,7 +246,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         String Lunch = LunchMinuteEdit.getText().toString();
                         String Supervisor = SupervisorEdit.getText().toString();
                         String Comments = CommentsEdit.getText().toString();
-                        String G = feedActivityList.get(pos).get(getText(R.string.column_key_id).toString());
+                        String G = feedActivityList.get(pos).get(getText(R.string.column_key_employee_id).toString());
                         boolean updated = false;
                         if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                         if (ID > 0) {
@@ -326,8 +326,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 if (dbActivity.getActivityListCount() == 0) {
                     NoActivity = true;
                     context.deleteDatabase(dbActivity.getDatabaseName());      // it is empty, might as well delete
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage(R.string.no_daily_activity_message).setTitle(R.string.empty_entry_title);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+                    builder.setMessage(R.string.no_daily_activity_message).setTitle(R.string.report_review_title);
                     builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             feedActivityList.clear();
@@ -335,7 +335,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         }
                     });
                     AlertDialog dialog = builder.create();
-                    dialog.show();
+                    General.TouchTimeDialog(dialog, view);
                 } else {
                     NoActivity = false;
                     ObjectKeys.clear();
@@ -428,7 +428,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
 
     public void onSelectDateButtonClicked(View view) {
         dateButtonID = view.getId();
-        dialog.show();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void updateSpinnerListView(View view) {
@@ -475,12 +475,12 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             map = new HashMap<String, String>();
             DailyActivityList Activity;
             Activity = all_activity_lists.get(i);
-            map.put(getText(R.string.column_key_id).toString(), String.valueOf(Activity.getEmployeeID()));
-            map.put(getText(R.string.column_key_last).toString(), Activity.getLastName());
+            map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(Activity.getEmployeeID()));
+            map.put(getText(R.string.column_key_last_name).toString(), Activity.getLastName());
             list_last_name.add(Activity.getLastName());
-            map.put(getText(R.string.column_key_first).toString(), Activity.getFirstName());
+            map.put(getText(R.string.column_key_first_name).toString(), Activity.getFirstName());
             list_first_name.add(Activity.getFirstName());
-            map.put(getText(R.string.column_key_group).toString(), Activity.getWorkGroup());
+            map.put(getText(R.string.column_key_group_id).toString(), Activity.getWorkGroup());
             if (!Activity.getWorkGroup().isEmpty()) list_group.add(Activity.getWorkGroup());
             map.put(getText(R.string.column_key_company).toString(), Activity.getCompany());
             list_company.add(Activity.getCompany());

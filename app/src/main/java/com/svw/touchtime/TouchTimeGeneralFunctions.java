@@ -1,5 +1,17 @@
 package com.svw.touchtime;
 
+import android.app.AlertDialog;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +24,28 @@ import java.util.HashSet;
 /**
  * Created by djlee on 5/10/15.
  */
-public class TouchTimeGeneralFunctions {
+public class TouchTimeGeneralFunctions extends ActionBarActivity {
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     public TouchTimeGeneralFunctions() {
+    }
+
+    public void TouchTimeDialog(AlertDialog dialog, View view) {
+        dialog.show();
+        TextView textView = (TextView) dialog.findViewById(android.R.id.message);
+        textView.setTextSize(view.getResources().getInteger(R.integer.dialog_message_size));
+        textView.setTextColor(view.getResources().getColor(R.color.dialog_message_color));
+        textView.setTypeface(null, Typeface.BOLD_ITALIC);
+        // dialog.getWindow().setLayout(300, 200);
+        // textView.setText(MessageID);
+        // dialog.getButton(dialog.BUTTON_NEUTRAL).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
+        // dialog.getButton(dialog.BUTTON_POSITIVE).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
+        // dialog.getButton(dialog.BUTTON_NEGATIVE).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
     }
 
     public String TimeDifference(String OldTime, String NewTime) {
@@ -61,7 +92,11 @@ public class TouchTimeGeneralFunctions {
                 if (ItemList != null) {
                     First = (o1.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList));
                     Second = (o2.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList));
-                    if (!Ascend) {
+                    if (Ascend) {
+                        if (First == 0)
+                            return 1;
+                        else if (Second == 0)
+                            return -1;
                         return (First < Second ? -1 : (First == Second ? 0 : 1));
                     } else {
                         return (First < Second ? 1 : (First == Second ? 0 : -1));
@@ -76,8 +111,9 @@ public class TouchTimeGeneralFunctions {
     public int GetIntegerIndex(ArrayList<HashMap<String, String>> List, String Items, int Data) {
         int i;
         if (Items == null) return -1;  // item not specified
-        for (i = 0; i< List.size(); i++) {
-            if (Data == Integer.parseInt(List.get(i).get(Items))) return i;
+        for (i = 0; i < List.size(); i++) {
+            if (!List.get(i).get(Items).isEmpty() && Data == Integer.parseInt(List.get(i).get(Items)))
+                return i;
         }
         return -1;
     }
@@ -91,17 +127,17 @@ public class TouchTimeGeneralFunctions {
                 int i = 0, result = 0;
                 String First[] = new String[ItemList.length];
                 String Second[] = new String[ItemList.length];
-                for (i = 0; i<ItemList.length; i++) {
+                for (i = 0; i < ItemList.length; i++) {
                     First[i] = o1.get(ItemList[i]);
                     Second[i] = o2.get(ItemList[i]);
                     if (First[i].isEmpty() && Second[i].isEmpty()) return 0;
-                    if (!Ascend) {
+                    if (Ascend) {
                         if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
                         if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                         result = First[i].compareToIgnoreCase(Second[i]);
                     } else {
-                        if (First[i].isEmpty() && !Second[i].isEmpty()) return -1;
-                        if (!First[i].isEmpty() && Second[i].isEmpty()) return 1;
+                        if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
+                        if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                         result = Second[i].compareToIgnoreCase(First[i]);
                     }
                     if (result != 0) return result;
@@ -113,10 +149,18 @@ public class TouchTimeGeneralFunctions {
 
     // Return index of the item on the list that matches the input two strings
     public int GetStringIndex(ArrayList<HashMap<String, String>> List, String[] Items, String[] Data) {
-        int i;
-        for (i = 0; i< Items.length; i++) if (Items[i] == null) return -1;  // item not specified
-        for (i = 0; i< List.size(); i++) {
-            if (Data[0].equals(List.get(i).get(Items[0])) && Data[1].equals(List.get(i).get(Items[1]))) return i;
+        boolean matched;
+        int i, j;
+        for (i = 0; i < Items.length; i++) if (Items[i] == null) return -1;  // item not specified
+        for (i = 0; i < List.size(); i++) {
+            matched = true;
+            for (j = 0; j < Data.length; j++) {
+                if (!List.get(i).get(Items[j]).isEmpty() && !Data[j].equals(List.get(i).get(Items[j]))) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) return i;
         }
         return -1;
     }
@@ -132,9 +176,13 @@ public class TouchTimeGeneralFunctions {
                 String Second[] = new String[ItemList.length];
                 for (i = 0; ItemList[i] != null; i++) {
                     if (i == 0) {
-                        int one = (o1.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList[i]));
-                        int two = (o2.get(ItemList).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList[i]));
-                        if (!Ascend) {
+                        int one = (o1.get(ItemList[i]).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList[i]));
+                        int two = (o2.get(ItemList[i]).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList[i]));
+                        if (Ascend) {
+                            if (one == 0)
+                                return 1;
+                            else if (two == 0)
+                                return -1;
                             result = (one < two ? -1 : (one == two ? 0 : 1));
                         } else {
                             result = (one < two ? 1 : (one == two ? 0 : -1));
@@ -144,13 +192,13 @@ public class TouchTimeGeneralFunctions {
                         First[i] = o1.get(ItemList[i]);
                         Second[i] = o2.get(ItemList[i]);
                         if (First[i].isEmpty() && Second[i].isEmpty()) return 0;
-                        if (!Ascend) {
+                        if (Ascend) {
                             if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
                             if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                             result = First[i].compareToIgnoreCase(Second[i]);
                         } else {
-                            if (First[i].isEmpty() && !Second[i].isEmpty()) return -1;
-                            if (!First[i].isEmpty() && Second[i].isEmpty()) return 1;
+                            if (First[i].isEmpty() && !Second[i].isEmpty()) return 1;
+                            if (!First[i].isEmpty() && Second[i].isEmpty()) return -1;
                             result = Second[i].compareToIgnoreCase(First[i]);
                         }
                         if (result != 0) return result;
@@ -201,4 +249,52 @@ public class TouchTimeGeneralFunctions {
         return result;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "TouchTimeGeneralFunctions Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "TouchTimeGeneralFunctions Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }

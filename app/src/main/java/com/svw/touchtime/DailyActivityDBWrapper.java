@@ -92,10 +92,10 @@ import java.util.Locale;
 
         // get activity
         public DailyActivityList getPunchedInActivityList(int EmployeeID) {
-            String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY+ " WHERE " + KEY_EMPLOYEE_ID + " = " + EmployeeID
-                    + " AND " + KEY_TIME_OUT + " IS NULL ";   // Time Out is empty = punched in but not punched out
-            Log.e(LOG, selectQuery);
-            Cursor c = database.rawQuery(selectQuery, null);
+            String Empty = "" + "";
+            Cursor c = database.rawQuery("SELECT  * FROM " + TABLE_ACTIVITY+ " WHERE " + KEY_EMPLOYEE_ID + " = ?"
+                            + " AND " + KEY_TIME_OUT + " = ?",
+                    new String[] { String.valueOf(EmployeeID), Empty});
             if (c.moveToFirst())
                 return retrieveActivity(EmployeeID, c);     // retrieve based on ID
             else
@@ -156,9 +156,10 @@ import java.util.Locale;
         }
 
         public int updatePunchedInActivityList(DailyActivityList Activity) {
-             // updating row based on employee id so cannot be changed
-            String selection = KEY_EMPLOYEE_ID + " = " + "'" + Activity.EmployeeID + "'" + " AND " + KEY_TIME_OUT + " IS NULL ";
-            return database.update(TABLE_ACTIVITY, storeActivity(Activity), selection, null);
+            String Empty = "" + "";
+            String selection = KEY_EMPLOYEE_ID + " = ?" + " AND " + KEY_TIME_OUT + " = ?";
+            return database.update(TABLE_ACTIVITY, storeActivity(Activity), selection,
+                    new String[] { String.valueOf(Activity.EmployeeID), Empty});
         }
 
         // getting Activity list count

@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONArray;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -351,6 +353,53 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
         return database.update(TABLE_EMPLOYEE, values, KEY_EMPLOYEE_ID + " = " + "'" + Employee.EmployeeID + "'", null);
     }
 
+    // change group is to a new group or 0
+    public void updateEmployeeListGroup(int EmployeeID, int group) {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_GROUP + " = ?"
+                + " WHERE " + KEY_EMPLOYEE_ID + " = ?", new String[] { String.valueOf(group) , String.valueOf(EmployeeID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    public void updateEmployeeListStatus(int EmployeeID, int status) {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_STATUS + " = ?" + " WHERE " + KEY_EMPLOYEE_ID + " = ?",
+                new String[] { String.valueOf(status) , String.valueOf(EmployeeID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    public int getEmployeeListStatus(int EmployeeID) {
+        String selectQuery = "SELECT  * FROM " + TABLE_EMPLOYEE+ " WHERE " + KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) return c.getInt(c.getColumnIndex(KEY_STATUS));
+        return 0;
+    }
+
+    // update company, location, job in an employee
+    public void updateEmployeeListCompanyLocationJob(int EmployeeID, String Company, String Location, String Job) {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                        + " WHERE " + KEY_EMPLOYEE_ID + " = ?",
+                        new String[] { Company, Location, Job , String.valueOf(EmployeeID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    // clear company, location, job in all employees that have the matched company
+    public void clearEmployeeListCompany(String Company) {
+        String Empty = "" + "";
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                        + " WHERE " + KEY_COMPANY + " = ?",
+                        new String[] { Empty, Empty, Empty, Company});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    // clear company, location, job in all employees that have the matched company, location, job
+    public void clearEmployeeListCompanyLocationJob(int EmployeeID) {
+        String Empty = "" + "";
+        Cursor c = database.rawQuery(  "UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                + " WHERE " + KEY_EMPLOYEE_ID + " = ?",
+                new String[] { Empty, Empty, Empty, String.valueOf(EmployeeID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
     // getting Employee list count
     public int getEmployeeListCount() {
         String countQuery = "SELECT  * FROM " + TABLE_EMPLOYEE;
@@ -402,6 +451,14 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
             WorkGroup.setEmployees(c.getString(c.getColumnIndex(KEY_EMPLOYEES)));
         }
         return WorkGroup;
+    }
+
+    public String getWorkGroupListEmployees(int GroupID) {
+        String selectQuery = "SELECT  * FROM " + TABLE_WORK_GROUP+ " WHERE " + KEY_WORK_GROUP_ID + " = " + "'" + GroupID + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) return c.getString(c.getColumnIndex(KEY_EMPLOYEES));
+        return "";
     }
 
     public boolean checkWorkGroupID(int GroupID) {
@@ -496,6 +553,72 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
         values.put(KEY_EMPLOYEES, WorkGroup.Employees);
         // updating row based on work group id so cannot be changed
         return database.update(TABLE_WORK_GROUP, values, KEY_WORK_GROUP_ID + " = " + "'" + WorkGroup.GroupID + "'", null);
+    }
+
+    // change group is to a new group or 0
+    public void removeWorkGroupListEmployee(int EmployeeID, int WorkGroupID) {
+        ArrayList<String> unique_employee = new ArrayList<String>();
+        String selectQuery = "SELECT  * FROM " + TABLE_WORK_GROUP+ " WHERE "
+                + KEY_WORK_GROUP_ID + " = " + "'" + WorkGroupID + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+         if (c.moveToFirst()) {
+            if (!c.getString(c.getColumnIndex(KEY_EMPLOYEES)).isEmpty()) {
+                String[] array = c.getString(c.getColumnIndex(KEY_EMPLOYEES)).split(",");
+                for (String s : array) {
+                    String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                    if (!ss.isEmpty()) {
+                        if (Integer.parseInt(ss) != EmployeeID) {   // only keep employee IDs that are not to be removed
+                            unique_employee.add(ss);
+                        }
+                    }
+                }
+                JSONArray JobArray = new JSONArray(unique_employee);
+                Cursor s = database.rawQuery("UPDATE " + TABLE_WORK_GROUP + " SET " + KEY_EMPLOYEES + " = ?"
+                        + " WHERE " + KEY_WORK_GROUP_ID + " = ?", new String[] { JobArray.toString() , String.valueOf(WorkGroupID)});
+                s.moveToFirst();        // somehow it has to move to first to work
+            }
+        }
+    }
+
+    public void updateWorkGroupListStatus(int WorkGroupID, int status) {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_WORK_GROUP + " SET " + KEY_STATUS + " = ?" + " WHERE " + KEY_WORK_GROUP_ID + " = ?",
+                new String[] { String.valueOf(status) , String.valueOf(WorkGroupID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    public int getWorkGroupListStatus(int WorkGroupID) {
+        String selectQuery = "SELECT  * FROM " + TABLE_WORK_GROUP+ " WHERE " + KEY_WORK_GROUP_ID + " = " + "'" + WorkGroupID + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) return c.getInt(c.getColumnIndex(KEY_STATUS));
+        return 0;
+    }
+
+    // update company, location, job in an employee
+    public void updateWorkGroupListCompanyLocationJob(int WorkGroupID, String Company, String Location, String Job) {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_WORK_GROUP + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                        + " WHERE " + KEY_WORK_GROUP_ID + " = ?",
+                new String[] { Company, Location, Job , String.valueOf(WorkGroupID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    // clear company, location, job in all employees that have the matched company
+    public void clearWorkGroupListCompany(String Company) {
+        String Empty = "" + "";
+        Cursor c = database.rawQuery("UPDATE " + TABLE_WORK_GROUP + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                        + " WHERE " + KEY_COMPANY + " = ?",
+                new String[] { Empty, Empty, Empty, Company});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    // clear company, location, job in all employees that have the matched job
+    public void clearWorkGroupListCompanyLocationJob(int WorkGroupID) {
+        String Empty = "" + "";
+        Cursor c = database.rawQuery("UPDATE " + TABLE_WORK_GROUP + " SET " + KEY_COMPANY + " = ?" + " , " + KEY_LOCATION + " = ?" + " , " + KEY_JOB + " = ?"
+                        + " WHERE " + KEY_WORK_GROUP_ID + " = ?",
+                new String[] { Empty, Empty, Empty, String.valueOf(WorkGroupID)});
+        c.moveToFirst();        // somehow it has to move to first to work
     }
 
     // getting WorkGroup list count

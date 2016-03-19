@@ -19,7 +19,7 @@
         android:id="@+id/textViewLastName"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_weight="4.5"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:paddingRight="5dp"
@@ -32,7 +32,7 @@
         android:id="@+id/textViewFirstName"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_weight="4.5"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:paddingRight="5dp"
@@ -45,11 +45,11 @@
         android:id="@+id/textViewGroup"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:paddingRight="5dp"
-        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
         android:focusable="false"
         />
 
@@ -57,11 +57,11 @@
         android:id="@+id/textViewActive"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="1.0"
+        android:layout_weight="1.5"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:paddingRight="5dp"
-        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
         android:focusable="false"
         />
 
@@ -73,7 +73,7 @@
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
         android:paddingRight="5dp"
-        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
         android:focusable="false"
         />
 
@@ -81,7 +81,7 @@
         android:id="@+id/myCheckBox"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="0.8"
+        android:layout_weight="0.5"
         android:layout_gravity="center"
         android:scaleX="1.5"
         android:scaleY="1.5"

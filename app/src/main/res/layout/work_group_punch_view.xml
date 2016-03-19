@@ -20,7 +20,7 @@
         />
 
     <TextView
-        android:id="@+id/textViewID"
+        android:id="@+id/textViewGroupID"
         android:focusable="false"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
@@ -34,7 +34,7 @@
         android:id="@+id/textViewStatus"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_marginRight="5dp"
         android:gravity="center_horizontal|center_vertical"
         android:textColor="#000000"
@@ -44,51 +44,26 @@
         />
 
     <TextView
-        android:id="@+id/textViewGroup"
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="1.6"
-        android:layout_marginRight="5dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/medium_small_text_size"
-        android:gravity="center_horizontal|center_vertical"
-        android:focusable="false"
-        />
-
-     <TextView
-        android:id="@+id/textViewLastName"
+        android:id="@+id/textViewGroupName"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="3"
-         android:layout_marginRight="5dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/medium_small_text_size"
-        android:layout_centerVertical="true"
-        android:focusable="false"
-        android:singleLine="true"
-        />
-
-    <TextView
-        android:id="@+id/textViewFirstName"
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="2.7"
         android:layout_marginRight="5dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         android:focusable="false"
-        android:singleLine="true"
         />
+
     <TextView
         android:id="@+id/textViewCompany"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="2.7"
+        android:layout_weight="3"
         android:layout_marginRight="5dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:paddingLeft="20dp"
+        android:paddingLeft="5dp"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:singleLine="true"
@@ -97,7 +72,7 @@
         android:id="@+id/textViewLocation"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="2.7"
+        android:layout_weight="3"
         android:layout_marginRight="5dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
@@ -110,11 +85,11 @@
         android:id="@+id/textViewJob"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="2.7"
+        android:layout_weight="3"
         android:layout_marginRight="5dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:paddingLeft="15dp"
+        android:paddingLeft="10dp"
         android:layout_centerVertical="true"
         android:focusable="false"
         android:singleLine="true"

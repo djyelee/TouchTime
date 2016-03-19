@@ -128,7 +128,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onNewUpdateButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (NameEdit.getText().toString().isEmpty()) {
             builder.setMessage(R.string.no_company_message).setTitle(R.string.company_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -149,7 +149,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             Company.Location = "";
 
             if (unique_com.size() > 0) {        // check if empty
-                // AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+                // AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                 if (General.checkDuplicates(unique_com, Company.getName()) == 0) {
                     if (view.getId() == R.id.btn_new) {   // no duplicate
                         builder.setMessage(R.string.company_new_message).setTitle(R.string.company_profile_title);
@@ -249,18 +249,21 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             displayCompanyProfile();             // display after SetAdapter to show the checked item
         }
         AlertDialog dialog = builder.create();
-        dialog.show();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void onDeleteButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (unique_com.size() > 0) {
             builder.setMessage(R.string.company_delete_confirm_message).setTitle(R.string.company_profile_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                     db.deleteCompanyList(feedCompanyList.get(item).get(getText(R.string.column_key_company).toString()));
-                    unique_com.remove(item);
-                    int i = 0;
+                    // whether the group or employee is already punched in or not they must be cleared
+                    db.clearEmployeeListCompany(feedCompanyList.get(item).get(getText(R.string.column_key_company).toString()));
+                    db.clearWorkGroupListCompany(feedCompanyList.get(item).get(getText(R.string.column_key_company).toString()));
+                unique_com.remove(item);
+                int i = 0;
                     feedCompanyList.clear();
                     while (i < unique_com.size()) {
                         map = new HashMap<String, String>();
@@ -293,7 +296,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             });
         }
         AlertDialog dialog = builder.create();
-        dialog.show();
+        General.TouchTimeDialog(dialog, view);
     }
 
     @Override

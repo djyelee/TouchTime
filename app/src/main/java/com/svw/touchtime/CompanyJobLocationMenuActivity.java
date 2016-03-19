@@ -135,15 +135,15 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                 job_location_list_view.setAdapter(adapter_loc);
             }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(R.string.no_company_message).setTitle(R.string.company_warning_title);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.no_company_message).setTitle(R.string.job_location_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     finish();
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
         }
         list_items[0] = getText(R.string.column_key_company).toString();
         list_id[0] = R.id.companyDisplayID;

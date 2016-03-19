@@ -1,121 +1,28 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://www.gueei.com/android-binding/"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:background="?android:attr/activatedBackgroundIndicator">
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:orientation="vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
 
-    <ListView
-        android:id="@+id/work_group_list_view"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="0.8"
-        android:background="@drawable/list_view_border"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:choiceMode="singleChoice"
-        android:listSelector="@android:color/darker_gray"/>
-
-    <TableLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="4.8"
-        >
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/selection"
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp"
-            android:orientation="horizontal" >
-            <RadioButton
-                android:id="@+id/radio_employee"
-                android:paddingRight="10dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/radio_employee"
-                android:textSize="@dimen/medium_text_size"
-                android:onClick="onRadioButtonClicked"
-                android:layout_gravity="center_vertical"
-                android:checked="true"
-                android:clickable="true" />
-            <RadioButton
-                android:id="@+id/radio_company"
-                android:paddingRight="10dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.1"
-                android:text="@string/radio_company"
-                android:textSize="@dimen/medium_text_size"
-                android:onClick="onRadioButtonClicked"
-                android:layout_gravity="center_vertical"
-                android:clickable="true" />
-            <RadioButton
-                android:id="@+id/radio_loc"
-                android:paddingRight="10dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/radio_loc"
-                android:textSize="@dimen/medium_text_size"
-                android:onClick="onRadioButtonClicked"
-                android:layout_gravity="center_vertical"
-                android:clickable="true" />
-            <RadioButton
-                android:id="@+id/radio_job"
-                android:paddingRight="10dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.6"
-                android:text="@string/radio_job"
-                android:textSize="@dimen/medium_text_size"
-                android:onClick="onRadioButtonClicked"
-                android:layout_gravity="center_vertical"
-                android:clickable="true" />
-        </RadioGroup>
-
-        <ListView
-            android:id="@+id/universal_list_view"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9"
-            android:background="@drawable/list_view_border"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:choiceMode="singleChoice"
-            android:listSelector="@android:color/darker_gray"
-            android:scrollingCache="true" />
-    </TableLayout>
-
-    <TableLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1.5"
-        >
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.7"
-            />
+        android:layout_marginBottom="5dp">
         <TextView
             android:id="@+id/current_date"
             android:textSize="@dimen/medium_text_size"
-            android:layout_weight="0.8"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
             android:textColor="@color/svw_blue"
             android:text="Date"
             android:textStyle="bold|italic"
@@ -123,38 +30,59 @@
         <TextView
             android:id="@+id/current_time"
             android:textSize="@dimen/medium_text_size"
-            android:layout_weight="0.8"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_weight="1.2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
             android:textColor="@color/svw_blue"
             android:text="Time"
             android:textStyle="bold|italic"
             android:gravity="center" />
         <Button
-            android:id="@+id/group_assign"
-            android:text="@string/button_assign"
+            android:id="@+id/group_select_all"
+            android:text="@string/button_deselect_all"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="0.9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="5dp"
+            android:clickable="true"
+            android:onClick="onSelectAllButtonClicked"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/group_select_job"
+            android:text="@string/button_move_job"
             android:textSize="@dimen/medium_text_size"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
             android:clickable="true"
-            android:onClick="onAssignButtonClicked"
+            android:onClick="onSelectJobButtonClicked"
+            android:layout_gravity="center_vertical" />
+        <Button
+            android:id="@+id/group_remove_job"
+            android:text="@string/button_remove_job"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1.2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/roundshapebtn"
+            android:layout_marginRight="5dp"
+            android:clickable="true"
+            android:onClick="onRemoveJobButtonClicked"
             android:layout_gravity="center_vertical" />
         <Button
             android:id="@+id/group_punch_in"
             android:text="@string/button_punch_in"
             android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
             android:clickable="true"
             android:onClick="onPunchInButtonClicked"
             android:layout_gravity="center_vertical" />
@@ -162,31 +90,113 @@
             android:id="@+id/group_punch_out"
             android:text="@string/button_punch_out"
             android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_weight="1.0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
             android:clickable="true"
             android:onClick="onPunchOutButtonClicked"
             android:layout_gravity="center_vertical" />
-        <Button
-            android:id="@+id/group_move"
-            android:text="@string/button_move_job"
-            android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/roundshapebtn"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:clickable="true"
-            android:onClick="onMoveJobButtonClicked"
-            android:layout_gravity="center_vertical" />
+    </TableRow>
 
-    </TableLayout>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="5dp">
+        <Button
+            android:id="@+id/sort_id"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.0"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/column_view_group_id"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortIDButtonClicked"
+            android:gravity="center" />
+        <Button
+            android:id="@+id/sort_punch_status"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/column_view_status"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortStatusButtonClicked"
+            android:gravity="center" />
+        <Button
+            android:id="@+id/sort_group_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/column_view_group_name"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortGroupNameButtonClicked"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/sort_company"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/column_view_company"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortCompanyButtonClicked"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="5dp"
+            android:text="@string/column_view_location"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="5dp"
+            android:text="@string/column_view_job"
+            android:textSize="@dimen/medium_small_text_size"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_black"
+            android:background="@color/svw_orange"
+            android:gravity="center" />
+
+    </TableRow>
+
+    <ListView
+        android:id="@+id/universal_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13.5"
+        android:background="@drawable/list_view_border"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:choiceMode="multipleChoiceModal"
+        android:listSelector="@color/svw_cyan"/>
 
 </LinearLayout>

@@ -67,10 +67,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Values[0] = datef.format(Calendar.getInstance().getTime());
         all_activity_lists = dbActivity.getActivityLists(Column, Compare, Values);
 
-        employee_item[0] = getText(R.string.column_key_id).toString();
-        employee_item[1] = getText(R.string.column_key_last).toString();
-        employee_item[2] = getText(R.string.column_key_first).toString();
-        employee_item[3] = getText(R.string.column_key_group).toString();
+        employee_item[0] = getText(R.string.column_key_employee_id).toString();
+        employee_item[1] = getText(R.string.column_key_last_name).toString();
+        employee_item[2] = getText(R.string.column_key_first_name).toString();
+        employee_item[3] = getText(R.string.column_key_group_id).toString();
         employee_item[4] = getText(R.string.column_key_company).toString();
         employee_item[5] = getText(R.string.column_key_location).toString();
         employee_item[6] = getText(R.string.column_key_job).toString();
@@ -100,10 +100,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         if (all_activity_lists.size() > 0) {
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_id).toString(), String.valueOf(all_activity_lists.get(i).getEmployeeID()));
-                map.put(getText(R.string.column_key_last).toString(), all_activity_lists.get(i).getLastName());
-                map.put(getText(R.string.column_key_first).toString(), all_activity_lists.get(i).getFirstName());
-                map.put(getText(R.string.column_key_group).toString(), all_activity_lists.get(i).getWorkGroup());
+                map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_activity_lists.get(i).getEmployeeID()));
+                map.put(getText(R.string.column_key_last_name).toString(), all_activity_lists.get(i).getLastName());
+                map.put(getText(R.string.column_key_first_name).toString(), all_activity_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_group_id).toString(), all_activity_lists.get(i).getWorkGroup());
                 map.put(getText(R.string.column_key_company).toString(), all_activity_lists.get(i).getCompany());
                 map.put(getText(R.string.column_key_location).toString(), all_activity_lists.get(i).getLocation());
                 map.put(getText(R.string.column_key_job).toString(), all_activity_lists.get(i).getJob());
@@ -121,15 +121,15 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 feedActivityList.add(map);
             } while (++i < all_activity_lists.size());
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
-            builder.setMessage(getText(R.string.no_daily_activity_message) + " for " + Values[0] + " !").setTitle(R.string.empty_entry_title);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(getText(R.string.no_daily_activity_message) + " for " + Values[0] + " !").setTitle(R.string.daily_activity_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     finish();
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
         }
 
         daily_activity_list_view.setItemsCanFocus(true);
@@ -145,12 +145,12 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.confirm_delete_title);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+                                builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.daily_activity_title);
                                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         int ID = 0;
-                                        String G = feedActivityList.get(item).get(getText(R.string.column_key_id).toString());
+                                        String G = feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString());
                                         if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                         if (ID > 0) {
                                             String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
@@ -166,7 +166,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                     }
                                 });
                                 AlertDialog dialog = builder.create();
-                                dialog.show();
+                                General.TouchTimeDialog(dialog, view);
                                 view.setAlpha(1);
                             }
                         });
@@ -185,7 +185,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                 String Lunch = LunchMinuteEdit.getText().toString();
                                 String Supervisor = SupervisorEdit.getText().toString();
                                 String Comments = CommentsEdit.getText().toString();
-                                String G = feedActivityList.get(pos).get(getText(R.string.column_key_id).toString());
+                                String G = feedActivityList.get(pos).get(getText(R.string.column_key_employee_id).toString());
                                 boolean updated = false;
                                 if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                 if (ID > 0) {
@@ -246,10 +246,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     public void onSortIDButtonClicked(View view) {
         if (feedActivityList.size() == 0) return;
         String [] Items = new String [10];
-        Items [0] = getText(R.string.column_key_id).toString();
-        Items [1] = getText(R.string.column_key_last).toString();
-        Items [2] = getText(R.string.column_key_first).toString();
-        Items [3] = getText(R.string.column_key_group).toString();
+        Items [0] = getText(R.string.column_key_employee_id).toString();
+        Items [1] = getText(R.string.column_key_last_name).toString();
+        Items [2] = getText(R.string.column_key_first_name).toString();
+        Items [3] = getText(R.string.column_key_group_id).toString();
         Items [4] = getText(R.string.column_key_company).toString();
         Items [5] = getText(R.string.column_key_date).toString();
         Items [6] = getText(R.string.column_key_timein).toString();
@@ -262,9 +262,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     public void onSortLastNameButtonClicked(View view) {
         if (feedActivityList.size() == 0) return;
         String [] Items = new String [10];
-        Items [0] = getText(R.string.column_key_last).toString();
-        Items [1] = getText(R.string.column_key_first).toString();
-        Items [2] = getText(R.string.column_key_group).toString();
+        Items [0] = getText(R.string.column_key_last_name).toString();
+        Items [1] = getText(R.string.column_key_first_name).toString();
+        Items [2] = getText(R.string.column_key_group_id).toString();
         Items [3] = getText(R.string.column_key_company).toString();
         Items [4] = getText(R.string.column_key_date).toString();
         Items [5] = getText(R.string.column_key_timein).toString();
@@ -277,9 +277,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     public void onSortGroupButtonClicked(View view) {
         if (feedActivityList.size() == 0) return;
         String [] Items = new String [10];
-        Items [0] = getText(R.string.column_key_group).toString();
-        Items [1] = getText(R.string.column_key_last).toString();
-        Items [2] = getText(R.string.column_key_first).toString();
+        Items [0] = getText(R.string.column_key_group_id).toString();
+        Items [1] = getText(R.string.column_key_last_name).toString();
+        Items [2] = getText(R.string.column_key_first_name).toString();
         Items [3] = getText(R.string.column_key_company).toString();
         Items [4] = getText(R.string.column_key_date).toString();
         Items [5] = getText(R.string.column_key_timein).toString();
@@ -293,9 +293,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         if (feedActivityList.size() == 0) return;
         String [] Items = new String [10];
         Items [0] = getText(R.string.column_key_company).toString();
-        Items [1] = getText(R.string.column_key_group).toString();
-        Items [2] = getText(R.string.column_key_last).toString();
-        Items [3] = getText(R.string.column_key_first).toString();
+        Items [1] = getText(R.string.column_key_group_id).toString();
+        Items [2] = getText(R.string.column_key_last_name).toString();
+        Items [3] = getText(R.string.column_key_first_name).toString();
         Items [4] = getText(R.string.column_key_date).toString();
         Items [5] = getText(R.string.column_key_timein).toString();
         General.SortStringList(feedActivityList, Items, sort_company_ascend);
@@ -309,9 +309,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         String [] Items = new String [10];
         Items [0] = getText(R.string.column_key_date).toString();
         Items [1] = getText(R.string.column_key_timein).toString();
-        Items [2] = getText(R.string.column_key_last).toString();
-        Items [3] = getText(R.string.column_key_first).toString();
-        Items [4] = getText(R.string.column_key_group).toString();
+        Items [2] = getText(R.string.column_key_last_name).toString();
+        Items [3] = getText(R.string.column_key_first_name).toString();
+        Items [4] = getText(R.string.column_key_group_id).toString();
         Items [5] = getText(R.string.column_key_company).toString();
         General.SortStringList(feedActivityList, Items, sort_date_ascend);
         sort_id_ascend = sort_last_name_ascend = sort_group_ascend = sort_company_ascend = false;

@@ -69,7 +69,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
             } while (++i < all_lists.size());
             itemCompany = db.getCompanyListPosition(CompanyLocationJob.get(1));     // Company name is stored in (1)
          } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.no_company_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -77,7 +77,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
         }
         company_list_items[0] = getText(R.string.column_key_company).toString();
         company_list_id[0] = R.id.singleItemDisplayID;
@@ -216,7 +216,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_punch_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -229,7 +229,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
             return true;
         }
 

@@ -15,26 +15,54 @@
     <color name="svw_view_background">#ffc7e3ff</color>
     <color name="svw_view_selector">#ffa0a0a0</color>
 
+    <integer name="dialog_message_size">32</integer>
+    <integer name="dialog_button_size">32</integer>
+    <color name="dialog_message_color">#004F4F</color>
+
     <!-- These are used for database column keys.  Can only use English.  Cannot be used for message if want to switch to a differnt language. -->
-    <string name="column_key_id">ID</string>
-    <string name="column_key_last">Last</string>
-    <string name="column_key_first">First</string>v
+    <string name="column_key_employee_id">EmployeeID</string>
+    <string name="column_key_last_name">LastName</string>
+    <string name="column_key_first_name">FirstName</string>v
     <string name="column_key_active">Active</string>
     <string name="column_key_current">Current</string>
-    <string name="column_key_group">Group</string>
-    <string name="column_key_status">In</string>
-    <string name="column_key_date">Date</string>
-    <string name="column_key_timein">TimeIn</string>
-    <string name="column_key_timeout">TimeOut</string>
-    <string name="column_key_lunch">Lunch</string>
-    <string name="column_key_hours">Hours</string>
-    <string name="column_key_supervisor">Supervisor</string>
-    <string name="column_key_comments">Comments</string>
+    <string name="column_key_doc_exp">DocExp</string>
+    <string name="column_key_status">Status</string>
     <string name="column_key_company">Company</string>
     <string name="column_key_location">Location</string>
     <string name="column_key_job">Job</string>
+    <string name="column_key_group_id">GroupID</string>
+    <string name="column_key_group_name">GroupName</string>
+    <string name="column_key_supervisor">Supervisor</string>
+    <string name="column_key_date">Date</string>
+    <string name="column_key_lunch">Lunch</string>
+    <string name="column_key_hours">Hours</string>
+    <string name="column_key_timein">TimeIn</string>
+    <string name="column_key_timeout">TimeOut</string>
+    <string name="column_key_comments">Comments</string>
 
-    <!-- Main Menus -->
+    <!-- These are used for view headers.  Can be switch to a different language. -->
+    <string name="column_view_employee_id">ID</string>
+    <string name="column_view_last_name">Last Name</string>
+    <string name="column_view_first_name">First Name</string>v
+    <string name="column_view_active">Active</string>
+    <string name="column_view_current">Current</string>
+    <string name="column_view_status">Status</string>
+    <string name="column_view_company">Company</string>
+    <string name="column_view_location">Location</string>
+    <string name="column_view_job">Job</string>
+    <string name="column_view_group_id">Group ID</string>
+    <string name="column_view_group_name">Group Name</string>
+    <string name="column_view_supervisor">Supervisor</string>
+    <string name="column_view_date">Date</string>
+    <string name="column_view_lunch">Lunch</string>
+    <string name="column_view_hours">Hours</string>
+    <string name="column_view_timein">TimeIn</string>
+    <string name="column_view_timeout">TimeOut</string>
+    <string name="column_view_comments">Comments</string>
+    <string name="column_view_group_number">Group #</string>
+    <string name="column_view_group">Group</string>
+
+    <!-- Main Menus Titles -->
     <string name="app_name">Touch Time - Smart Vision Works, LLC.</string>
     <string name="screen_name">Touch Time</string>
     <string name="administrator">Administrator</string>
@@ -79,7 +107,7 @@
     <string name="no_company_message">No company !</string>
     <string name="no_location_message">No Location !</string>
     <string name="no_job_message">No Job !</string>
-    <string name="no_company_location_job_message">Assign company, location, and job !</string>
+    <string name="no_company_location_job_message">No company, location, or job !</string>
     <string name="hint_add_job_item">Enter a new job here ...</string>
     <string name="hint_add_location_item">Enter a new location here ...</string>
     <string name="button_clear_all">Clear Company</string>
@@ -95,24 +123,20 @@
     <string name="employee_update_message">Update employee profile ?</string>
     <string name="employee_no_ID_message">Select an employee !</string>
     <string name="employee_empty_message">No employee assigned to group !</string>
-
-    <string name="comma_title_text"> , </string>
-    <string name="hourly_rate_title_text">Hourly Rate:</string>
-    <string name="piece_rate_title_text">Piece Rate:</string>
-    <string name="ss_number_title_text">SS#:</string>
-    <string name="birth_date_title_text">DoB:</string>
-    <string name="hire_date_title_text">DoHire:</string>
-    <string name="expiration_title_text">Doc Exp:</string>
-    <string name="active_title_text">Active</string>
-    <string name="current_title_text">Current</string>
-    <string name="hint_employee_comments_text">Comments</string>
+        <!-- TextView title text -->
+        <string name="comma_title_text"> , </string>
+        <string name="hourly_rate_title_text">Hourly Rate:</string>
+        <string name="piece_rate_title_text">Piece Rate:</string>
+        <string name="ss_number_title_text">SS#:</string>
+        <string name="birth_date_title_text">DoB:</string>
+        <string name="hire_date_title_text">DoHire:</string>
+        <string name="expiration_title_text">Doc Exp:</string>
+        <string name="active_title_text">Active</string>
+        <string name="current_title_text">Current</string>
+        <string name="hint_employee_comments_text">Comments</string>
 
     <!-- Work Group Menu -->
     <string name="group_title">Work Group</string>
-    <string name="group_name_header">Group #</string>
-    <string name="group_title_text">Group Name:</string>
-    <string name="supervisor_title_text">Supervisor:</string>
-    <string name="shift_title_text">Shift Name:</string>
     <string name="group_new_message">Create work group ?</string>
     <string name="group_update_message">Update work group ?</string>
     <string name="group_confirm_delete_message">Delete work group permanently ?</string>
@@ -121,18 +145,26 @@
     <string name="group_invalid_employee">Assign inactive or not current employees ?</string>
     <string name="group_reassign_employee_">Reassign group ?</string>
     <string name="group_select_employee">Select employees for group </string>
+    <!-- TextView title text -->
+        <string name="group_name_title_text">Group Name:</string>
+        <string name="supervisor_title_text">Supervisor:</string>
+        <string name="shift_title_text">Shift Name:</string>
 
     <!-- Employee Punch In -->
     <string name="employee_punch_title">Employee Punch In/Out</string>
     <string name="no_employee_message">No employee !</string>
-    <string name="employee_punch_in_message">Punch in employee ?</string>
-    <string name="employee_punch_out_message">Punch out employee ?</string>
-    <string name="employee_already_punch_in_message">Employee already punched in !</string>
-    <string name="employee_already_punch_out_message">Employee already punched out !</string>
-    <string name="employee_must_punch_out_message">Employee must be punched out first !</string>
-    <string name="employee_punch_in_now_message">Employee has not been punched in. Punch in now ?</string>
+    <string name="employee_not_active">Employee(s) not active !</string>
+    <string name="employee_doc_expire">Employee(s) not current or document expired !</string>
+    <string name="employee_punch_in_message">Punch in employee(s) ?</string>
+    <string name="employee_punch_out_message">Punch out employee(s) ?</string>
+    <string name="employee_already_punched_in_message">Employee(s) already punched in !</string>
+    <string name="employee_already_punched_out_message">Employee(s) already punched out !</string>
+    <string name="employee_must_punch_out_message">Employee(s) must be punched out first !</string>
+    <string name="employee_must_punch_in_message">Employee(s) has not been punched in. Punch in now ?</string>
+    <string name="employee_group_not_punch_in_message">Group is not punched in, punch in employee(s) anyway ?</string>
+    <string name="employee_group_already_punched_in_message">Punch in to the same job as the group !</string>
+    <string name="employee_punch_in_different_job_message">Punch in to a different job from the group ?</string>
 
-    <!-- Need to review the following list -->
 
     <!-- Work Group Punch In -->
     <string name="group_punch_title">Group Punch In/Out</string>
@@ -141,15 +173,16 @@
     <string name="no_work_group_message">No work group !</string>
     <string name="assign_work_group_message">Assign company, location, and job to work group ?</string>
     <string name="company_select_message">Select a company !</string>
-    <string name="group_punch_in_message">Punch in group ?</string>
-    <string name="group_punch_out_message">Punch out group ?</string>
-    <string name="group_move_message">Move group ?</string>
-    <string name="group_already_punched_in_message">Group already punched in !</string>
-    <string name="group_must_punch_out_message">Group must be punched out first !</string>
-    <string name="group_not_punched_in_message">Group has not been punched in !</string>
-    <string name="group_move_anyway_message">Group has not been punched in. Punch in now ?</string>
+    <string name="group_punch_in_message">Punch in group(s) ?</string>
+    <string name="group_punch_out_message">Punch out group(s) ?</string>
+    <string name="group_already_punched_in_message">Group(s) already punched in !</string>
+    <string name="group_already_punched_out_message">Group(s) already punched out !</string>
+    <string name="group_must_punch_out_message">Group(s) must be punched out first !</string>
+    <string name="group_must_punch_in_message">Group(s) has not been punched in. Punch in now ?</string>
+    <string name="group_inactive_employee_message">Inactive employees have been removed !</string>
 
     <!-- Daily Activity -->
+    <string name="daily_activity_title">Daily Activity </string>
     <string name="no_daily_activity_message">No activity </string>
     <string name="delete_daily_activity_message">Delete activity permanently ?</string>
     <string name="enter_comment_hint">Enter comment...</string>
@@ -158,6 +191,8 @@
     <string name="column_key_no_selection">No Selection</string>
 
     <!-- Report Selection -->
+    <string name="report_review_title">Report Reivew </string>
+    <string name="report_export_title">Report Export </string>
     <string name="report_selection_id">Employee ID</string>
     <string name="report_selection_last_name">Last Name</string>
     <string name="report_selection_first_name">First Name</string>
@@ -167,10 +202,15 @@
 
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
-    <string name="id_hint">Enter 4-Digit Employee ID : </string>
-    <string name="id_success">Are you </string>
-    <string name="id_fail">ID not available, enter again.</string>
-    <string name="job_location">Job Location</string>
+    <string name="employee_menu_title">Employee Menu</string>
+    <string name="employee_enter_id">Enter Employee ID : </string>
+    <string name="employee_id_fail">ID not available, enter again !</string>
+    <string name="group_title_text">Group:</string>
+    <string name="company_title_text">Company:</string>
+    <string name="location_title_text">Location:</string>
+    <string name="job_title_text">Job:</string>
+    <string name="date_hire_title_text">Date of Hire:</string>
+    <string name="doc_expiration_title_text">Expire Date:</string>
 
     <!-- Dialog Selections -->
     <string name="change_not_saved_message">Changes not saved, quit anyway ?</string>
@@ -198,7 +238,8 @@
     <string name="button_punch_out">Punch Out</string>
     <string name="button_move_job">Select Job</string>
     <string name="button_remove_job">Remove Job</string>
-
+    <string name="button_select_all">Select All</string>
+    <string name="button_deselect_all">Clear All</string>
 
     <!-- Main Activity Names -->
     <string name="action_settings">Settings</string>
@@ -222,31 +263,5 @@
     <string name="title_activity_company_job_location_selection">Company Job Location Selection</string>
     <string name="hello_world">Hello world!</string>
 
-    <!--
-    <dimen name="button_width">300dp</dimen>
-    <dimen name="button_height">100dp</dimen>
-    public static final int button_height=0x7f070027;
-    public static final int button_width=0x7f070028;
 
-    public static final int svw_view_background=0x7f060006;
-    public static final int svw_view_selector=0x7f060007;
-
-
-    <string name="company_change_message">Update company name and profile?</string>
-    <string name="employee_last_name_text">Last Name</string>
-    <string name="employee_first_name_text">First Name</string>
-
-    <string name="button_go">Go</string>
-
-    <string name="empty">Empty</string>
-
-    <string name="company_selection_item_name">Company Name</string>
-    <string name="company_selection_item">Company</string>
-    <string name="title_activity_group_punch_menu">Group Punch In/Out Menu</string>
-    <string name="title_activity_report_Selection_menu">Report Selection Menu</string>
-    <string name="title_activity_punch_in_out_menu">Punch In/Out Menu</string>
-    <string name="title_activity_export_data_menu">Export Data Menu</string>
-    <string name="title_activity_report_view">ReportViewActivity</string>
-    <string name="title_activity_report_selection_menu">ReportSelectionMenuActivity</string>
-    -->
 </resources>

@@ -16,7 +16,10 @@ import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -79,13 +82,13 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             i = 0;
             while (i < unique_group.size()) {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_group).toString(), unique_group.get(i++));
+                map.put(getText(R.string.column_key_group_id).toString(), unique_group.get(i++));
                 feedGroupList.add(map);
             };
             WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(0)));
             itemWorkGroup = 0;
         }
-        group_item[0] = getText(R.string.column_key_group).toString();
+        group_item[0] = getText(R.string.column_key_group_id).toString();
         group_id[0] = R.id.groupDisplayID;
         work_group_list_view.setItemsCanFocus(true);
         // work_group_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
@@ -96,9 +99,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         // retrieve employee lists
         unique_employee = new ArrayList<String>();
         // display selected employees
-        employee_item[0] = getText(R.string.column_key_id).toString();
-        employee_item[1] = getText(R.string.column_key_last).toString();
-        employee_item[2] = getText(R.string.column_key_first).toString();
+        employee_item[0] = getText(R.string.column_key_employee_id).toString();
+        employee_item[1] = getText(R.string.column_key_last_name).toString();
+        employee_item[2] = getText(R.string.column_key_first_name).toString();
         employee_id[0] = R.id.textDisplayID;
         employee_id[1] = R.id.textDisplayLastName;
         employee_id[2] = R.id.textDisplayFirstName;
@@ -133,14 +136,14 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             startActivityForResult(intent, PICK_GROUP_REQUEST);
         } else {
              // put the dialog inside so it will not dim the screen when returns.
-             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
              builder.setMessage(R.string.group_select_message).setTitle(R.string.group_title);
              builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
              AlertDialog dialog = builder.create();
-             dialog.show();
+             General.TouchTimeDialog(dialog, view);
          }
      }
 
@@ -163,7 +166,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void onAddUpdateButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (GroupNameEdit.getText().toString().isEmpty()) {              // must have the group name
             builder.setMessage(R.string.group_name_empty_message).setTitle(R.string.group_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -171,7 +174,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, view);
             return;
         }
         WorkGroup.setGroupName(GroupNameEdit.getText().toString());
@@ -205,7 +208,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, view);
         } else if (view.getId() == R.id.update_work_group) {
             if (itemWorkGroup < 0) {
                 builder.setMessage(R.string.group_select_message).setTitle(R.string.group_title);
@@ -235,12 +238,12 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     });
             }
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, view);
         }
     }
 
     public void onDeleteButtonClicked(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (itemWorkGroup >= 0) {
             if (WorkGroup.getStatus() != 0) {
                 builder.setMessage(R.string.group_must_punch_out_message).setTitle(R.string.group_title);
@@ -258,11 +261,8 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                             for (String s : array) {
                                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                                 if (!ss.isEmpty()) {
-                                    if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                                        EmployeeProfileList Employee = new EmployeeProfileList();
-                                        Employee = db.getEmployeeList(Integer.parseInt(ss));
-                                        Employee.setGroup(0);
-                                        db.updateEmployeeList(Employee);
+                                    if (db.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
+                                        db.updateEmployeeListGroup(Integer.parseInt(ss), 0); // group is removed, employee record must be updated as well to set group to 0
                                     }
                                 }
                             }
@@ -270,6 +270,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                         // delete group and update list
                         db.deleteWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
                         unique_group.remove(itemWorkGroup);
+                        feedGroupList.remove(itemWorkGroup);
                         adapter_group.notifyDataSetChanged();
                         all_work_group_lists = db.getAllWorkGroupLists();
                         if (all_work_group_lists.size() > 0) {
@@ -297,7 +298,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             });
         }
         AlertDialog dialog = builder.create();
-        dialog.show();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void displayWorkGroup() {
@@ -305,10 +306,10 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         GroupNameEdit.setText(WorkGroup.getGroupName().isEmpty() ? "" : WorkGroup.getGroupName());
         SupervisorEdit.setText(WorkGroup.getSupervisor().isEmpty() ? "" : WorkGroup.getSupervisor());
         ShiftNameEdit.setText(WorkGroup.getShiftName().isEmpty() ? "" : WorkGroup.getShiftName());
-        feedGroupList.clear();     // clear the old list
+        feedGroupList.clear();                  // clear the old list
         while (i < unique_group.size()) {
             map = new HashMap<String, String>();
-            map.put(getText(R.string.column_key_group).toString(), unique_group.get(i++));
+            map.put(getText(R.string.column_key_group_id).toString(), unique_group.get(i++));
             feedGroupList.add(map);
         };
         adapter_group.notifyDataSetChanged();
@@ -316,7 +317,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void displayEmployee() {
-        feedEmployeeList.clear();     // clear the old list
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         unique_employee.clear();      // c lear the old list
         if (!WorkGroup.getEmployees().isEmpty()) {
             String[] array = WorkGroup.getEmployees().split(",");
@@ -324,7 +325,19 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                 if (!ss.isEmpty()) {
                     if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                        if (db.getEmployeeList(Integer.parseInt(ss)).getGroup() == WorkGroup.getGroupID()) {
+                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                        if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
+                                db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
+                                db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
+                            builder.setMessage(R.string.group_inactive_employee_message).setTitle(R.string.group_title);
+                            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
+                            db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
+                        } else {
                             unique_employee.add(ss);
                         }
                     }
@@ -334,44 +347,18 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             JSONArray JobArray = new JSONArray(unique_employee);
             WorkGroup.setEmployees(JobArray.toString());
             db.updateWorkGroupList(WorkGroup);
-            for (String s : unique_employee) {
-                map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_id).toString(), String.valueOf(db.getEmployeeList(Integer.parseInt(s)).getEmployeeID()));
-                map.put(getText(R.string.column_key_last).toString(), db.getEmployeeList(Integer.parseInt(s)).getLastName());
-                map.put(getText(R.string.column_key_first).toString(), db.getEmployeeList(Integer.parseInt(s)).getFirstName());
-                feedEmployeeList.add(map);
-            }
+        }
+        feedEmployeeList.clear();     // clear the old list
+        for (String s : unique_employee) {
+            map = new HashMap<String, String>();
+            map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(db.getEmployeeList(Integer.parseInt(s)).getEmployeeID()));
+            map.put(getText(R.string.column_key_last_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getLastName());
+            map.put(getText(R.string.column_key_first_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getFirstName());
+            feedEmployeeList.add(map);
         }
         adapter_employee.notifyDataSetChanged();
     }
-/*
-    static int checkDuplicates(ArrayList<String> list, String testString) {
-        int nDuplicates = 0;
-        // Loop over argument list.
-        for (String item : list) {
-            if (item.equals(testString)) {
-                nDuplicates++;
-            }
-        }
-        return nDuplicates;
-    }
 
-    static ArrayList<String> removeDuplicates(ArrayList<String> list) {
-        // Store unique items in result.
-        ArrayList<String> result = new ArrayList<String>();
-        // Record encountered Strings in HashSet.
-        HashSet<String> set = new HashSet<String>();
-        // Loop over argument list.
-        for (String item : list) {
-            // If String is not in set, add it to the list and the set.
-            if (!set.contains(item)) {
-                result.add(item);
-                set.add(item);
-            }
-        }
-        return result;
-    }
-*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

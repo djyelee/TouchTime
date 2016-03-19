@@ -12,7 +12,8 @@
         android:layout_weight="1.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp">
         <TextView
             android:id="@+id/employee_selection_group"
             android:textSize="@dimen/medium_text_size"
@@ -30,7 +31,6 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
             android:background="@drawable/roundshapebtn"
             android:clickable="true"
             android:onClick="onSubmitButtonClicked"
@@ -41,65 +41,83 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center">
         <Button
             android:id="@+id/sort_id"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/column_key_id"
+            android:text="@string/column_view_employee_id"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
-            android:onClick="onSortIDButtonClicked"
-            android:gravity="center" />
+            android:onClick="onSortIDButtonClicked"/>
 
         <Button
             android:id="@+id/sort_last_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginRight="10dp"
+            android:layout_weight="4.5"
+            android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/column_key_last"
+            android:text="@string/column_view_last_name"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:clickable="true"
-            android:onClick="onSortLastNameButtonClicked"
-            android:gravity="center" />
+            android:onClick="onSortLastNameButtonClicked" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5.5"
+            android:layout_weight="4.5"
+            android:layout_marginRight="5dp"
             android:paddingLeft="10dp"
-            android:text="@string/column_key_first"
+            android:text="@string/column_view_first_name"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
-            android:background="@color/svw_orange"/>
+            android:background="@color/svw_orange"
+            android:gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/sort_group_id"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:text="@string/column_view_group"
+            android:textSize="@dimen/medium_text_size"
+            android:textStyle="bold|italic"
+            android:clickable="true"
+            android:onClick="onSortGroupIDButtonClicked" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="@string/active_title_text"
+            android:layout_marginRight="5dp"
+            android:text="@string/column_view_active"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
-            android:background="@color/svw_orange"/>
+            android:background="@color/svw_orange"
+            android:gravity="center_horizontal" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.8"
-            android:text="@string/current_title_text"
+            android:layout_weight="1.5"
+            android:text="@string/column_view_current"
             android:textSize="@dimen/medium_text_size"
             android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
-            android:background="@color/svw_orange"/>
+            android:background="@color/svw_orange"
+            android:gravity="center_horizontal" />
 
     </TableRow>
     <ListView

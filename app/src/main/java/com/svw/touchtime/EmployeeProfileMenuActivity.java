@@ -57,7 +57,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         sort_last_name = (Button) findViewById(R.id.sort_last_name);
         feedEmployeeList = new ArrayList<HashMap<String, String>>();
 
-        String[] list_items = {getText(R.string.column_key_id).toString(), getText(R.string.column_key_last).toString(), getText(R.string.column_key_first).toString()};
+        String[] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString()};
         int[] list_id = {R.id.textDisplayID, R.id.textDisplayLastName, R.id.textDisplayFirstName};
         db = new EmployeeGroupCompanyDBWrapper(this);
         Employee = new EmployeeProfileList();
@@ -66,9 +66,9 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         if (all_employee_lists.size() > 0) {
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_id).toString(), String.valueOf(all_employee_lists.get(i).getEmployeeID()));
-                map.put(getText(R.string.column_key_last).toString(), all_employee_lists.get(i).getLastName());
-                map.put(getText(R.string.column_key_first).toString(), all_employee_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_employee_lists.get(i).getEmployeeID()));
+                map.put(getText(R.string.column_key_last_name).toString(), all_employee_lists.get(i).getLastName());
+                map.put(getText(R.string.column_key_first_name).toString(), all_employee_lists.get(i).getFirstName());
                 feedEmployeeList.add(map);
             } while (++i < all_employee_lists.size());
             itemEmployee = 0;       // default selection
@@ -91,7 +91,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 map = feedEmployeeList.get(itemEmployee);
-                                Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_id))));
+                                Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
                                 HighlightListItem(itemEmployee);
                                 view.setAlpha(1);
                             }
@@ -116,14 +116,14 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
             // itemEmployee = -1;  Remove this line because need to remember previous selection
         } else {
             // put the dialog inside so it will not dim the screen when returns.
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.employee_no_ID_message).setTitle(R.string.employee_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
             AlertDialog dialog = builder.create();
-            dialog.show();
+            General.TouchTimeDialog(dialog, view);
         }
     }
 
@@ -146,12 +146,12 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
             Employee = db.getEmployeeList(ID);
             // Check which request we're responding to
             if (requestCode == PICK_NEW_REQUEST) {
-                map.put(getText(R.string.column_key_id).toString(), String.valueOf(ID));
-                map.put(getText(R.string.column_key_last).toString(), Employee.getLastName());
-                map.put(getText(R.string.column_key_first).toString(), Employee.getFirstName());
+                map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(ID));
+                map.put(getText(R.string.column_key_last_name).toString(), Employee.getLastName());
+                map.put(getText(R.string.column_key_first_name).toString(), Employee.getFirstName());
                 feedEmployeeList.add(map);
 
-                itemEmployee = General.GetIntegerIndex(feedEmployeeList, getText(R.string.column_key_id).toString(), ID);
+                itemEmployee = General.GetIntegerIndex(feedEmployeeList, getText(R.string.column_key_employee_id).toString(), ID);
                 sort_id_ascend = !sort_id_ascend;   // reverse back to original sort order
                 onSortIDButtonClicked(employee_list_view);  // toggle back internally
             } else if (requestCode == PICK_UPDATE_REQUEST) {
@@ -159,9 +159,9 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 if (feedEmployeeList.size() > 0) {
                     do {
                         map = feedEmployeeList.get(i);
-                        if (ID == Integer.parseInt(map.get(getText(R.string.column_key_id).toString()))) {
-                            map.put(getText(R.string.column_key_last).toString(), Employee.getLastName());
-                            map.put(getText(R.string.column_key_first).toString(), Employee.getFirstName());
+                        if (ID == Integer.parseInt(map.get(getText(R.string.column_key_employee_id).toString()))) {
+                            map.put(getText(R.string.column_key_last_name).toString(), Employee.getLastName());
+                            map.put(getText(R.string.column_key_first_name).toString(), Employee.getFirstName());
                             feedEmployeeList.set(i, map);
                         }
                     } while (++i < feedEmployeeList.size());
@@ -174,28 +174,39 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     public void onDeleteButtonClicked(View view) {
         //       if (Caller != R.id.caller_administrator) return;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (itemEmployee >= 0) {
-            builder.setMessage(R.string.employee_confirm_delete_message).setTitle(R.string.employee_profile_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    if (itemEmployee > 0) HighlightListItem(itemEmployee - 1);
-                    db.deleteEmployeeList(Employee.getEmployeeID());
-                    feedEmployeeList.remove(itemEmployee);
-                    employee_list_view.setAdapter(adapter_employee);
-                    //adapter_employee.notifyDataSetChanged();
-                    itemEmployee = (itemEmployee == 0 && feedEmployeeList.size() > 0) ? 0 : itemEmployee-1;
-                    if (itemEmployee >= 0 && feedEmployeeList.size() > 0) {
-                        map = feedEmployeeList.get(itemEmployee);
-                        Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_id))));
+            if (Employee.getStatus() != 0) {
+                builder.setMessage(R.string.employee_must_punch_out_message).setTitle(R.string.employee_profile_title);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                     }
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                }
-            });
+                });
+            } else {
+                builder.setMessage(R.string.employee_confirm_delete_message).setTitle(R.string.employee_profile_title);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (itemEmployee > 0) HighlightListItem(itemEmployee - 1);
+                        db.deleteEmployeeList(Employee.getEmployeeID());
+                        feedEmployeeList.remove(itemEmployee);
+                        employee_list_view.setAdapter(adapter_employee);
+                        // remove employee ID that is already assigned to a group
+                        if (Employee.getGroup() != 0) {             // already assigned to a group
+                            db.removeWorkGroupListEmployee(Employee.getEmployeeID(), Employee.getGroup());
+                        }
+                        itemEmployee = (itemEmployee == 0 && feedEmployeeList.size() > 0) ? 0 : itemEmployee - 1;
+                        if (itemEmployee >= 0 && feedEmployeeList.size() > 0) {
+                            map = feedEmployeeList.get(itemEmployee);
+                            Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
+                        }
+                    }
+                });
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+            }
         } else {
             builder.setMessage(R.string.employee_no_ID_message).setTitle(R.string.employee_profile_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -204,17 +215,20 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
             });
         }
         AlertDialog dialog = builder.create();
-        dialog.show();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void onSortIDButtonClicked(View view) {
         if (feedEmployeeList.size() == 0) return;
         String Items;
-        Items = getText(R.string.column_key_id).toString();
-        int ID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_id).toString()));
+        int ID = 0;
+        Items = getText(R.string.column_key_employee_id).toString();
+        if (itemEmployee >= 0) ID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_employee_id).toString()));
         General.SortIntegerList(feedEmployeeList, Items, sort_id_ascend);
-        itemEmployee = General.GetIntegerIndex(feedEmployeeList, Items, ID);
-        adapter_employee.setSelectedItem(itemEmployee);
+        if (itemEmployee >= 0) {
+            itemEmployee = General.GetIntegerIndex(feedEmployeeList, Items, ID);
+            adapter_employee.setSelectedItem(itemEmployee);
+        }
         sort_last_name_ascend = false;
         sort_id_ascend = !sort_id_ascend;
         adapter_employee.notifyDataSetChanged();
@@ -225,13 +239,17 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         if (feedEmployeeList.size() == 0) return;
         String[] Items = new String[2];
         String[] Data = new String[2];
-        Items[0] = getText(R.string.column_key_last).toString();
-        Items[1] = getText(R.string.column_key_first).toString();
-        Data[0] = feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_last).toString());
-        Data[1] = feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_first).toString());
+        Items[0] = getText(R.string.column_key_last_name).toString();
+        Items[1] = getText(R.string.column_key_first_name).toString();
+        if (itemEmployee >= 0) {
+            Data[0] = feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_last_name).toString());
+            Data[1] = feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_first_name).toString());
+        }
         General.SortStringList(feedEmployeeList, Items, sort_last_name_ascend);
-        itemEmployee = General.GetStringIndex(feedEmployeeList, Items, Data);
-        adapter_employee.setSelectedItem(itemEmployee);
+        if (itemEmployee >= 0) {
+            itemEmployee = General.GetStringIndex(feedEmployeeList, Items, Data);
+            adapter_employee.setSelectedItem(itemEmployee);
+        }
         sort_id_ascend = false;
         sort_last_name_ascend = !sort_last_name_ascend;
         adapter_employee.notifyDataSetChanged();
