@@ -13,14 +13,13 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp">
+        android:layout_marginRight="5dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal|center_vertical"
+            android:paddingLeft="10dp"
             android:layout_marginBottom="5dp"
             android:text="@string/company_name_header"
             android:textSize="@dimen/medium_text_size"
@@ -60,7 +59,6 @@
                 android:layout_column="0">
                 <RadioButton
                     android:id="@+id/radio_loc"
-                    android:paddingRight="10dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1.75"
@@ -71,7 +69,6 @@
                     android:clickable="true" />
                 <RadioButton
                     android:id="@+id/radio_job"
-                    android:paddingRight="10dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -86,9 +83,9 @@
                 android:id="@+id/job_location_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
+                android:layout_weight="1.25"
                 android:textSize="@dimen/medium_text_size"
-                android:inputType="text"
+                android:inputType="textCapWords"
                 android:hint="@string/hint_add_job_item"
                 android:textColor="@color/svw_black"
                 android:paddingRight="10dp"
@@ -108,7 +105,6 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
-                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:text="@string/button_new"
                 android:textSize="@dimen/medium_text_size"
@@ -118,7 +114,6 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/roundshapebtn"
                 android:text="@string/button_del"
@@ -128,11 +123,22 @@
                 android:layout_column="1" />
 
             <Button
+                android:id="@+id/btn_copy_to"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundshapebtn"
+                android:text="@string/button_copy_to"
+                android:textSize="@dimen/medium_text_size"
+                android:onClick="onCopyToButtonClicked"
+                android:clickable="true"
+                android:layout_column="3" />
+
+            <Button
                 android:id="@+id/btn_clear"
                 android:layout_width="0dp"
                 android:layout_weight="2.5"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/roundshapebtn"
                 android:text="@string/button_clear_all"
@@ -140,20 +146,6 @@
                 android:onClick="onClearButtonClicked"
                 android:clickable="true"
                 android:layout_column="2" />
-
-            <Button
-                android:id="@+id/btn_copy_to"
-                android:layout_width="0dp"
-                android:layout_weight="1.5"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/roundshapebtn"
-                android:text="@string/button_copy_to"
-                android:textSize="@dimen/medium_text_size"
-                android:onClick="onCopyToButtonClicked"
-                android:clickable="true"
-                android:layout_column="3" />
 
         </TableRow>
 

@@ -18,14 +18,16 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
         int resLayout;
         Context context;
         int SelectedItem;
+        int Height;
 
-        public TouchTimeGeneralAdapter(Context context, ArrayList<HashMap<String, String>> feedList, int textViewResourceId, String[] list_Items, int[] list_IDs) {
+        public TouchTimeGeneralAdapter(Context context, ArrayList<HashMap<String, String>> feedList, int textViewResourceId, String[] list_Items, int[] list_IDs, int Height) {
             super(context, textViewResourceId, feedList);
             this.context = context;
             resLayout = textViewResourceId;
             this.MyFeedList = feedList;
             this.MyListItems = list_Items;
             this.MyListIDs = list_IDs;
+            this.Height = Height;
         }
 
         @Override
@@ -43,11 +45,13 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
             {   // Find our widgets and populate them with the Team data.
                 for (int i = 0; i < MyListItems.length; i++) {
                     TextView myItemView = (TextView) row.findViewById(MyListIDs[i]);
-                    if(myItemView != null) myItemView.setText(String.valueOf(item.get(MyListItems[i])));
+                    if(myItemView != null) {
+                        myItemView.setMinimumHeight(Height);
+                        myItemView.setText(String.valueOf(item.get(MyListItems[i])));
+                    }
                 }
                 highlightItem(position, row);
             }
-
             return row;
         }
 
@@ -64,4 +68,9 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
         public void setSelectedItem(int selectedItem) {
             this.SelectedItem = selectedItem;
         }
+        public void setRowHeight(int height) {
+        this.Height = height;
+    }
 }
+
+

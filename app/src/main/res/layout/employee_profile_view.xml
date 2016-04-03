@@ -13,17 +13,17 @@
         android:layout_marginLeft="10dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         android:singleLine="true"
         />
     <TextView
         android:id="@+id/textDisplayLastName"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="3.2"
+        android:layout_weight="2.1"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         android:focusable="false"
         android:singleLine="true"
         />
@@ -32,10 +32,33 @@
         android:id="@+id/textDisplayFirstName"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="3"
+        android:layout_weight="2.1"
         android:textColor="#000000"
         android:textSize="@dimen/medium_text_size"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:focusable="false"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/textDisplayActive"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="0.9"
+        android:textColor="#000000"
+        android:textSize="@dimen/medium_text_size"
+        android:gravity="center_horizontal|center_vertical"
+        android:focusable="false"
+        android:singleLine="true"
+        />
+    <TextView
+        android:id="@+id/textDisplayCurrent"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="0.9"
+        android:textColor="#000000"
+        android:textSize="@dimen/medium_text_size"
+        android:gravity="center_horizontal|center_vertical"
         android:focusable="false"
         android:singleLine="true"
         />

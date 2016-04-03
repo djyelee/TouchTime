@@ -37,7 +37,7 @@
             android:layout_gravity="center_vertical" />
     </TableRow>
     <TableRow
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
@@ -66,19 +66,17 @@
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_last_name"
             android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortLastNameButtonClicked" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4.5"
+            android:layout_weight="4.2"
             android:layout_marginRight="5dp"
             android:paddingLeft="10dp"
             android:text="@string/column_view_first_name"
             android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center_horizontal" />
@@ -92,7 +90,6 @@
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_group"
             android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortGroupIDButtonClicked" />
 
@@ -103,7 +100,6 @@
             android:layout_marginRight="5dp"
             android:text="@string/column_view_active"
             android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center_horizontal" />
@@ -111,10 +107,9 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_weight="1.8"
             android:text="@string/column_view_current"
             android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center_horizontal" />

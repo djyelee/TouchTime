@@ -26,7 +26,8 @@
         </activity>
         <activity android:name=".EmployeeMenuActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName=".TouchTimeActivity">
+            android:parentActivityName=".TouchTimeActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity android:name=".CompanyProfileMenuActivity"
             android:label="@string/title_activity_administrator_menu"
@@ -46,7 +47,8 @@
         </activity>
         <activity android:name=".EmployeeDetailActivity"
             android:label="@string/title_activity_employee_profile_menu"
-            android:parentActivityName=".EmployeeProfileMenuActivity">
+            android:parentActivityName=".EmployeeProfileMenuActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity android:name=".WorkGroupMenuActivity"
             android:label="@string/title_activity_administrator_menu"
@@ -81,7 +83,8 @@
         </activity>
         <activity android:name=".ReportExportMenuActivity"
             android:label="@string/title_activity_administrator_menu"
-            android:parentActivityName=".AdministratorMenuActivity">
+            android:parentActivityName=".AdministratorMenuActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
          App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

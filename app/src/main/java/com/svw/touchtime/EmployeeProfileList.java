@@ -38,7 +38,7 @@ public class EmployeeProfileList {
 
     // constructors
     public EmployeeProfileList() {
-        this.EmployeeID = 1;            // starts from 0
+        this.EmployeeID = 0;            // starts from 0
         this.LastName ="";
         this.FirstName ="";
         this.Street ="";
@@ -48,8 +48,8 @@ public class EmployeeProfileList {
         this.Country ="";
         this.Phone ="";
         this.Email ="";
-        this.HourlyRate = 10.0;
-        this.PieceRate = 10.0;
+        this.HourlyRate = 0.0;
+        this.PieceRate = 0.0;
         this.SSNumber ="";
         this.DoB ="";
         this.DoH ="";
@@ -122,9 +122,9 @@ public class EmployeeProfileList {
     public void setEmail(String Email) {
         this.Email = Email;
     }
-    public void setHourlyRate(double HourlyRate) { if (HourlyRate > 0.0) this.HourlyRate = HourlyRate; }
+    public void setHourlyRate(double HourlyRate) { if (HourlyRate >= 0.0) this.HourlyRate = HourlyRate; }
     public void setPieceRate(double PieceRate) {
-        if (PieceRate > 0.0) this.PieceRate = PieceRate;
+        if (PieceRate >= 0.0) this.PieceRate = PieceRate;
     }
     public void setSSNumber(String SSNumber) {
         this.SSNumber = SSNumber;

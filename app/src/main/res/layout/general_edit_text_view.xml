@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
-    android:paddingTop="2dip"
-    android:paddingBottom="3dip"
+    android:paddingTop="1dip"
+    android:paddingBottom="1dip"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:textSize="@dimen/medium_text_size"
-    android:textStyle="bold|italic"
-    android:textColor="@color/svw_blue"
-    android:background="@color/svw_dark_gray"
-    android:paddingLeft="10dp"
+    android:textColor="@color/svw_black"
+    android:paddingLeft="5dp"
 />

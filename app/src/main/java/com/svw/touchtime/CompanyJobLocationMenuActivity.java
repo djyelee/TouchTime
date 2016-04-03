@@ -129,6 +129,7 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             adapter_job = new ArrayAdapter<String>(this, R.layout.company_job_location_listview, unique_job);
             adapter_loc = new ArrayAdapter<String>(this, R.layout.company_job_location_listview, unique_loc);
             // use adaptor to display
+            radioGroup.check(locationButton.getId());       // default to check location
             if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
                 job_location_list_view.setAdapter(adapter_job);
             } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
@@ -136,6 +137,7 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             }
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            // AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.no_company_message).setTitle(R.string.job_location_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {

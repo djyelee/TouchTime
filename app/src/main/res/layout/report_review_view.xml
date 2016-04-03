@@ -7,31 +7,16 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/textViewLastName"
+        android:id="@+id/textViewName"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.8"
         android:gravity="start|center_vertical"
         android:paddingLeft="5dp"
         android:layout_marginEnd="3dp"
         android:layout_marginRight="3dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:singleLine="true"
-        />
-
-    <TextView
-        android:id="@+id/textViewFirstName"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="0.8"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/medium_small_text_size"
-        android:singleLine="true"
         />
 
     <TextView
@@ -44,7 +29,6 @@
         android:layout_marginRight="3dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:onClick="onColumnClicked"
         />
 
     <TextView
@@ -57,9 +41,9 @@
         android:layout_marginRight="3dp"
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
-        android:onClick="onColumnClicked"
+
         />
-     <TextView
+    <TextView
         android:id="@+id/textViewLunch"
         android:layout_height="match_parent"
         android:layout_width="0dp"
@@ -83,7 +67,7 @@
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
         />
-   <TextView
+    <TextView
         android:id="@+id/textViewCompany"
         android:layout_height="match_parent"
         android:layout_width="0dp"
@@ -132,7 +116,6 @@
         android:textColor="#000000"
         android:textSize="@dimen/medium_small_text_size"
         android:gravity="center"
-        android:onClick="onColumnClicked"
         />
 
     <TextView
@@ -147,7 +130,7 @@
         android:textSize="@dimen/medium_small_text_size"
         android:gravity="start|center_vertical"
         android:onClick="onColumnClicked"
-    />
+        />
     <TextView
         android:id="@+id/textViewComments"
         android:layout_height="match_parent"

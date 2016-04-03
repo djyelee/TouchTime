@@ -22,9 +22,8 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     ListView employee_list_view;
     Button sort_id;
     Button sort_last_name;
-    boolean sort_id_ascend = true;
-    boolean sort_last_name_ascend = true;
-    boolean selectEmployee = true;
+    boolean sort_id_ascend = false;
+    boolean sort_last_name_ascend = false;
     ArrayList<HashMap<String, String>> feedEmployeeList;
     TouchTimeGeneralAdapter adapter_employee;
     HashMap<String, String> map;
@@ -33,6 +32,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     EmployeeProfileList Employee;
     static final int PICK_NEW_REQUEST = 123;             // The request code
     static final int PICK_UPDATE_REQUEST = 456;          // The request code
+    static final int PICK_COPY_REQUEST = 789;          // The request code
     private int Caller;
 
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
@@ -57,8 +57,9 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         sort_last_name = (Button) findViewById(R.id.sort_last_name);
         feedEmployeeList = new ArrayList<HashMap<String, String>>();
 
-        String[] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString()};
-        int[] list_id = {R.id.textDisplayID, R.id.textDisplayLastName, R.id.textDisplayFirstName};
+        String[] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString(),
+                getText(R.string.column_key_active).toString(), getText(R.string.column_key_current).toString()};
+        int[] list_id = {R.id.textDisplayID, R.id.textDisplayLastName, R.id.textDisplayFirstName, R.id.textDisplayActive, R.id.textDisplayCurrent};
         db = new EmployeeGroupCompanyDBWrapper(this);
         Employee = new EmployeeProfileList();
         all_employee_lists = db.getAllEmployeeLists();
@@ -69,13 +70,16 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_employee_lists.get(i).getEmployeeID()));
                 map.put(getText(R.string.column_key_last_name).toString(), all_employee_lists.get(i).getLastName());
                 map.put(getText(R.string.column_key_first_name).toString(), all_employee_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_active).toString(), all_employee_lists.get(i).getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
+                map.put(getText(R.string.column_key_current).toString(), all_employee_lists.get(i).getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                 feedEmployeeList.add(map);
             } while (++i < all_employee_lists.size());
             itemEmployee = 0;       // default selection
+            Employee = db.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
         }
         // display selected employees
         // adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
-        adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
+        adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id, 40);
         employee_list_view.setItemsCanFocus(true);
         // employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_profile_header, null, false), null, false);
         // use adaptor to display, must be done after the header is added
@@ -107,10 +111,11 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
 
     public void onUpdateButtonClicked(View view) {
         if (itemEmployee >= 0) {
-            int[] Data = new int[2];
+            int[] Data = new int[3];
             Intent intent = new Intent(this, EmployeeDetailActivity.class);
             Data[0] = Caller;
-            Data[1] = Employee.getEmployeeID();
+            Data[1] = PICK_UPDATE_REQUEST;
+            Data[2] = Employee.getEmployeeID();
             intent.putExtra("EmployeeID", Data);
             startActivityForResult(intent, PICK_UPDATE_REQUEST);
             // itemEmployee = -1;  Remove this line because need to remember previous selection
@@ -128,10 +133,16 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onAddButtonClicked(View view) {
-        int[] Data = new int[2];
+        int[] Data = new int[3];
         Intent intent = new Intent(this, EmployeeDetailActivity.class);
         Data[0] = Caller;
-        Data[1] = 0;
+        if (view.getId() == R.id.btn_new) {
+            Data[1] = PICK_NEW_REQUEST;
+            Data[2] = 0;                            // send the one that is currently selected to be modified
+        } else if (view.getId() == R.id.btn_copy_to) {
+            Data[1] = PICK_COPY_REQUEST;
+            Data[2] = Employee.getEmployeeID();     // send the one that is currently selected to be copied from
+        }
         intent.putExtra("EmployeeID", Data);
         startActivityForResult(intent, PICK_NEW_REQUEST);
     }
@@ -149,10 +160,12 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(ID));
                 map.put(getText(R.string.column_key_last_name).toString(), Employee.getLastName());
                 map.put(getText(R.string.column_key_first_name).toString(), Employee.getFirstName());
+                map.put(getText(R.string.column_key_active).toString(), Employee.getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
+                map.put(getText(R.string.column_key_current).toString(), Employee.getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                 feedEmployeeList.add(map);
 
                 itemEmployee = General.GetIntegerIndex(feedEmployeeList, getText(R.string.column_key_employee_id).toString(), ID);
-                sort_id_ascend = !sort_id_ascend;   // reverse back to original sort order
+                sort_id_ascend = !sort_id_ascend;
                 onSortIDButtonClicked(employee_list_view);  // toggle back internally
             } else if (requestCode == PICK_UPDATE_REQUEST) {
                 int i = 0;
@@ -162,6 +175,8 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                         if (ID == Integer.parseInt(map.get(getText(R.string.column_key_employee_id).toString()))) {
                             map.put(getText(R.string.column_key_last_name).toString(), Employee.getLastName());
                             map.put(getText(R.string.column_key_first_name).toString(), Employee.getFirstName());
+                            map.put(getText(R.string.column_key_active).toString(), Employee.getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
+                            map.put(getText(R.string.column_key_current).toString(), Employee.getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                             feedEmployeeList.set(i, map);
                         }
                     } while (++i < feedEmployeeList.size());

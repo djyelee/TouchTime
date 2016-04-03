@@ -131,8 +131,9 @@ import java.util.Locale;
             ArrayList<DailyActivityList> activity_lists = new ArrayList<DailyActivityList>();
             String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY+ " WHERE " + Column[0] + Compare[0] + "'" + Values[0] + "'";
             int i;
-            for (i=1; Column[i] != null; i++) {
-                selectQuery = selectQuery + " AND " + Column[i] + Compare[i] + "'" + Values[i] + "'";
+            String Empty = "" + "";
+            for (i=1; i < Column.length && Column[i] != null; i++) {
+                    selectQuery = selectQuery + " AND " + Column[i] + Compare[i] + "'" + Values[i] + "'";
             }
             Log.e(LOG, selectQuery);
             Cursor c = database.rawQuery(selectQuery, null);
@@ -148,8 +149,9 @@ import java.util.Locale;
         public int updateActivityList(DailyActivityList Activity, String[] Column, String[] Values) {
             String selectQuery = Column[0] + " = " + "'" + Values[0] + "'";
             int i;
-            for (i=1; Column[i] != null; i++) {
-                selectQuery = selectQuery + " AND " + Column[i] + " = " + "'" + Values[i] + "'";
+            String Empty = "" + "";
+            for (i=1; i < Column.length && Column[i] != null; i++) {
+                    selectQuery = selectQuery + " AND " + Column[i] + " = " + "'" + Values[i] + "'";
             }
             Log.e(LOG, selectQuery);
             return database.update(TABLE_ACTIVITY, storeActivity(Activity), selectQuery, null);
@@ -178,9 +180,8 @@ import java.util.Locale;
             database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'", null);
         }
 
-        public void deletePunchedInActivityList(int EmployeeID, String Date, String TimeIn) {
+        public void deletePunchedInActivityList(int EmployeeID, String TimeIn) {
             database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'"
-                    + " AND " + KEY_DATE + " = " + "'" + Date + "'"
                     + " AND " + KEY_TIME_IN + " = " + "'" + TimeIn + "'", null);
         }
         // ------------------------ "basic database methods ----------------//

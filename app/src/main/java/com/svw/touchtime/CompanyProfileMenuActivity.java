@@ -8,6 +8,7 @@ import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,6 +44,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);        // prevent soft keyboard from squeezing the EditTex Box
 
         company_list_view = (ListView) findViewById(R.id.company_profile_list_view);
         NameEdit = (EditText) findViewById(R.id.company_name_text);
@@ -145,8 +148,6 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             Company.setPhone((PhoneEdit.getText().toString().isEmpty()) ? "" : PhoneEdit.getText().toString());
             Company.setContact((ContactEdit.getText().toString().isEmpty()) ? "" : ContactEdit.getText().toString());
             Company.setEmail((EmailEdit.getText().toString().isEmpty()) ? "" : EmailEdit.getText().toString());
-            Company.Job = "";
-            Company.Location = "";
 
             if (unique_com.size() > 0) {        // check if empty
                 // AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
@@ -170,6 +171,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                     map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
                                     feedCompanyList.add(map);
                                 } while (++i < unique_com.size());
+                                Company.Job = "";                           // it is a new company
+                                Company.Location = "";
                                 db.createCompanyList(Company);
                                 adapter_com.notifyDataSetChanged();
                                 item = unique_com.indexOf(Company.getName());       // get the index of the new company
@@ -235,6 +238,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                         });
                     }
                 }
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, view);
             } else {
                 // It is empty.  No checking duplicates and no sorting are necessary
                 unique_com.add(Company.getName());
@@ -248,9 +253,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             adapter_com.notifyDataSetChanged();
             displayCompanyProfile();             // display after SetAdapter to show the checked item
         }
-        AlertDialog dialog = builder.create();
-        General.TouchTimeDialog(dialog, view);
-    }
+     }
 
     public void onDeleteButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
@@ -292,6 +295,12 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
+                }
+            });
+        } else {
+            builder.setMessage(R.string.no_company_message).setTitle(R.string.company_profile_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
                 }
             });
         }

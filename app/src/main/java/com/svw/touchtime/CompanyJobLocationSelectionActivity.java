@@ -82,7 +82,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         company_list_items[0] = getText(R.string.column_key_company).toString();
         company_list_id[0] = R.id.singleItemDisplayID;
         company_list_view.setItemsCanFocus(true);
-        adapter_company = new TouchTimeGeneralAdapter(this, feedCompanyList, R.layout.general_single_item_view, company_list_items, company_list_id);
+        adapter_company = new TouchTimeGeneralAdapter(this, feedCompanyList, R.layout.general_single_item_view, company_list_items, company_list_id, 40);
         adapter_company.setSelectedItem(itemCompany);
         company_list_view.setAdapter(adapter_company);
 
@@ -90,14 +90,14 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         location_list_items[0] = getText(R.string.column_key_location).toString();
         location_list_id[0] = R.id.singleItemDisplayID;
         location_list_view.setItemsCanFocus(true);
-        adapter_location = new TouchTimeGeneralAdapter(this, feedLocationList, R.layout.general_single_item_view, location_list_items, location_list_id);
+        adapter_location = new TouchTimeGeneralAdapter(this, feedLocationList, R.layout.general_single_item_view, location_list_items, location_list_id, 40);
         adapter_location.setSelectedItem(itemLocation);
         location_list_view.setAdapter(adapter_location);
 
         job_list_items[0] = getText(R.string.column_key_job).toString();
         job_list_id[0] = R.id.singleItemDisplayID;
         job_list_view.setItemsCanFocus(true);
-        adapter_job = new TouchTimeGeneralAdapter(this, feedJobList, R.layout.general_single_item_view, job_list_items, job_list_id);
+        adapter_job = new TouchTimeGeneralAdapter(this, feedJobList, R.layout.general_single_item_view, job_list_items, job_list_id, 40);
         adapter_job.setSelectedItem(itemJob);
         job_list_view.setAdapter(adapter_job);
 

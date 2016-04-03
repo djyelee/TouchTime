@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.svw.touchtime.CheckableLinearLayout
 
-android:id="@+id/scrollView1"
+    android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -12,64 +12,215 @@ android:id="@+id/scrollView1"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp">
+            <TextView
+                android:id="@+id/daily_activity_view"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/daily_activity_view_message"
+                android:textStyle="bold|italic"
+                android:textColor="@color/svw_blue"
+                android:layout_weight="5"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/daily_activity_select_date"
+                android:text="@string/button_select_date"
+                android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onSelectDateButtonClicked"
+                android:layout_gravity="center_vertical" />
+        </TableRow>
+
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="13.5">
 
             <LinearLayout android:id="@+id/linearLayout2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="3dp"
                 android:orientation="vertical">
                 <TableRow
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
+                    android:layout_weight="1.5"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingLeft="5dp"
                     android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <Button
-                        android:id="@+id/sort_id"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/column_key_employee_id"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:clickable="true"
-                        android:onClick="onSortIDButtonClicked"
-                        android:gravity="center" />
-
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp">
                     <Button
                         android:id="@+id/sort_last_name"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/column_view_last_name"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:clickable="true"
                         android:onClick="onSortLastNameButtonClicked"
                         android:gravity="center" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_first_name"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:text="@string/column_view_first_name"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:background="@color/svw_orange"
+                        android:textColor="@color/svw_black"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/set_time_in"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:textColor="@color/svw_light_gray"
+                        android:text="@string/column_view_timein"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:gravity="center"
+                        android:onClick="onSetTimeClicked"/>
+
+                    <Button
+                        android:id="@+id/clear_time_in"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/X"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:gravity="center"
+                        android:onClick="onClearTimeClicked"/>
+
+                    <Button
+                        android:id="@+id/set_time_out"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.9"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:textColor="@color/svw_light_gray"
+                        android:text="@string/column_view_timeout"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:gravity="center"
+                        android:onClick="onSetTimeClicked"/>
+                    <Button
+                        android:id="@+id/clear_time_out"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/X"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:gravity="center"
+                        android:onClick="onClearTimeClicked"/>
+
+                    <EditText
+                        android:id="@+id/activity_lunch_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.4"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:hint="@string/enter_lunch_hint"
+                        android:inputType="number"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:background="@color/svw_dark_gray"
+                        android:textColor="@color/svw_black"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.4"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:text="@string/column_view_hours"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:background="@color/svw_orange"
+                        android:textColor="@color/svw_black"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/select_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/button_company"
+                        android:textColor="@color/svw_light_gray"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSelectCompanyClicked"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/sort_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortCompanyButtonClicked"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:text="@string/column_view_location"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:background="@color/svw_orange"
+                        android:textColor="@color/svw_black"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:text="@string/column_view_job"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:background="@color/svw_orange"
                         android:textColor="@color/svw_black"
                         android:gravity="center" />
@@ -77,139 +228,28 @@ android:id="@+id/scrollView1"
                     <Button
                         android:id="@+id/sort_group"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.35"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
-                        android:text="@string/column_key_group_id"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:text="@string/column_view_group_id"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:clickable="true"
                         android:onClick="onSortGroupButtonClicked"
-                        android:gravity="center" />
-
-                    <Button
-                        android:id="@+id/sort_company"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/button_company"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:clickable="true"
-                        android:onClick="onSortCompanyButtonClicked"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_location"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_job"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
-                        android:gravity="center" />
-
-                    <Button
-                        android:id="@+id/sort_date"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/column_key_date"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:clickable="true"
-                        android:onClick="onSortDateButtonClicked"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.4"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_timein"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.4"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_timeout"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
-                        android:gravity="center" />
-
-                    <EditText
-                        android:id="@+id/activity_lunch_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:paddingLeft="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:hint="@string/enter_lunch_hint"
-                        android:inputType="number"
-                        android:textSize="@dimen/medium_small_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_dark_gray"
-                        android:textColor="@color/svw_black"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_hours"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
                         android:gravity="center" />
 
                     <EditText
                         android:id="@+id/activity_supervisor_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:paddingLeft="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:hint="@string/enter_supervisor_hint"
-                        android:inputType="text"
+                        android:inputType="textCapWords"
                         android:textSize="@dimen/medium_small_text_size"
-                        android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>
 
@@ -217,23 +257,22 @@ android:id="@+id/scrollView1"
                         android:id="@+id/activity_comment_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:paddingLeft="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:hint="@string/enter_comment_hint"
-                        android:inputType="text"
+                        android:inputType="textCapWords"
                         android:textSize="@dimen/medium_small_text_size"
-                        android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>
                 </TableRow>
 
                 <ListView
                     android:id="@+id/daily_activity_list_view"
-                    android:layout_width="3000dp"
+                    android:layout_width="2300dp"
                     android:layout_height="0dp"
-                    android:layout_weight="9"
+                    android:layout_weight="10"
                     android:background="@drawable/list_view_border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"

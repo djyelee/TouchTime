@@ -13,15 +13,11 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <!--
-    parent="@android:style/Theme.Dialog">
-    -->
-
     <style name="TouchTimeDialog"
-        parent="@android:style/TextAppearance.DialogWindowTitle">
+            parent="@android:style/Theme.Dialog">
             <item name="android:textColor">#002F2F</item>
             <item name="android:typeface">monospace</item>
-            <item name="android:textSize">30sp</item>
+            <item name="android:textSize">30dp</item>
             <item name="android:textStyle">bold</item>
     </style>
 </resources>

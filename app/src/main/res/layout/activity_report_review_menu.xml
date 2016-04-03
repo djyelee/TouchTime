@@ -12,112 +12,82 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp">
+            <TextView
+                android:id="@+id/report_view"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/daily_activity_view_message"
+                android:textStyle="bold|italic"
+                android:textColor="@color/svw_blue"
+                android:layout_weight="5"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/report_review_select_year"
+                android:text="@string/button_select_year"
+                android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onSelectDateButtonClicked"
+                android:layout_gravity="center_vertical" />
+        </TableRow>
+
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="14">
 
             <LinearLayout android:id="@+id/linearLayout2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="3dp"
                 android:orientation="vertical">
                 <TableRow
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
+                    android:layout_weight="1.5"
+                    android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingLeft="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginRight="3dp">
                     <Spinner
-                        android:id="@+id/year_spinner"
+                        android:id="@+id/name_spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginRight="5dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/last_name_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/first_name_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/group_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/company_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/location_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:touchscreenBlocksFocus="false"/>
-
-                    <Spinner
-                        android:id="@+id/job_spinner"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:layout_weight="1.8"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/list_view_border"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Button
                         android:id="@+id/report_start_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1.2"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_date"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:layout_weight="1.1"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/column_view_start_date"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:textColor="@color/svw_blue"
                         android:clickable="true"
                         android:onClick="onSelectDateButtonClicked"
@@ -127,42 +97,28 @@
                         android:id="@+id/report_end_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1.4"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_date"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
+                        android:layout_weight="1.1"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/column_view_end_date"
+                        android:textSize="@dimen/medium_small_text_size"
                         android:textColor="@color/svw_blue"
                         android:clickable="true"
                         android:onClick="onSelectDateButtonClicked"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1.4"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_timeout"
-                        android:textSize="@dimen/medium_text_size"
-                        android:textStyle="bold|italic"
-                        android:background="@color/svw_orange"
-                        android:textColor="@color/svw_black"
                         android:gravity="center" />
 
                     <EditText
                         android:id="@+id/activity_lunch_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.4"
                         android:paddingLeft="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:hint="@string/enter_lunch_hint"
                         android:inputType="number"
                         android:textSize="@dimen/medium_small_text_size"
-                        android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>
 
@@ -170,41 +126,84 @@
                         android:id="@+id/total_hours_view"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/column_key_hours"
+                        android:layout_weight="0.4"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:text="@string/column_view_hours"
                         android:textSize="@dimen/medium_small_text_size"
-                        android:textStyle="bold|italic"
                         android:background="@color/svw_orange"
                         android:textColor="@color/svw_black"
                         android:gravity="center" />
 
+                    <Spinner
+                        android:id="@+id/company_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/list_view_border"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/location_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/list_view_border"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/job_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/list_view_border"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:touchscreenBlocksFocus="false"/>
+
+                    <Spinner
+                        android:id="@+id/group_spinner"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.35"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/list_view_border"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:touchscreenBlocksFocus="false"/>
+
                     <EditText
-                    android:id="@+id/activity_supervisor_text"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:paddingLeft="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:hint="@string/enter_supervisor_hint"
-                    android:inputType="text"
-                    android:textSize="@dimen/medium_small_text_size"
-                    android:textStyle="bold|italic"
-                    android:background="@color/svw_dark_gray"
-                    android:textColor="@color/svw_black"/>
+                        android:id="@+id/activity_supervisor_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:hint="@string/enter_supervisor_hint"
+                        android:inputType="textCapWords"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:textStyle="bold|italic"
+                        android:background="@color/svw_dark_gray"
+                        android:textColor="@color/svw_black"/>
 
                     <EditText
                         android:id="@+id/activity_comment_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:paddingLeft="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
                         android:hint="@string/enter_comment_hint"
-                        android:inputType="text"
+                        android:inputType="textCapWords"
                         android:textSize="@dimen/medium_small_text_size"
                         android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
@@ -213,7 +212,7 @@
 
                 <ListView
                     android:id="@+id/daily_activity_list_view"
-                    android:layout_width="3000dp"
+                    android:layout_width="2300dp"
                     android:layout_height="0dp"
                     android:layout_weight="9"
                     android:background="@drawable/list_view_border"

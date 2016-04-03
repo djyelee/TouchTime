@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -62,6 +63,8 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         Current_View = (TextView) findViewById(R.id.employee_current_text);
         photoView = (ImageView) findViewById(R.id.photo);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);        // prevent soft keyboard from squeezing the EditTex Box
+        getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         DateFormat yf = new SimpleDateFormat("yyyy");
         int year = Integer.parseInt(yf.format(Calendar.getInstance().getTime()));
         dbActivity = new DailyActivityDBWrapper(this, year);
@@ -167,17 +170,17 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         if (dbGroup.checkEmployeeID(employeeID)) {
             if (dbGroup.getEmployeeListStatus(Employee.getEmployeeID()) == 1) {
-                    builder.setMessage(getText(R.string.employee_already_punched_in_message).toString()).setTitle(R.string.employee_menu_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setMessage(getText(R.string.employee_already_punched_in_message).toString()).setTitle(R.string.employee_menu_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                         }
-                    });
+                });
             } else if (Employee.getCompany().isEmpty() || Employee.getLocation().isEmpty() || Employee.getJob().isEmpty()) {
-                    builder.setMessage(getText(R.string.no_company_location_job_message).toString()).setTitle(R.string.employee_menu_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                builder.setMessage(getText(R.string.no_company_location_job_message).toString()).setTitle(R.string.employee_menu_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                         }
-                    });
+                });
             } else if (Employee.Active == 0) {
                 builder.setMessage(getText(R.string.employee_not_active).toString()).setTitle(R.string.employee_menu_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -191,28 +194,42 @@ public class EmployeeMenuActivity extends ActionBarActivity {
                     }
                 });
             } else {
-                    builder.setMessage(getText(R.string.employee_punch_in_message).toString()).setTitle(R.string.employee_menu_title);
-                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            employeePunchIn(view);
-                        }
-                    });
-                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
+                if (Employee.getGroup() > 0) {                  // employee belongs to a group
+                    WorkGroupList EmployeeWorkGroup = new WorkGroupList();
+                    EmployeeWorkGroup = dbGroup.getWorkGroupList(Employee.getGroup());
+                    if (EmployeeWorkGroup.getStatus() == 0) {          // and the group is not punched in, punch in employee?
+                        builder.setMessage(getText(R.string.employee_group_not_punch_in_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_menu_title);
+                    } else if (Employee.getCompany().equals(EmployeeWorkGroup.getCompany())
+                            && Employee.getLocation().equals(EmployeeWorkGroup.getLocation())
+                            && Employee.getJob().equals(EmployeeWorkGroup.getJob())) {            // same job as the company
+                        builder.setMessage(getText(R.string.employee_punch_in_same_job_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_menu_title);
+                    } else if (!Employee.getCompany().equals(EmployeeWorkGroup.getCompany())
+                            || !Employee.getLocation().equals(EmployeeWorkGroup.getLocation())
+                            || !Employee.getJob().equals(EmployeeWorkGroup.getJob())) {            // same job as the company
+                        builder.setMessage(getText(R.string.employee_punch_in_different_job_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_menu_title);
+                    }
+                } else {
+                    builder.setMessage(getText(R.string.employee_punch_in_message).toString() + " # " + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_menu_title);
+                }
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        employeePunchIn(view);
+                    }
+                });
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
             }
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
         } else {
             builder.setMessage(R.string.no_employee_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
         }
+        AlertDialog dialog = builder.create();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void onPunchOutButtonClicked(final View view) {
@@ -225,7 +242,23 @@ public class EmployeeMenuActivity extends ActionBarActivity {
                     }
                 });
             } else {
-                builder.setMessage(getText(R.string.employee_punch_out_message).toString()).setTitle(R.string.employee_menu_title);
+                if (Employee.getGroup() > 0) {           // belongs to a group
+                    WorkGroupList Group = new WorkGroupList();
+                    Group = dbGroup.getWorkGroupList(Employee.getGroup());
+                    if (Group.getStatus() == 0) {          // and the group already punched out, punch out employee?
+                        builder.setMessage(getText(R.string.employee_group_already_punch_out_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_punch_title);
+                    } else if (Employee.getCompany().equals(Group.getCompany())
+                            && Employee.getLocation().equals(Group.getLocation())
+                            && Employee.getJob().equals(Group.getJob())) {            // same job as the company
+                        builder.setMessage(getText(R.string.employee_punch_out_same_job_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_punch_title);
+                    } else if (!Employee.getCompany().equals(Group.getCompany())
+                            || !Employee.getLocation().equals(Group.getLocation())
+                            || !Employee.getJob().equals(Group.getJob())) {            // same job as the company
+                        builder.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_punch_title);
+                    }
+                } else {
+                    builder.setMessage(getText(R.string.employee_punch_out_message).toString() + " Employee #" + String.valueOf(Employee.getEmployeeID())).setTitle(R.string.employee_punch_title);
+                }
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         employeePunchOut(view);
@@ -236,36 +269,26 @@ public class EmployeeMenuActivity extends ActionBarActivity {
                     }
                 });
             }
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
-        } else {
+       } else {
             builder.setMessage(R.string.no_employee_message).setTitle(R.string.employee_menu_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                 }
             });
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
         }
+        AlertDialog dialog = builder.create();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void employeePunchIn(View view) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
         dbGroup.updateEmployeeListStatus(employeeID, 1);
-            // employee belongs to a group ?
-            //      No, then go ahead and punch in
-            //      Yes, check if the group is already punched in
-            //          No, then punch in employee and ask    -- Group is not punched in, punch in employee anyway?
-            //          Yes, is the job the same as the group?
-            //              Yes, punch in and send a message  -- Group is already punched in to the same job !
-            //              No, ask if punch in               -- Group is already punched in to a different job, punch in anyway?
-
         Activity = new DailyActivityList();
         Activity.setEmployeeID(Employee.getEmployeeID());
         Activity.setLastName(Employee.getLastName());
         Activity.setFirstName(Employee.getFirstName());
-        if (Employee.getGroup() > 0) Activity.setWorkGroup(dbGroup.getWorkGroupList(Employee.getGroup()).getGroupName());
+        if (Employee.getGroup() > 0) Activity.setWorkGroup(String.valueOf(dbGroup.getWorkGroupList(Employee.getGroup()).getGroupID()));
         if (!Employee.getCompany().isEmpty()) Activity.setCompany(Employee.getCompany());
         if (!Employee.getLocation().isEmpty()) Activity.setLocation(Employee.getLocation());
         if (!Employee.getJob().isEmpty()) Activity.setJob(Employee.getJob());
@@ -278,14 +301,6 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
         dbGroup.updateEmployeeListStatus(employeeID, 0);
-            // employee belongs to a group ?
-            //      No, then go ahead and punch out
-            //      Yes, check if the group is already punched out
-            //          Yes, then punch out and send a message  -- Group is punched out, punch out as well!
-            //          No, is the job the same as the group?
-            //              No, punch out and send a message    -- Group is still punched in to a different job, punch out employee anyway?
-            //              Yes, punch out and send a message   -- Group is still punched in to the same job, punch out employee anyway?
-
         Activity = dbActivity.getPunchedInActivityList(employeeID);
         if (Activity != null && Activity.getEmployeeID() > 0) {
             long diff = General.MinuteDifference(Activity.getTimeIn(), currentDateTimeString);

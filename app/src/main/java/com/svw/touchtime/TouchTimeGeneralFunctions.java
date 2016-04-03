@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Created by djlee on 5/10/15.
@@ -48,6 +49,25 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         // dialog.getButton(dialog.BUTTON_NEGATIVE).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
     }
 
+    public ArrayList<String> getCountries(String usa, String msg) {
+        Locale[] locales = Locale.getAvailableLocales();
+        ArrayList<String> countries = new ArrayList<String>();
+        for (Locale locale : locales) {
+            String country = locale.getDisplayCountry();
+            if (country.trim().length()>0 && !countries.contains(country)) {
+                countries.add(country);
+            }
+        }
+        Collections.sort(countries);
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("");
+        list.add(msg);
+        list.add(usa);
+        countries.remove("United States");      // remove use from the list
+        for (int i=0; i<countries.size(); i++) list.add(countries.get(i));
+        return list;
+    }
+
     public String TimeDifference(String OldTime, String NewTime) {
         DateFormat tf = new SimpleDateFormat("hh:mm:ss aa");
         if (OldTime == null || NewTime == null) return null;
@@ -66,7 +86,7 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
     }
 
     public long MinuteDifference(String OldTime, String NewTime) {
-        DateFormat tf = new SimpleDateFormat("hh:mm:ss aa");
+        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
         if (OldTime == null || NewTime == null) return 0;
         long diffMinutes = 0;
         try {
@@ -127,7 +147,7 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
                 int i = 0, result = 0;
                 String First[] = new String[ItemList.length];
                 String Second[] = new String[ItemList.length];
-                for (i = 0; i < ItemList.length; i++) {
+                for (i = 0; i < ItemList.length && ItemList[i] != null; i++) {
                     First[i] = o1.get(ItemList[i]);
                     Second[i] = o2.get(ItemList[i]);
                     if (First[i].isEmpty() && Second[i].isEmpty()) return 0;
@@ -174,7 +194,7 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
                 int i = 0, result = 0;
                 String First[] = new String[ItemList.length];
                 String Second[] = new String[ItemList.length];
-                for (i = 0; ItemList[i] != null; i++) {
+                for (i = 0; i<ItemList.length && ItemList[i] != null; i++) {
                     if (i == 0) {
                         int one = (o1.get(ItemList[i]).isEmpty()) ? 0 : Integer.parseInt(o1.get(ItemList[i]));
                         int two = (o2.get(ItemList[i]).isEmpty()) ? 0 : Integer.parseInt(o2.get(ItemList[i]));
@@ -234,19 +254,20 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
     }
 
     public ArrayList<String> removeDuplicates(ArrayList<String> list) {
-        // Store unique items in result.
-        ArrayList<String> result = new ArrayList<String>();
+        int size = list.size();         // duplicates will be removed, so must preserve the size
         // Record encountered Strings in HashSet.
         HashSet<String> set = new HashSet<String>();
         // Loop over argument list.
-        for (String item : list) {
+        for (int i = 0; i<size; i++) {
             // If String is not in set, add it to the list and the set.
-            if (!set.contains(item)) {
-                result.add(item);
-                set.add(item);
+            if (!set.contains(list.get(i))) {
+                set.add(list.get(i));
+            } else {
+                list.remove(i);     // remove duplicate
+                size--;             // decrease the size
             }
         }
-        return result;
+        return list;
     }
 
     @Override
@@ -298,3 +319,4 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         client.disconnect();
     }
 }
+
