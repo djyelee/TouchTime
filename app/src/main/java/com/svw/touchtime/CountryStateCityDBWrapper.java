@@ -3,17 +3,23 @@ package com.svw.touchtime;
 /**
  * Created by djlee on 4/2/16.
  */
-
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 public class CountryStateCityDBWrapper extends SQLiteOpenHelper {
     private SQLiteDatabase database;
+    private Context context;
+    private TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
 
     // Logcat tag
     private static final String LOG = CountryStateCityDBWrapper.class.getName();
@@ -35,11 +41,13 @@ public class CountryStateCityDBWrapper extends SQLiteOpenHelper {
     // Table Create Statements
     // Activity table create statement
     private static final String CREATE_TABLE_COUNTRY_STATE_CITY = "CREATE TABLE "
-            + TABLE_COUNTRY_STATE_CITY + "(" + KEY_COUNTRY + " TEXT," + KEY_STATE + " TEXT," + KEY_CITY + " TEXT" + ")";
+            + TABLE_COUNTRY_STATE_CITY + "(" + KEY_COUNTRY + " TEXT,"
+            + KEY_STATE + " TEXT," + KEY_CITY + " TEXT" + ")";
 
     public CountryStateCityDBWrapper(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
- //       open();         // go to getWritableDatabase that will create and/or open a database
+        this.context = context;
+        open();         // go to getWritableDatabase that will create and/or open a database
     }
 
     @Override
@@ -56,177 +64,154 @@ public class CountryStateCityDBWrapper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /*
     // ------------------------ "country state city" table methods ----------------//
 
-    // Creating a Activity List
-    public void createActivityList(DailyActivityList Activity) {
-        database.insert(TABLE_COUNTRY_STATE_CITY, null, storeActivity(Activity));
+    public void clearAllList() {
+        String selectQuery = "DELETE FROM " + TABLE_COUNTRY_STATE_CITY;
+        Log.e(LOG, selectQuery);
+        database.execSQL(selectQuery);
     }
 
-    // get activity
-    public DailyActivityList getActivityListID(int EmployeeID) {
-        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY+ " WHERE " + KEY_EMPLOYEE_ID + " = " + EmployeeID;
+    public void addMissingList(String Country, String State, String City) {
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY+ " WHERE "
+                + KEY_COUNTRY + " = " + "'" + Country + "'" + " AND "
+                + KEY_STATE + " = " + "'" + State + "'" + " AND "
+                + KEY_CITY + " = " + "'" + City + "'";
         Log.e(LOG, selectQuery);
         Cursor c = database.rawQuery(selectQuery, null);
-        if (c.moveToFirst())
-            return retrieveActivity(EmployeeID, c);        // retrieve based on ID
-        else
-            return null;
+        if (c.getCount() <= 0) {        // does not exist
+            if (!State.isEmpty()) {
+                if (!City.isEmpty()) {
+                    createCityList(Country, State, City);
+                } else {
+                    createCityList(Country, State, City);
+                }
+            }
+        }
     }
 
-    // get activity
-    public DailyActivityList getPunchedInActivityList(int EmployeeID) {
-        String Empty = "" + "";
-        Cursor c = database.rawQuery("SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY+ " WHERE " + KEY_EMPLOYEE_ID + " = ?"
-                        + " AND " + KEY_TIME_OUT + " = ?",
-                new String[] { String.valueOf(EmployeeID), Empty});
-        if (c.moveToFirst())
-            return retrieveActivity(EmployeeID, c);     // retrieve based on ID
-        else
-            return null;
+    public void createCountryList(String Country) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_COUNTRY, Country);
+        values.put(KEY_STATE, "");
+        values.put(KEY_CITY, "");
+        database.insert(TABLE_COUNTRY_STATE_CITY, null, values);
     }
 
-    public boolean checkEmployeeID(int EmployeeID) {
-        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY + " WHERE "
-                + KEY_EMPLOYEE_ID + " = " + EmployeeID;
+    public ArrayList<String> getCountryList(ArrayList<String> Country_List) {       // pass in the list so no new one will be created
+        Country_List.clear();
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY;
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Country_List.add(c.getString(c.getColumnIndex(KEY_COUNTRY)));
+            } while (c.moveToNext());
+        }
+        General.sortString(Country_List);
+        Country_List.add(0, "");
+        Country_List.add(1, context.getString(R.string.employee_add_new_message));
+        Country_List = General.removeDuplicates(Country_List);
+        return Country_List;
+    }
+
+    public boolean checkStateList(String Country, String State) {
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY+ " WHERE "
+                + KEY_COUNTRY + " = " + "'" + Country + "'" + " AND "
+                + KEY_STATE + " = " + "'" + State + "'";
         Log.e(LOG, selectQuery);
         Cursor c = database.rawQuery(selectQuery, null);
         if (c.getCount() <= 0) return false;
         return true;
     }
 
-    // getting all Activity lists
-    public ArrayList<DailyActivityList> getAllActivityLists() {
-        ArrayList<DailyActivityList> activity_lists = new ArrayList<DailyActivityList>();
-        String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
+    public void createStateList(String Country, String State) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_COUNTRY, Country);
+        values.put(KEY_STATE, State);
+        values.put(KEY_CITY, "");
+        database.insert(TABLE_COUNTRY_STATE_CITY, null, values);
+    }
+
+    public ArrayList<String> getStateList(String Country, ArrayList<String> State_List) {
+        State_List.clear();
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY + " WHERE "
+                + KEY_COUNTRY + " = " + "'" + Country + "'" ;
         Log.e(LOG, selectQuery);
         Cursor c = database.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                activity_lists.add(retrieveActivity(0, c));
+                State_List.add(c.getString(c.getColumnIndex(KEY_STATE)));
             } while (c.moveToNext());
         }
-        return activity_lists;
+        General.sortString(State_List);
+        State_List.add(0, "");
+        State_List.add(1, context.getString(R.string.employee_add_new_message));
+        State_List = General.removeDuplicates(State_List);
+        return State_List;
     }
 
-    // getting Activity lists according to the date
-    public ArrayList<DailyActivityList> getActivityLists(String[] Column, String[] Compare, String[] Values) {
-        ArrayList<DailyActivityList> activity_lists = new ArrayList<DailyActivityList>();
-        String selectQuery = "SELECT  * FROM " + TABLE_ACTIVITY+ " WHERE " + Column[0] + Compare[0] + "'" + Values[0] + "'";
-        int i;
-        String Empty = "" + "";
-        for (i=1; i < Column.length && Column[i] != null; i++) {
-            selectQuery = selectQuery + " AND " + Column[i] + Compare[i] + "'" + Values[i] + "'";
-        }
+    public void deleteStateList(String Country, String State) {
+        database.delete(TABLE_COUNTRY_STATE_CITY, KEY_COUNTRY + " = " + "'" + Country + "'"
+                + " AND " + KEY_STATE + " = " + "'" + State + "'", null);
+    }
+
+    public boolean checkCityList(String Country, String State, String City) {
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY+ " WHERE "
+                + KEY_COUNTRY + " = " + "'" + Country + "'" + " AND "
+                + KEY_STATE + " = " + "'" + State + "'" + " AND "
+                + KEY_CITY + " = " + "'" + City + "'";
+        Log.e(LOG, selectQuery);
+        Cursor c = database.rawQuery(selectQuery, null);
+        if (c.getCount() <= 0) return false;
+        return true;
+    }
+
+    public void createCityList(String Country, String State, String City) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_COUNTRY, Country);
+        values.put(KEY_STATE, State);
+        values.put(KEY_CITY, City);
+        database.insert(TABLE_COUNTRY_STATE_CITY, null, values);
+    }
+
+    public ArrayList<String> getCityList(String Country, String State, ArrayList<String> City_List) {
+        City_List.clear();
+        String selectQuery = "SELECT  * FROM " + TABLE_COUNTRY_STATE_CITY + " WHERE "
+                + KEY_COUNTRY + " = " + "'" + Country + "'" + " AND "
+                + KEY_STATE + " = " + "'" + State + "'";
         Log.e(LOG, selectQuery);
         Cursor c = database.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                activity_lists.add(retrieveActivity(0, c));
+                City_List.add(c.getString(c.getColumnIndex(KEY_CITY)));
             } while (c.moveToNext());
         }
-        return activity_lists;
+        General.sortString(City_List);
+        City_List.add(0, "");
+        City_List.add(1, context.getString(R.string.employee_add_new_message));
+        City_List = General.removeDuplicates(City_List);
+        return City_List;
     }
 
-    public int updateActivityList(DailyActivityList Activity, String[] Column, String[] Values) {
-        String selectQuery = Column[0] + " = " + "'" + Values[0] + "'";
-        int i;
-        String Empty = "" + "";
-        for (i=1; i < Column.length && Column[i] != null; i++) {
-            selectQuery = selectQuery + " AND " + Column[i] + " = " + "'" + Values[i] + "'";
-        }
-        Log.e(LOG, selectQuery);
-        return database.update(TABLE_ACTIVITY, storeActivity(Activity), selectQuery, null);
-    }
-
-    public int updatePunchedInActivityList(DailyActivityList Activity) {
-        String Empty = "" + "";
-        String selection = KEY_EMPLOYEE_ID + " = ?" + " AND " + KEY_TIME_OUT + " = ?";
-        return database.update(TABLE_ACTIVITY, storeActivity(Activity), selection,
-                new String[] { String.valueOf(Activity.EmployeeID), Empty});
-    }
-
-    // getting Activity list count
-    public int getActivityListCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_ACTIVITY;
-        Cursor cursor = database.rawQuery(countQuery, null);
-
-        int count = cursor.getCount();
-        cursor.close();
-        // return count
-        return count;
-    }
-
-    // Deleting an Activity list
-    public void deleteIDActivityList(int EmployeeID) {
-        database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'", null);
-    }
-
-    public void deletePunchedInActivityList(int EmployeeID, String TimeIn) {
-        database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'"
-                + " AND " + KEY_TIME_IN + " = " + "'" + TimeIn + "'", null);
+    public void deleteCityList(String Country, String State, String City) {
+        database.delete(TABLE_COUNTRY_STATE_CITY, KEY_COUNTRY + " = " + "'" + Country + "'"
+                + " AND " + KEY_STATE + " = " + "'" + State + "'"
+                + " AND " + KEY_CITY + " = " + "'" + City + "'", null);
     }
     // ------------------------ "basic database methods ----------------//
 
+    public String getCountryColumnKey() { return KEY_COUNTRY;}
+    public String getStateColumnKey() { return KEY_STATE;}
+    public String getCityColumnKey() { return KEY_CITY;}
+
+    // open database
     public void open() throws SQLException {
         database = getWritableDatabase();
     }
-
-    public DailyActivityList retrieveActivity(int EmployeeID, Cursor c) {
-        DailyActivityList Activity = new DailyActivityList();
-        if (EmployeeID > 0) {
-            Activity.setEmployeeID(EmployeeID);
-        } else {
-            Activity.setEmployeeID(c.getInt(c.getColumnIndex(KEY_EMPLOYEE_ID)));
-        }
-        Activity.setLastName(c.getString(c.getColumnIndex(KEY_LAST_NAME)));
-        Activity.setFirstName(c.getString(c.getColumnIndex(KEY_FIRST_NAME)));
-        Activity.setWorkGroup(c.getString(c.getColumnIndex(KEY_WORK_GROUP)));
-        Activity.setCompany(c.getString(c.getColumnIndex(KEY_COMPANY)));
-        Activity.setLocation(c.getString(c.getColumnIndex(KEY_LOCATION)));
-        Activity.setJob(c.getString(c.getColumnIndex(KEY_JOB)));
-        Activity.setDate(c.getString(c.getColumnIndex(KEY_DATE)));
-        Activity.setTimeIn(c.getString(c.getColumnIndex(KEY_TIME_IN)));
-        Activity.setTimeOut(c.getString(c.getColumnIndex(KEY_TIME_OUT)));
-        Activity.setLunch(c.getLong(c.getColumnIndex(KEY_LUNCH)));
-        Activity.setHours(c.getLong(c.getColumnIndex(KEY_HOURS)));
-        Activity.setSupervisor(c.getString(c.getColumnIndex(KEY_SUPERVISOR)));
-        Activity.setComments(c.getString(c.getColumnIndex(KEY_COMMENTS)));
-        return Activity;
-    }
-
-    public ContentValues storeActivity(DailyActivityList Activity) {
-        ContentValues values = new ContentValues();
-        values.put(KEY_EMPLOYEE_ID, Activity.EmployeeID);
-        values.put(KEY_LAST_NAME, Activity.LastName);
-        values.put(KEY_FIRST_NAME, Activity.FirstName);
-        values.put(KEY_WORK_GROUP, Activity.WorkGroup);
-        values.put(KEY_COMPANY, Activity.Company);
-        values.put(KEY_LOCATION, Activity.Location);
-        values.put(KEY_JOB, Activity.Job);
-        values.put(KEY_DATE, Activity.Date);
-        values.put(KEY_TIME_IN, Activity.TimeIn);
-        values.put(KEY_TIME_OUT, Activity.TimeOut);
-        values.put(KEY_LUNCH, Activity.Lunch);
-        values.put(KEY_HOURS, Activity.Hours);
-        values.put(KEY_SUPERVISOR, Activity.Supervisor);
-        values.put(KEY_COMMENTS, Activity.Comments);
-        return values;
-    }
-
-    public String getIDColumnKey() { return KEY_EMPLOYEE_ID;}
-    public String getLastNameColumnKey() { return KEY_LAST_NAME;}
-    public String getFirstNameColumnKey() { return KEY_FIRST_NAME;}
-    public String getWorkGroupColumnKey() { return KEY_WORK_GROUP;}
-    public String getCompanyColumnKey() { return KEY_COMPANY;}
-    public String getLocationColumnKey() { return KEY_LOCATION;}
-    public String getJobColumnKey() { return KEY_JOB;}
-    public String getDateColumnKey() { return KEY_DATE;}
-    public String getTimeInColumnKey() { return KEY_TIME_IN;}
-    public String getTimeOutColumnKey() { return KEY_TIME_OUT;}
 
     // closing database
     public void closeDB() {
@@ -234,11 +219,7 @@ public class CountryStateCityDBWrapper extends SQLiteOpenHelper {
         if (db != null && db.isOpen())
             db.close();
     }
-*/
 
-    /**
-     * get datetime
-     * */
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());

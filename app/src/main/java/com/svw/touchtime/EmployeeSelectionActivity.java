@@ -67,7 +67,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
                 getText(R.string.column_key_first_name).toString(), getText(R.string.column_key_group_id).toString(),
                 getText(R.string.column_key_active).toString(), getText(R.string.column_key_current).toString()};
         int [] list_id = {R.id.textViewID, R.id.textViewLastName, R.id.textViewFirstName, R.id.textViewGroup, R.id.textViewActive, R.id.textViewCurrent};
-        adapter_employee = new TouchTimeGeneralAdapter(this, feedList, R.layout.employee_selection_view, list_items, list_id, 50);
+        adapter_employee = new TouchTimeGeneralAdapter(this, feedList, R.layout.employee_selection_view, list_items, list_id, 60);
         // lv.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false), null, false);
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         lv.setAdapter(adapter_employee);

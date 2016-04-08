@@ -50,11 +50,12 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private ImageView photoView;
     private DatePickerDialog CalendarDialog;
     private int dateButtonID;
-    private boolean newEmployeeProfile;
+    private int itemCountry, itemState, itemCity;
     private int Caller, employeeID;
     EmployeeProfileList Employee;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
-    private EmployeeGroupCompanyDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper dbGroup;
+    private CountryStateCityDBWrapper dbCountry;
     static final int PICK_NEW_REQUEST = 123;             // The request code
     static final int PICK_UPDATE_REQUEST = 456;          // The request code
     static final int PICK_COPY_REQUEST = 789;          // The request code
@@ -92,23 +93,31 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         currentNoButton = (RadioButton) findViewById(R.id.radio_current_no);
         photoView = (ImageView) findViewById(R.id.photo);
 
+        // database and other data
+        dbGroup = new EmployeeGroupCompanyDBWrapper(this);
+        dbCountry = new CountryStateCityDBWrapper(this);
+        Employee = new EmployeeProfileList();
+        Countries = new ArrayList<String>();
+        States = new ArrayList<String>();
+        Cities = new ArrayList<String>();
+
         context = this;
         CountrySpinner = (Spinner) findViewById(R.id.country_spinner);
-        Countries = General.getCountries(getText(R.string.column_usa_name).toString(), getText(R.string.employee_add_new_message).toString());
+        Countries = dbCountry.getCountryList(Countries);        // get an empty list
         adapter_country = new ArrayAdapter<String>(context, general_edit_text_view, Countries);
         CountrySpinner.setAdapter(adapter_country);
         CountrySpinner.setSelection(0, false);                  // this prevents the first firing
         CountrySpinner.setOnItemSelectedListener(OnSpinnerCL);
 
         StateSpinner = (Spinner) findViewById(R.id.state_spinner);
-        States = General.getCountries(getText(R.string.column_usa_name).toString(), getText(R.string.employee_add_new_message).toString());
+        States = dbCountry.getStateList("", States);        // get an empty list
         adapter_state = new ArrayAdapter<String>(context, general_edit_text_view, States);
         StateSpinner.setAdapter(adapter_state);
         StateSpinner.setSelection(0, false);                  // this prevents the first firing
         StateSpinner.setOnItemSelectedListener(OnSpinnerCL);
 
         CitySpinner = (Spinner) findViewById(R.id.city_spinner);
-        Cities = General.getCountries(getText(R.string.column_usa_name).toString(), getText(R.string.employee_add_new_message).toString());
+        Cities = dbCountry.getCityList("", "", Cities);     // get an empty list
         adapter_city = new ArrayAdapter<String>(context, general_edit_text_view, Cities);
         CitySpinner.setAdapter(adapter_city);
         CitySpinner.setSelection(0, false);                  // this prevents the first firing
@@ -118,10 +127,6 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         calendar = Calendar.getInstance();
         CalendarDialog = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-        // database and other data
-        db = new EmployeeGroupCompanyDBWrapper(this);
-        Employee = new EmployeeProfileList();
 
         int [] Data = new int[2];
         Data = getIntent().getIntArrayExtra("EmployeeID");
@@ -143,10 +148,30 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             radioGroupCurrent.setBackgroundColor(getResources().getColor(R.color.svw_gray));
         }
 
+        // building database for country, state, city spinner from employee list
+        ArrayList<EmployeeProfileList> all_employee_lists;
+        all_employee_lists = dbGroup.getAllEmployeeLists();
+        int i = 0;
+        dbCountry.clearAllList();           // clear the database for country, state, city spinner
+        if (all_employee_lists.size() > 0) {
+            do {
+                // building database for country, state, city spinner from employee list
+                dbCountry.addMissingList(all_employee_lists.get(i).getCountry(), all_employee_lists.get(i).getState(), all_employee_lists.get(i).getCity());
+            } while (++i < all_employee_lists.size());
+        }
+        // building database for country, state, city spinner from company list
+        ArrayList<CompanyJobLocationList> Lists;
+        Lists = dbGroup.getAllCompanyLists();
+        if (Lists.size() > 0) {
+            for (i = 0; i < Lists.size(); i++) {
+                dbCountry.addMissingList(Lists.get(i).getCountry(), Lists.get(i).getState(), Lists.get(i).getCity());
+            }
+        }
+
         if (Request == PICK_UPDATE_REQUEST) EmployeeIDEdit.setFocusable(false);   // should not be changed
         if (Request == PICK_UPDATE_REQUEST || Request == PICK_COPY_REQUEST) {   // display what is selected
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            Employee = db.getEmployeeList(employeeID);
+            Employee = dbGroup.getEmployeeList(employeeID);
             if (Employee.getDocExp().compareTo(df.format(Calendar.getInstance().getTime())) < 0) {
                 radioGroupCurrent.check(R.id.radio_current_no);
                 Employee.setCurrent(0);
@@ -154,13 +179,21 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                 radioGroupCurrent.check(R.id.radio_current_yes);
                 Employee.setCurrent(1);
             }
-            int Country = adapter_country.getPosition(Employee.getCountry());
-            if (Country > 0) CountrySpinner.setSelection(Country);
-            int State = adapter_state.getPosition(Employee.getState());
-            if (State > 0) StateSpinner.setSelection(State);
-            int City = adapter_city.getPosition(Employee.getCity());
-            if (City > 0) CitySpinner.setSelection(City);
-            db.updateEmployeeList(Employee);
+            itemCountry = adapter_country.getPosition(Employee.getCountry());
+            if (itemCountry > 0) {
+                CountrySpinner.setSelection(itemCountry);
+                States = dbCountry.getStateList(Employee.getCountry(), States);
+                adapter_state.notifyDataSetChanged();
+            }
+            itemState = adapter_state.getPosition(Employee.getState());
+            if (itemState > 0) {
+                StateSpinner.setSelection(itemState);
+                Cities = dbCountry.getCityList(Employee.getCountry(), Employee.getState(), Cities);
+                adapter_city.notifyDataSetChanged();
+            }
+            itemCity = adapter_city.getPosition(Employee.getCity());
+            if (itemCity > 0) CitySpinner.setSelection(itemCity);
+            dbGroup.updateEmployeeList(Employee);
         }
         displayEmployeeProfile();
         // hide soft keyboard when start up
@@ -181,14 +214,13 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                             // int select = adapter_country.getPosition(Employee.getCountry());
                             Countries.remove("");       // remove items first
                             Countries.remove(getText(R.string.employee_add_new_message).toString());
-                            Countries.remove(getText(R.string.column_usa_name).toString());
                             Countries.add(0, dialog_text.getText().toString());
                             General.sortString(Countries);
                             Countries = General.removeDuplicates(Countries);
-                            Countries.add(0, getText(R.string.column_usa_name).toString());
                             Countries.add(0, getText(R.string.employee_add_new_message).toString());
                             Countries.add(0, "");       // remove items first
                             adapter_country.notifyDataSetChanged();
+                            dbCountry.addMissingList(dialog_text.getText().toString(), States.get(itemState), Cities.get(itemCity));
                             CountrySpinner.setSelection(Countries.indexOf(dialog_text.getText().toString()));
                         }
                     });
@@ -200,7 +232,37 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                     AlertDialog dialog = builder.create();
                     General.TouchTimeDialog(dialog, view);
                 } else {
-                    Employee.setCountry(Countries.get(pos));
+                    itemCountry = pos;
+                    if (Countries.size() > itemCountry) {
+                        String currentState = States.get(itemState);        // get it before losing it
+                        States = dbCountry.getStateList(Countries.get(itemCountry), States);
+                        if (!States.contains(currentState)) {
+                            States.remove("");       // remove items first
+                            States.remove(getText(R.string.employee_add_new_message).toString());
+                            States.add(0, currentState);
+                            General.sortString(States);
+                            States.add(0, getText(R.string.employee_add_new_message).toString());
+                            States.add(0, "");       // add items first
+                            itemState = States.indexOf(currentState);
+                            StateSpinner.setSelection(itemState);
+                        }
+                        adapter_state.notifyDataSetChanged();
+                        if (States.size() > itemState) {
+                            String currentCity = Cities.get(itemCity);      // get it before losing it
+                            Cities = dbCountry.getCityList(Countries.get(itemCountry), States.get(itemState), Cities);
+                            if (!Cities.contains(currentCity)) {
+                                Cities.remove("");
+                                Cities.remove(getText(R.string.employee_add_new_message).toString());
+                                Cities.add(0, currentCity);
+                                General.sortString(Cities);
+                                Cities.add(0, getText(R.string.employee_add_new_message).toString());
+                                Cities.add(0, "");       // remove items first
+                                itemCity = Cities.indexOf(currentCity);
+                                CitySpinner.setSelection(itemCity);
+                            }
+                            adapter_city.notifyDataSetChanged();
+                        }
+                    }
                 }
             } else if (parent == StateSpinner) {
                 if (pos == 1) {             // 0 is blank, 1 is add new
@@ -211,14 +273,13 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                             // int select = adapter_country.getPosition(Employee.getCountry());
                             States.remove("");       // remove items first
                             States.remove(getText(R.string.employee_add_new_message).toString());
-                            States.remove(getText(R.string.column_usa_name).toString());
                             States.add(0, dialog_text.getText().toString());
                             General.sortString(States);
                             States = General.removeDuplicates(States);
-                            States.add(0, getText(R.string.column_usa_name).toString());
                             States.add(0, getText(R.string.employee_add_new_message).toString());
                             States.add(0, "");       // remove items first
                             adapter_state.notifyDataSetChanged();
+                            dbCountry.addMissingList(Countries.get(itemCountry), dialog_text.getText().toString(), Cities.get(itemCity));
                             StateSpinner.setSelection(States.indexOf(dialog_text.getText().toString()));
                         }
                     });
@@ -230,7 +291,24 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                     AlertDialog dialog = builder.create();
                     General.TouchTimeDialog(dialog, view);
                 } else {
-                    Employee.setState(States.get(pos));
+                    itemState = pos;
+                    if (Countries.size() > itemCountry) {
+                        if (States.size() > itemState) {
+                            String currentCity = Cities.get(itemCity);      // get it before losing it
+                            Cities = dbCountry.getCityList(Countries.get(itemCountry), States.get(itemState), Cities);
+                            if (!Cities.contains(currentCity)) {
+                                Cities.remove("");
+                                Cities.remove(getText(R.string.employee_add_new_message).toString());
+                                Cities.add(0, currentCity);
+                                General.sortString(Cities);
+                                Cities.add(0, getText(R.string.employee_add_new_message).toString());
+                                Cities.add(0, "");       // remove items first
+                                itemCity = Cities.indexOf(currentCity);
+                                CitySpinner.setSelection(itemCity);
+                            }
+                            adapter_city.notifyDataSetChanged();
+                        }
+                    }
                 }
             } if (parent == CitySpinner) {
                 if (pos == 1) {             // 0 is blank, 1 is add new
@@ -241,14 +319,13 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                             // int select = adapter_country.getPosition(Employee.getCountry());
                             Cities.remove("");       // remove items first
                             Cities.remove(getText(R.string.employee_add_new_message).toString());
-                            Cities.remove(getText(R.string.column_usa_name).toString());
                             Cities.add(0, dialog_text.getText().toString());
                             General.sortString(Cities);
                             Cities = General.removeDuplicates(Cities);
-                            Cities.add(0, getText(R.string.column_usa_name).toString());
                             Cities.add(0, getText(R.string.employee_add_new_message).toString());
                             Cities.add(0, "");       // remove items first
                             adapter_city.notifyDataSetChanged();
+                            dbCountry.addMissingList(Countries.get(itemCountry), States.get(itemState), dialog_text.getText().toString());
                             CitySpinner.setSelection(Cities.indexOf(dialog_text.getText().toString()));
                         }
                     });
@@ -260,7 +337,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                     AlertDialog dialog = builder.create();
                     General.TouchTimeDialog(dialog, view);
                 } else {
-                    Employee.setCity(Cities.get(pos));
+                    itemCity = pos;
                 }
             }
         }
@@ -421,8 +498,45 @@ public class EmployeeDetailActivity extends ActionBarActivity {
              General.TouchTimeDialog(dialog, view);
              return;    // must have at least the first name
          }
+         if (Countries.size() > itemCountry) Employee.setCountry(Countries.get(itemCountry));
+         if (States.size() > itemState) Employee.setState(States.get(itemState));
+         if (Cities.size() > itemCity) Employee.setCity(Cities.get(itemCity));
+ /*
+          if (Countries.size() > itemCountry && States.size() > itemState && Cities.size() > itemCity &&
+                 !dbCountry.checkCityList(Countries.get(itemCountry), States.get(itemState), Cities.get(itemCity))) {
+           if (!Employee.getCountry().isEmpty() && !Employee.getState().isEmpty()) {
+                  if (!Employee.getCity().isEmpty()) {
+                     builder.setMessage(R.string.employee_new_city_message).setTitle(R.string.employee_profile_title);
+                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                         public void onClick(DialogInterface dialog, int id) {
+                         dbCountry.addMissingList(Employee.getCountry(), Employee.getState(), Employee.getCity());
+                         }
+                     });
+                     builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                         public void onClick(DialogInterface dialog, int id) {
+                         }
+                     });
+                 }
+                 if (!Employee.getState().isEmpty()){
+                     builder.setMessage(R.string.employee_new_state_message).setTitle(R.string.employee_profile_title);
+                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                         public void onClick(DialogInterface dialog, int id) {
+                         dbCountry.addMissingList(Employee.getCountry(), Employee.getState(), Employee.getCity());
+                         }
+                     });
+                     builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                         public void onClick(DialogInterface dialog, int id) {
+                         }
+                     });
+                 }
+                 AlertDialog dialog = builder.create();
+                 General.TouchTimeDialog(dialog, view);
+                 return;
+             }
+         }
+         */
          if (Request == PICK_NEW_REQUEST || Request == PICK_COPY_REQUEST) {       // add a new employee profile
-             if (db.checkEmployeeID(ID)) {        // ID already exists
+             if (dbGroup.checkEmployeeID(ID)) {        // ID already exists
                  builder.setMessage(R.string.employee_assign_ID_message).setTitle(R.string.employee_profile_title);
                  builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                      public void onClick(DialogInterface dialog, int id) {
@@ -437,7 +551,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                             Intent returnIntent = new Intent();
                             returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                             setResult(RESULT_OK, returnIntent);
-                            db.closeDB();
+                            dbGroup.closeDB();
                             finish();
                         }
                  });
@@ -447,7 +561,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                  });
             }
         } else if (Request == PICK_UPDATE_REQUEST){              // update the employee profile
-            if (db.checkEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()))) {      // employee ID already exists
+            if (dbGroup.checkEmployeeID(Integer.parseInt(EmployeeIDEdit.getText().toString()))) {      // employee ID already exists
                 builder.setMessage(R.string.employee_update_message).setTitle(R.string.employee_profile_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -456,7 +570,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                         setResult(RESULT_OK, returnIntent);
-                        db.closeDB();
+                        dbGroup.closeDB();
                         finish();
                     }
                 });
@@ -466,7 +580,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                          Intent returnIntent = new Intent();
                          returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
                          setResult(RESULT_OK, returnIntent);
-                         db.closeDB();
+                         dbGroup.closeDB();
                          finish();
                      }
                 });
@@ -544,10 +658,10 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         Employee.setPhoto((drawable == null) ? null : drawable.getBitmap());
         if (Add) {
             // add the new one to the end of the list
-            db.createEmployeeList(Employee);
+            dbGroup.createEmployeeList(Employee);
         } else {
             // if the current id displayed already exists, then update
-            db.updateEmployeeList(Employee);
+            dbGroup.updateEmployeeList(Employee);
         }
         // displayEmployeeProfile();
     }
@@ -581,7 +695,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
                     builder.setMessage(R.string.change_not_saved_message).setTitle(R.string.employee_profile_title);
                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            db.closeDB();
+                            dbGroup.closeDB();
                             onBackPressed();
                         }
                     });

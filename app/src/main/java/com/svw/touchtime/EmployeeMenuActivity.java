@@ -75,7 +75,7 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         General = new TouchTimeGeneralFunctions();
         context = this;
         if(dbGroup.getEmployeeListCount() == 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.no_employee_message).setTitle(R.string.employee_menu_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -326,7 +326,7 @@ public class EmployeeMenuActivity extends ActionBarActivity {
             } else {
                 Intent intent = new Intent(this, CompanyJobLocationSelectionActivity.class);
                 ArrayList<String> CompanyLocationJob = new ArrayList<>();
-                CompanyLocationJob.add(getText(R.string.title_activity_employee_punch_menu).toString());        // caller
+                CompanyLocationJob.add(getText(R.string.title_activity_employee_menu).toString());        // caller
                 // use the last selected one as default
                 CompanyLocationJob.add(Employee.getCompany());              // company
                 CompanyLocationJob.add(Employee.getLocation());             // location

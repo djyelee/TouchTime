@@ -42,6 +42,7 @@
     <string name="column_key_comments">Comments</string>
     <string name="column_key_no_selection">-</string>
     <string name="column_key_name">Name</string>
+    <string name="column_usa_name">U.S.A.</string>
 
     <!-- These are used for view headers.  Can be switch to a different language. -->
     <string name="column_view_employee_id">ID</string>
@@ -122,11 +123,19 @@
     <string name="employee_confirm_delete_message">Delete employee permanently ?</string>
     <string name="empty_last_name_message">Last name cannot be empty !</string>
     <string name="empty_first_name_message">First name cannot be empty !</string>
-    <string name="employee_assign_ID_message">Assign a new ID ?</string>
+    <string name="empty_take_photo_message">Touch the photo area to take a photo !</string>
+    <string name="employee_assign_ID_message">Assign a new ID !</string>
     <string name="employee_new_ID_message">Create employee profile ?</string>
     <string name="employee_update_message">Update employee profile ?</string>
     <string name="employee_no_ID_message">Select an employee !</string>
     <string name="employee_empty_message">No employee assigned to group !</string>
+    <string name="employee_enter_country_message">Enter new country ?</string>
+    <string name="employee_enter_state_message">Enter new state/province ?</string>
+    <string name="employee_enter_city_message">Enter new city ?</string>
+    <string name="employee_add_new_message">Add New</string>
+    <string name="employee_new_state_message">Add the new state ?</string>
+    <string name="employee_new_city_message">Add the new city ?</string>
+
     <!-- TextView title text -->
     <string name="comma_title_text"> , </string>
     <string name="hourly_rate_title_text">Hourly Rate:</string>
@@ -171,7 +180,7 @@
     <string name="employee_group_already_punch_out_message">Group already punched out, punch out employee as well ?</string>
     <string name="employee_punch_out_same_job_message">Punch out from the same job as the group ?</string>
     <string name="employee_punch_out_different_job_message">Punch out from a different job from the group ?</string>
-    <string name="employee_will_not_be_included_message">Employees already punched in will not be included ?</string>
+    <string name="employee_are_not_changed_message">Employees already punched in are not changed !</string>
 
     <!-- Work Group Punch In -->
     <string name="group_punch_title">Group Punch In/Out</string>
@@ -187,7 +196,7 @@
     <string name="group_must_punch_out_message">Group(s) must be punched out first !</string>
     <string name="group_must_punch_in_message">Group(s) has not been punched in. Punch in now ?</string>
     <string name="group_inactive_employee_message">Inactive employees have been removed !</string>
-    <string name="group_will_not_be_included_message">Groups already punched in will not be included ?</string>
+    <string name="group_are_not_changed_message">Groups already punched in are not changed </string>
 
     <!-- Daily Activity -->
     <string name="daily_activity_title">Daily Activity </string>

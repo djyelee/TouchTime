@@ -28,7 +28,6 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     TouchTimeGeneralAdapter adapter_employee;
     HashMap<String, String> map;
     private int itemEmployee = -1;
-    private ArrayList<EmployeeProfileList> all_employee_lists;
     EmployeeProfileList Employee;
     static final int PICK_NEW_REQUEST = 123;             // The request code
     static final int PICK_UPDATE_REQUEST = 456;          // The request code
@@ -36,7 +35,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     private int Caller;
 
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
-    private EmployeeGroupCompanyDBWrapper db;
+    private EmployeeGroupCompanyDBWrapper dbGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +59,10 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         String[] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString(),
                 getText(R.string.column_key_active).toString(), getText(R.string.column_key_current).toString()};
         int[] list_id = {R.id.textDisplayID, R.id.textDisplayLastName, R.id.textDisplayFirstName, R.id.textDisplayActive, R.id.textDisplayCurrent};
-        db = new EmployeeGroupCompanyDBWrapper(this);
+        dbGroup = new EmployeeGroupCompanyDBWrapper(this);
         Employee = new EmployeeProfileList();
-        all_employee_lists = db.getAllEmployeeLists();
+        ArrayList<EmployeeProfileList> all_employee_lists;
+        all_employee_lists = dbGroup.getAllEmployeeLists();
         int i = 0;
         if (all_employee_lists.size() > 0) {
             do {
@@ -73,11 +73,11 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_active).toString(), all_employee_lists.get(i).getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                 map.put(getText(R.string.column_key_current).toString(), all_employee_lists.get(i).getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
                 feedEmployeeList.add(map);
-            } while (++i < all_employee_lists.size());
+             } while (++i < all_employee_lists.size());
             itemEmployee = 0;       // default selection
-            Employee = db.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
+            Employee = dbGroup.getEmployeeList(all_employee_lists.get(itemEmployee).getEmployeeID());
         }
-        // display selected employees
+         // display selected employees
         // adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id);
         adapter_employee = new TouchTimeGeneralAdapter(this, feedEmployeeList, R.layout.employee_profile_view, list_items, list_id, 40);
         employee_list_view.setItemsCanFocus(true);
@@ -95,7 +95,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 map = feedEmployeeList.get(itemEmployee);
-                                Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
+                                Employee = dbGroup.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
                                 HighlightListItem(itemEmployee);
                                 view.setAlpha(1);
                             }
@@ -154,7 +154,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK) {
             map = new HashMap<String, String>();
             int ID = data.getIntExtra("EmployeeID", -1);
-            Employee = db.getEmployeeList(ID);
+            Employee = dbGroup.getEmployeeList(ID);
             // Check which request we're responding to
             if (requestCode == PICK_NEW_REQUEST) {
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(ID));
@@ -202,17 +202,17 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (itemEmployee > 0) HighlightListItem(itemEmployee - 1);
-                        db.deleteEmployeeList(Employee.getEmployeeID());
+                        dbGroup.deleteEmployeeList(Employee.getEmployeeID());
                         feedEmployeeList.remove(itemEmployee);
                         employee_list_view.setAdapter(adapter_employee);
                         // remove employee ID that is already assigned to a group
                         if (Employee.getGroup() != 0) {             // already assigned to a group
-                            db.removeWorkGroupListEmployee(Employee.getEmployeeID(), Employee.getGroup());
+                            dbGroup.removeWorkGroupListEmployee(Employee.getEmployeeID(), Employee.getGroup());
                         }
                         itemEmployee = (itemEmployee == 0 && feedEmployeeList.size() > 0) ? 0 : itemEmployee - 1;
                         if (itemEmployee >= 0 && feedEmployeeList.size() > 0) {
                             map = feedEmployeeList.get(itemEmployee);
-                            Employee = db.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
+                            Employee = dbGroup.getEmployeeList(Integer.parseInt(map.get(getText(R.string.column_key_employee_id))));
                         }
                     }
                 });
@@ -288,7 +288,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            db.closeDB();
+            dbGroup.closeDB();
             onBackPressed();
             return true;
         }

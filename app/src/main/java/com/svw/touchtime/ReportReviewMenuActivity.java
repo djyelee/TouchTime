@@ -63,7 +63,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     Spinner JobSpinner;
     private int dateButtonID;
     Button StartDateButton, EndDateButton;
-
+    boolean sort_group_ascend = true;
+    boolean sort_company_ascend = true;
+    boolean sort_name_ascend = true;
+    Button NameSort, CompanySort, GroupSort;
     private TouchTimeGeneralAdapter adapter_activity;
     ArrayList<HashMap<String, String>> feedActivityList;
     DailyActivityList Activity;
@@ -105,6 +108,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         CommentsEdit = (EditText) findViewById(R.id.activity_comment_text);
         StartDateButton = (Button) findViewById(R.id.report_start_date_button);
         EndDateButton = (Button) findViewById(R.id.report_end_date_button);
+        NameSort = (Button) findViewById(R.id.sort_name);
+        CompanySort = (Button) findViewById(R.id.sort_company);
+        GroupSort = (Button) findViewById(R.id.sort_group);
         context = this;
 
         activity_item[0] = getText(R.string.column_key_name).toString();
@@ -131,7 +137,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         activity_id[9] = R.id.textViewSupervisor;
         activity_id[10] = R.id.textViewComments;
         daily_activity_list_view.setItemsCanFocus(true);
-        adapter_activity = new TouchTimeGeneralAdapter(this, feedActivityList, R.layout.report_review_view, activity_item, activity_id, 50);
+        adapter_activity = new TouchTimeGeneralAdapter(this, feedActivityList, R.layout.report_review_view, activity_item, activity_id, 60);
         daily_activity_list_view.setAdapter(adapter_activity);
 
         list_name = new ArrayList<String>();
@@ -150,7 +156,12 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         LocationSpinner = (Spinner) findViewById(R.id.location_spinner);
         JobSpinner = (Spinner) findViewById(R.id.job_spinner);
         GroupSpinner = (Spinner) findViewById(R.id.group_spinner);
-
+        // need to have something so adapters will work
+        list_name.add(noSelection);
+        list_company.add(noSelection);
+        list_location.add(noSelection);
+        list_job.add(noSelection);
+        list_group.add(noSelection);
         adapter_name = new ArrayAdapter<String>(context, general_edit_text_view, list_name);
         adapter_company = new ArrayAdapter<String>(context, general_edit_text_view, list_company);
         adapter_location = new ArrayAdapter<String>(context, general_edit_text_view, list_location);
@@ -162,7 +173,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         LocationSpinner.setAdapter(adapter_location);
         JobSpinner.setAdapter(adapter_job);
         GroupSpinner.setAdapter(adapter_group);
-
+        // fire once with animation set to false, it actually will avoid the first fire
         NameSpinner.setSelection(0, false);
         CompanySpinner.setSelection(0, false);
         LocationSpinner.setSelection(0, false);
@@ -508,10 +519,25 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             map = new HashMap<String, String>();
             DailyActivityList Activity;
             Activity = all_activity_lists.get(i);
+            // converting 12 hour to 24 hour time
+/*            try {
+                DateFormat tf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
+                DateFormat ttf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date d1 = tf.parse(Activity.getTimeIn());
+                Date d2 = tf.parse(Activity.getTimeOut());
+                dbActivity.deletePunchedInActivityList(Activity.getEmployeeID(), Activity.getTimeIn());
+                Activity.setTimeIn(ttf.format(d1));
+                Activity.setTimeOut(ttf.format(d2));
+                dbActivity.createActivityList(Activity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+*/
             String Name;
             Name = Activity.getLastName() + ", " + Activity.getFirstName() + ", " + String.valueOf(Activity.getEmployeeID());
             map.put(getText(R.string.column_key_name).toString(), Name);
             if (readAll) list_name.add(Name);
+            map.put(getText(R.string.column_key_date).toString(), all_activity_lists.get(i).getDate());
             map.put(getText(R.string.column_key_timein).toString(), Activity.getTimeIn());
             map.put(getText(R.string.column_key_timeout).toString(), Activity.getTimeOut());
             // convert from number of minutes to hh:mm
@@ -545,7 +571,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             feedActivityList.add(map);
             i++;
         };
-        adapter_activity.notifyDataSetChanged();
+        HighlightListItem(0);
 
         if (readAll) {
             General.sortString(list_name);
@@ -563,16 +589,6 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             list_location.add(0, noSelection);
             list_job.add(0, noSelection);
             list_group.add(0, noSelection);
-            adapter_name.clear();              // these lines must stay here
-            adapter_company.clear();
-            adapter_location.clear();
-            adapter_job.clear();
-            adapter_group.clear();
-            for (i = 0; i < list_name.size(); i++) adapter_name.add(list_name.get(i));
-            for (i = 0; i < list_company.size(); i++) adapter_company.add(list_company.get(i));
-            for (i = 0; i < list_location.size(); i++) adapter_location.add(list_location.get(i));
-            for (i = 0; i < list_job.size(); i++) adapter_job.add(list_job.get(i));
-            for (i = 0; i < list_group.size(); i++) adapter_group.add(list_group.get(i));
             adapter_name.notifyDataSetChanged();
             adapter_group.notifyDataSetChanged();
             adapter_company.notifyDataSetChanged();
@@ -613,6 +629,51 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             updateSpinnerListView(view);
             report_view.setText(getText(R.string.daily_activity_view_message) + " " + year);
         }
+    }
+
+    public void onSortNameButtonClicked(View view) {
+        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        String [] Items = new String [5];
+        Items [0] = getText(R.string.column_key_name).toString();
+        Items [1] = getText(R.string.column_key_group_id).toString();
+        Items [2] = getText(R.string.column_key_company).toString();
+        Items [3] = getText(R.string.column_key_date).toString();
+        Items [4] = getText(R.string.column_key_timein).toString();
+        General.SortStringList(feedActivityList, Items, sort_name_ascend);
+        sort_group_ascend = sort_company_ascend = false;
+        sort_name_ascend = !sort_name_ascend;
+        NameSort.setText(sort_name_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
+        daily_activity_list_view.setAdapter(adapter_activity);
+    }
+
+    public void onSortGroupButtonClicked(View view) {
+        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        String [] Items = new String [5];
+        Items [0] = getText(R.string.column_key_group_id).toString();
+        Items [1] = getText(R.string.column_key_name).toString();
+        Items [2] = getText(R.string.column_key_company).toString();
+        Items [3] = getText(R.string.column_key_date).toString();
+        Items [4] = getText(R.string.column_key_timein).toString();
+        General.SortStringList(feedActivityList, Items, sort_group_ascend);
+        sort_name_ascend = sort_company_ascend = false;
+        sort_group_ascend = !sort_group_ascend;
+        GroupSort.setText(sort_group_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
+        daily_activity_list_view.setAdapter(adapter_activity);
+    }
+
+    public void onSortCompanyButtonClicked(View view) {
+        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        String [] Items = new String [5];
+        Items [0] = getText(R.string.column_key_company).toString();
+        Items [1] = getText(R.string.column_key_name).toString();
+        Items [2] = getText(R.string.column_key_date).toString();
+        Items [3] = getText(R.string.column_key_timein).toString();
+        Items [4] = getText(R.string.column_key_group_id).toString();
+        General.SortStringList(feedActivityList, Items, sort_company_ascend);
+        sort_name_ascend = sort_group_ascend = false;
+        sort_company_ascend = !sort_company_ascend;
+        CompanySort.setText(sort_company_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
+        daily_activity_list_view.setAdapter(adapter_activity);
     }
 
     @Override

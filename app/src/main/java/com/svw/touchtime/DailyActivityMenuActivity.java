@@ -33,7 +33,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     public ListView daily_activity_list_view;
     public EditText LunchMinuteEdit, SupervisorEdit, CommentsEdit;
     public TextView DailyActivityView;
-    Button SetTimeIn, SetTimeOut, CompanySort;
+    Button SetTimeIn, SetTimeOut, CompanySort, DateSort;
     public TouchTimeGeneralAdapter adapter_activity;
     ArrayList<HashMap<String, String>> feedActivityList;
     HashMap<String, String> map;
@@ -74,6 +74,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         SetTimeIn = (Button) findViewById(R.id.set_time_in);
         SetTimeOut = (Button) findViewById(R.id.set_time_out);
         CompanySort = (Button) findViewById(R.id.sort_company);
+        DateSort = (Button) findViewById(R.id.sort_date);
         DailyActivityView = (TextView) findViewById(R.id.daily_activity_view);
         feedActivityList = new ArrayList<HashMap<String, String>>();
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);      // open database of the year and create if not exist
@@ -124,7 +125,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                             if (ID > 0) {
                                                 String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
                                                 dbGroup.updateEmployeeListStatus(ID, 0);        // set it to punch out anyway
-                                                dbActivity.deletePunchedInActivityList(ID, TI);
+                                                dbActivity.deletePunchedInActivityList(ID, null);
                                                 feedActivityList.remove(item);
                                                 adapter_activity.notifyDataSetChanged();
                                             }
@@ -148,7 +149,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 itemPosition = position;
-                Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(position+1), Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(position + 1), Toast.LENGTH_SHORT);
                 toast.show();
                 view.animate().setDuration(30).alpha(0)
                         .withEndAction(new Runnable() {
@@ -190,7 +191,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             Calendar calendar = Calendar.getInstance();     // current date and time
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
             calendar.set(Calendar.MINUTE, selectedMinute);
-            DateFormat dtf = new SimpleDateFormat("hh:mm:ss aa");
+            DateFormat dtf = new SimpleDateFormat("HH:mm:ss");
             String TimeString = dtf.format(calendar.getTime());
             if (timeClickedID == R.id.set_time_in) {
                 TimeInString = TimeInString + " " + TimeString;
@@ -331,6 +332,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
 
     public void onClearTimeClicked(View view) {
         if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        timeClickedID = view.getId();
         if (timeClickedID == R.id.clear_time_in) {
             TimeInString = "";
             SetTimeIn.setText(getText(R.string.column_view_timein).toString());
@@ -348,7 +350,6 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             General.TouchTimeDialog(dialog, view);
         } else {
-            timeClickedID = view.getId();
             Activity = getUniqueActivity(itemPosition);
             if (Activity == null) return;
             if (timeClickedID == R.id.clear_time_in) {
@@ -486,6 +487,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         General.SortStringList(feedActivityList, Items, sort_date_ascend);
         sort_id_ascend = sort_last_name_ascend = sort_group_ascend = sort_company_ascend = false;
         sort_date_ascend = !sort_date_ascend;
+        DateSort.setText(sort_date_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
     }
 
@@ -537,6 +539,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_activity_lists.get(i).getEmployeeID()));  // need it for indexing but not display
                 map.put(getText(R.string.column_key_last_name).toString(), all_activity_lists.get(i).getLastName());
                 map.put(getText(R.string.column_key_first_name).toString(), all_activity_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_date).toString(), all_activity_lists.get(i).getDate());
                 map.put(getText(R.string.column_key_timein).toString(), all_activity_lists.get(i).getTimeIn());
                 map.put(getText(R.string.column_key_timeout).toString(), all_activity_lists.get(i).getTimeOut());
                 // convert from number of minutes to hh:mm
@@ -567,7 +570,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
         }
         daily_activity_list_view.setItemsCanFocus(true);
-        adapter_activity = new TouchTimeGeneralAdapter(this, feedActivityList, R.layout.daily_activity_view, employee_item, employee_id, 40);
+        adapter_activity = new TouchTimeGeneralAdapter(this, feedActivityList, R.layout.daily_activity_view, employee_item, employee_id, 60);
         daily_activity_list_view.setAdapter(adapter_activity);
     }
 

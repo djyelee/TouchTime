@@ -71,18 +71,32 @@
                         android:id="@+id/name_spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.8"
+                        android:layout_weight="1.6"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
-                        android:background="@drawable/list_view_border"
+                        android:background="@color/svw_dark_gray"
                         android:textSize="@dimen/medium_small_text_size"
                         android:touchscreenBlocksFocus="false"/>
+
+                    <Button
+                        android:id="@+id/sort_name"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortNameButtonClicked"
+                        android:gravity="center" />
 
                     <Button
                         android:id="@+id/report_start_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1.1"
+                        android:layout_weight="0.9"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
@@ -97,7 +111,7 @@
                         android:id="@+id/report_end_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1.1"
+                        android:layout_weight="0.9"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
@@ -146,11 +160,25 @@
                         android:textSize="@dimen/medium_small_text_size"
                         android:touchscreenBlocksFocus="false"/>
 
+                    <Button
+                        android:id="@+id/sort_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortCompanyButtonClicked"
+                        android:gravity="center" />
+
                     <Spinner
                         android:id="@+id/location_spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.6"
+                        android:layout_weight="0.5"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
@@ -161,7 +189,7 @@
                         android:id="@+id/job_spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.6"
+                        android:layout_weight="0.5"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
@@ -179,11 +207,25 @@
                         android:textSize="@dimen/medium_small_text_size"
                         android:touchscreenBlocksFocus="false"/>
 
+                    <Button
+                        android:id="@+id/sort_group"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortGroupButtonClicked"
+                        android:gravity="center" />
+
                     <EditText
                         android:id="@+id/activity_supervisor_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.9"
                         android:paddingLeft="5dp"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -198,7 +240,7 @@
                         android:id="@+id/activity_comment_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="0.9"
                         android:paddingLeft="5dp"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"

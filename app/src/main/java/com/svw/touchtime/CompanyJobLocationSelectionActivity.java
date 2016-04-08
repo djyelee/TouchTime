@@ -47,8 +47,12 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         CompanyLocationJob = getIntent().getStringArrayListExtra("CompanyLocationJob");
         if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_employee_punch_menu)))     // first item is the caller, then company, location, and job
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_employee_punch_menu).toString()));
-        else
+        else if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_work_group_punch_menu)))
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_work_group_punch_menu).toString()));
+        else if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_daily_activity_menu)))
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_daily_activity_menu).toString()));
+        else if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_employee_menu)))
+            setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_employee_menu).toString()));
 
         company_list_view = (ListView) findViewById(R.id.company_selection_view);
         location_list_view = (ListView) findViewById(R.id.location_selection_view);

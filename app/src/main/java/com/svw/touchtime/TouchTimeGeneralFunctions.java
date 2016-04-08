@@ -42,14 +42,14 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         textView.setTextSize(view.getResources().getInteger(R.integer.dialog_message_size));
         textView.setTextColor(view.getResources().getColor(R.color.dialog_message_color));
         textView.setTypeface(null, Typeface.BOLD_ITALIC);
-        // dialog.getWindow().setLayout(300, 200);
+        // dialog.getWindow().setLayout(600, 400);
         // textView.setText(MessageID);
         // dialog.getButton(dialog.BUTTON_NEUTRAL).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
         // dialog.getButton(dialog.BUTTON_POSITIVE).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
         // dialog.getButton(dialog.BUTTON_NEGATIVE).setTextSize(view.getResources().getInteger(R.integer.dialog_button_size));
     }
 
-    public ArrayList<String> getCountries(String usa, String msg) {
+    public ArrayList<String> getCountries(String msg) {
         Locale[] locales = Locale.getAvailableLocales();
         ArrayList<String> countries = new ArrayList<String>();
         for (Locale locale : locales) {
@@ -62,14 +62,13 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         ArrayList<String> list = new ArrayList<String>();
         list.add("");
         list.add(msg);
-        list.add(usa);
         countries.remove("United States");      // remove use from the list
         for (int i=0; i<countries.size(); i++) list.add(countries.get(i));
         return list;
     }
 
     public String TimeDifference(String OldTime, String NewTime) {
-        DateFormat tf = new SimpleDateFormat("hh:mm:ss aa");
+        DateFormat tf = new SimpleDateFormat("HH:mm:ss");
         if (OldTime == null || NewTime == null) return null;
         long diffMinutes = 0;
         long diffHours = 0;
@@ -86,13 +85,14 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
     }
 
     public long MinuteDifference(String OldTime, String NewTime) {
-        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
+        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (OldTime == null || NewTime == null) return 0;
         long diffMinutes = 0;
         try {
             Date d1 = tf.parse(OldTime);
             Date d2 = tf.parse(NewTime);
             long diff = d2.getTime() - d1.getTime();
+            diff = (diff < 0) ? -diff : diff;   // make sure it is always positive of the difference between two times
             diffMinutes = diff / (60 * 1000);
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,6 +265,7 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
             } else {
                 list.remove(i);     // remove duplicate
                 size--;             // decrease the size
+                i--;
             }
         }
         return list;
