@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,7 +37,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     public ListView daily_activity_list_view;
     ArrayList<DailyActivityList> all_activity_lists;
     private EditText LunchMinuteEdit, SupervisorEdit, CommentsEdit;
-    private TextView report_view;
+    private TextView report_view, report_hours;
     ArrayList<String> list_name;
     ArrayList<String> list_group;
     ArrayList<String> list_company;
@@ -93,7 +92,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
         daily_activity_list_view = (ListView) findViewById(R.id.daily_activity_list_view);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);      // open database of the year and create if not exist
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -103,6 +102,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
 
         feedActivityList = new ArrayList<HashMap<String, String>>();
         report_view = (TextView) findViewById(R.id.report_view);
+        report_hours = (TextView) findViewById(R.id.report_hours);
         LunchMinuteEdit = (EditText) findViewById(R.id.activity_lunch_text);
         SupervisorEdit = (EditText) findViewById(R.id.activity_supervisor_text);
         CommentsEdit = (EditText) findViewById(R.id.activity_comment_text);
@@ -187,7 +187,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         GroupSpinner.setOnItemSelectedListener(OnSpinnerCL);
 
         selectYear(findViewById(android.R.id.content), Integer.parseInt(CurrentYear));
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);        // prevent soft keyboard from squeezing the EditTex Box
+
+
         LunchMinuteEdit.setOnTouchListener(new TextView.OnTouchListener() {         // set blank whenever touched
             public boolean onTouch(View v, MotionEvent event) {
                 LunchMinuteEdit.setText("");
@@ -306,7 +307,6 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 }
             }
         };
-
     }
 
     public AdapterView.OnItemSelectedListener OnSpinnerCL = new AdapterView.OnItemSelectedListener() {
@@ -442,7 +442,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 if (!Lunch.isEmpty() && Long.parseLong(Lunch) >= 0) {
                     Activity.setLunch(Long.parseLong(Lunch));
                     feedActivityList.get(itemPosition).put(getText(R.string.column_key_lunch).toString(),
-                            String.format("%2s:%2s", String.valueOf(Activity.Lunch / 60 % 24),
+                            String.format("%2s:%2s", String.valueOf(Activity.Lunch / 60),
                                     String.valueOf(Activity.Lunch % 60)).replace(' ', '0'));
                     update = true;
                 }
@@ -463,7 +463,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 diff = (diff > 0 && diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
                 Activity.setHours(diff);
                 feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(),
-                            String.format("%2s:%2s", String.valueOf(Activity.Hours / 60 % 24),
+                            String.format("%2s:%2s", String.valueOf(Activity.Hours / 60),
                                     String.valueOf(Activity.Hours % 60)).replace(' ', '0'));
                 setUniqueActivity(Activity, itemPosition);          // must update activity first before changing feedActivityList
              }
@@ -485,7 +485,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         String [] Column = new String[NUMBER_ITEMS];
         String [] Compare = new String[NUMBER_ITEMS];
         String [] Values = new String[NUMBER_ITEMS];
-        int i = 0, count = 0, total_hours = 0;
+        int i = 0, count = 0;
+        long total_hours = 0;
         for (String s : itemsSelected) {
             if (!s.equals(noSelection)) {
                 Column[count] = ObjectKeys.get(i);
@@ -514,6 +515,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             list_job.clear();
             list_group.clear();
         }
+        HighlightListItem(0);
         i = 0;
         while (i < all_activity_lists.size()) {
             map = new HashMap<String, String>();
@@ -541,11 +543,12 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             map.put(getText(R.string.column_key_timein).toString(), Activity.getTimeIn());
             map.put(getText(R.string.column_key_timeout).toString(), Activity.getTimeOut());
             // convert from number of minutes to hh:mm
-            map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(Activity.getLunch() / 60 % 24),
+            map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(Activity.getLunch() / 60),
                     String.valueOf(Activity.getLunch() % 60)).replace(' ', '0'));
             // convert from number of minutes to hh:mm
-            map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(Activity.getHours() / 60 % 24),
+            map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(Activity.getHours() / 60),
                     String.valueOf(Activity.getHours() % 60)).replace(' ', '0'));
+            total_hours = total_hours + Activity.getHours();
             map.put(getText(R.string.column_key_company).toString(), Activity.getCompany());
             if (readAll) list_company.add(Activity.getCompany());
             map.put(getText(R.string.column_key_location).toString(), Activity.getLocation());
@@ -571,7 +574,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             feedActivityList.add(map);
             i++;
         };
-        HighlightListItem(0);
+        report_hours.setText(getText(R.string.report_total_hours).toString() + " " + String.format("%4s:%2s", String.valueOf(total_hours / 60), String.valueOf(total_hours % 60)));
 
         if (readAll) {
             General.sortString(list_name);
@@ -627,7 +630,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             ObjectKeys.add(dbActivity.getWorkGroupColumnKey());
             for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
             updateSpinnerListView(view);
-            report_view.setText(getText(R.string.daily_activity_view_message) + " " + year);
+            report_view.setText(getText(R.string.report_review_message) + " " + year);
         }
     }
 

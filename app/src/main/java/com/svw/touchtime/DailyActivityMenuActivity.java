@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -66,6 +65,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         daily_activity_list_view = (ListView) findViewById(R.id.daily_activity_list_view);
         LunchMinuteEdit = (EditText) findViewById(R.id.activity_lunch_text);
@@ -83,7 +83,6 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         ActivityDateString = dateFormat.format(Calendar.getInstance().getTime());
 
         retrieveActivityRecord();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);        // prevent soft keyboard from squeezing the EditTex Box
 
         LunchMinuteEdit.setOnTouchListener(new TextView.OnTouchListener() {         // set blank whenever touched
             public boolean onTouch(View v, MotionEvent event) {
@@ -125,7 +124,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                             if (ID > 0) {
                                                 String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
                                                 dbGroup.updateEmployeeListStatus(ID, 0);        // set it to punch out anyway
-                                                dbActivity.deletePunchedInActivityList(ID, null);
+                                                dbActivity.deletePunchedInActivityList(ID, TI);
                                                 feedActivityList.remove(item);
                                                 adapter_activity.notifyDataSetChanged();
                                             }
@@ -167,6 +166,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 myTimeListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
         mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
     }
 
     private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
@@ -308,7 +308,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                         diff = (diff > 0 && diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
                         Activity.setHours(diff);
                         feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(),
-                                String.format("%2s:%2s", String.valueOf(Activity.Hours / 60 % 24),
+                                String.format("%2s:%2s", String.valueOf(Activity.Hours / 60),
                                         String.valueOf(Activity.Hours % 60)).replace(' ', '0'));
                     }
                     setUniqueActivity(Activity, itemPosition);          // must update activity first before changing feedActivityList
@@ -543,10 +543,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_timein).toString(), all_activity_lists.get(i).getTimeIn());
                 map.put(getText(R.string.column_key_timeout).toString(), all_activity_lists.get(i).getTimeOut());
                 // convert from number of minutes to hh:mm
-                map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(all_activity_lists.get(i).getHours() / 60 % 24),
+                map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(all_activity_lists.get(i).getHours() / 60),
                         String.valueOf(all_activity_lists.get(i).getHours() % 60)).replace(' ', '0'));
                 // convert from number of minutes to hh:mm
-                map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(all_activity_lists.get(i).getLunch() / 60 % 24),
+                map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(all_activity_lists.get(i).getLunch() / 60),
                         String.valueOf(all_activity_lists.get(i).getLunch() % 60)).replace(' ', '0'));
                 map.put(getText(R.string.column_key_company).toString(), all_activity_lists.get(i).getCompany());
                 map.put(getText(R.string.column_key_location).toString(), all_activity_lists.get(i).getLocation());

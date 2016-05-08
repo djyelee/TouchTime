@@ -85,7 +85,7 @@
     <string name="individual_punch_menu">Individual Punch In/Out</string>
     <string name="work_group_punch_menu">Work Group Punch In/Out</string>
     <string name="daily_activity_menu">Daily Activity</string>
-    <string name="report_review_menu">View Report</string>
+    <string name="report_review_menu">View Activities</string>
     <string name="report_export_menu">Export Report</string>
 
     <!-- Company Profile Menu -->
@@ -206,8 +206,8 @@
     <string name="enter_comment_hint">Enter comment...</string>
     <string name="enter_supervisor_hint">Enter supervisor..</string>
     <string name="enter_lunch_hint">Lunch..</string>
-    <string name="daily_activity_view_message">Daily Activity of </string>
-    <string name="daily_activity_no_message">No Daily Activity for </string>
+    <string name="daily_activity_view_message">Daily Activities of </string>
+    <string name="daily_activity_no_message">No Daily Activities for </string>
 
     <!-- Report Selection -->
     <string name="report_review_title">Report Review </string>
@@ -218,6 +218,8 @@
     <string name="report_selection_start_date">Start Date</string>
     <string name="report_selection_end_date">End Date</string>
     <string name="report_selection_group">Group</string>
+    <string name="report_review_message">Review Activities of </string>
+    <string name="report_total_hours">Total Hours: </string>
 
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
@@ -255,13 +257,14 @@
     <string name="button_upd">Update</string>
     <string name="button_sub">Submit</string>
     <string name="button_sel">Select</string>
-    <string name="button_clear_all">Clear Company</string>
+    <string name="button_clear_all">Clear</string>
     <string name="button_copy_to">Copy To</string>
     <string name="button_employee">Employees</string>
     <string name="button_punch_in">Punch In</string>
     <string name="button_punch_out">Punch Out</string>
-    <string name="button_move_job">Select Job</string>
+    <string name="button_select_job">Select Job</string>
     <string name="button_remove_job">Remove Job</string>
+    <string name="button_move_job">Move Job</string>
     <string name="button_select_all">Select All</string>
     <string name="button_deselect_all">Clear All</string>
     <string name="button_select_date">Select Date</string>

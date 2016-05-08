@@ -25,6 +25,8 @@ public class AdministratorMenuActivity extends ActionBarActivity {
             main_menu.setText(getText(R.string.title_activity_administrator_menu).toString());
         else
             main_menu.setText(getText(R.string.title_activity_supervisor_menu).toString());
+
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
     }
 
     public void ReportReviewMenu(View view) {

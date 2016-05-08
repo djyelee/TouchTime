@@ -69,6 +69,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_employee_profile_menu).toString()));
         setContentView(R.layout.activity_employee_detail);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         Calendar calendar;
         LastNameEdit = (EditText) findViewById(R.id.employee_last_name_text);

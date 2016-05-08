@@ -42,7 +42,6 @@
     <string name="column_key_comments">Comments</string>
     <string name="column_key_no_selection">-</string>
     <string name="column_key_name">Name</string>
-    <string name="column_usa_name">U.S.A.</string>
 
     <!-- These are used for view headers.  Can be switch to a different language. -->
     <string name="column_view_employee_id">ID</string>
@@ -261,7 +260,8 @@
     <string name="button_employee">Employees</string>
     <string name="button_punch_in">Punch In</string>
     <string name="button_punch_out">Punch Out</string>
-    <string name="button_move_job">Select Job</string>
+    <string name="button_select_job">Select Job</string>
+    <string name="button_move_job">Move Job</string>
     <string name="button_remove_job">Remove Job</string>
     <string name="button_select_all">Select All</string>
     <string name="button_deselect_all">Clear All</string>

@@ -50,6 +50,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
             delete_employee.setClickable(false);
             delete_employee.setBackgroundColor(getResources().getColor(R.color.svw_dark_gray));
         }
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         employee_list_view = (ListView) findViewById(R.id.employee_profile_list_view);
         sort_id = (Button) findViewById(R.id.sort_id);

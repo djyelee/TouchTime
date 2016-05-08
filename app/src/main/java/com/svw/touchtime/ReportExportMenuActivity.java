@@ -17,6 +17,7 @@ public class ReportExportMenuActivity extends ActionBarActivity {
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
     }
 
 

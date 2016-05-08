@@ -52,7 +52,7 @@
             android:layout_gravity="center_vertical" />
         <Button
             android:id="@+id/group_select_job"
-            android:text="@string/button_move_job"
+            android:text="@string/button_select_job"
             android:textSize="@dimen/medium_small_text_size"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -63,16 +63,16 @@
             android:onClick="onSelectJobButtonClicked"
             android:layout_gravity="center_vertical" />
         <Button
-            android:id="@+id/group_remove_job"
-            android:text="@string/button_remove_job"
+            android:id="@+id/group_move_job"
+            android:text="@string/button_move_job"
             android:textSize="@dimen/medium_small_text_size"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
             android:layout_marginRight="5dp"
             android:clickable="true"
-            android:onClick="onRemoveJobButtonClicked"
+            android:onClick="onMoveJobButtonClicked"
             android:layout_gravity="center_vertical" />
         <Button
             android:id="@+id/group_punch_in"

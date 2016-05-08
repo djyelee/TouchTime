@@ -56,6 +56,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         else
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);        // prevent soft keyboard from squeezing the EditTex Box
 
         company_list_view = (ListView) findViewById(R.id.company_profile_list_view);

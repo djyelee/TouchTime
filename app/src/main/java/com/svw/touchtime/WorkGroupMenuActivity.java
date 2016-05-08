@@ -54,6 +54,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_administrator_menu).toString()));
         else
             setTitle(getText(R.string.back_to).toString().concat(" " + getText(R.string.title_activity_supervisor_menu).toString()));
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         ListView employee_list_view;
 
@@ -189,6 +190,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     WorkGroup.setCompany("");               // no company assigned yet
                     WorkGroup.setLocation("");              // no location assigned yet
                     WorkGroup.setJob("");                   // no job assigned yet
+                    WorkGroup.setStatus(0);
                     unique_group.add(String.valueOf(WorkGroup.getGroupID()));
                     Collections.sort(unique_group, new Comparator<String>() {
                         @Override

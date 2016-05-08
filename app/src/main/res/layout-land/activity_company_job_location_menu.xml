@@ -103,7 +103,7 @@
             <Button
                 android:id="@+id/btn_new"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
                 android:layout_marginRight="5dp"
@@ -113,7 +113,7 @@
             <Button
                 android:id="@+id/btn_del"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/roundshapebtn"
@@ -139,7 +139,7 @@
             <Button
                 android:id="@+id/btn_clear"
                 android:layout_width="0dp"
-                android:layout_weight="2.5"
+                android:layout_weight="1.5"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
                 android:text="@string/button_clear_all"

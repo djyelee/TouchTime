@@ -4,6 +4,7 @@
 android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:focusableInTouchMode="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -189,20 +190,6 @@ android:id="@+id/scrollView1"
                         android:gravity="center" />
 
                     <Button
-                        android:id="@+id/sort_company"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/up"
-                        android:textSize="@dimen/medium_small_text_size"
-                        android:clickable="true"
-                        android:onClick="onSortCompanyButtonClicked"
-                        android:gravity="center" />
-
-                    <Button
                         android:id="@+id/select_company"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -215,6 +202,20 @@ android:id="@+id/scrollView1"
                         android:textSize="@dimen/medium_small_text_size"
                         android:clickable="true"
                         android:onClick="onSelectCompanyClicked"
+                        android:gravity="center" />
+
+                    <Button
+                        android:id="@+id/sort_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortCompanyButtonClicked"
                         android:gravity="center" />
 
                     <TextView

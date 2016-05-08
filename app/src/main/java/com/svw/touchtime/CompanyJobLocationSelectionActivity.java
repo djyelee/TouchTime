@@ -43,6 +43,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_job_location_selection);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         CompanyLocationJob = getIntent().getStringArrayListExtra("CompanyLocationJob");
         if (CompanyLocationJob.get(0).equals(getText(R.string.title_activity_employee_punch_menu)))     // first item is the caller, then company, location, and job
@@ -68,10 +69,13 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
             int i=0;
             do {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_company).toString(), all_lists.get(i).getName());
+                if (i == 0)     // add a blank company to deselect company
+                    map.put(getText(R.string.column_key_company).toString(), getText(R.string.button_remove_job).toString());
+                else
+                    map.put(getText(R.string.column_key_company).toString(), all_lists.get(i-1).getName());
                 feedCompanyList.add(map);
-            } while (++i < all_lists.size());
-            itemCompany = db.getCompanyListPosition(CompanyLocationJob.get(1));     // Company name is stored in (1)
+            } while (++i < all_lists.size()+1);
+            itemCompany = db.getCompanyListPosition(CompanyLocationJob.get(1)) + 1;     // Company name is stored in (1), add 1 because a blank is inserted
          } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.no_company_message).setTitle(R.string.employee_punch_title);
@@ -163,9 +167,9 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         feedLocationList.clear();
         feedJobList.clear();
         if (itemCompany < 0) return;
-        if (!all_lists.get(itemCompany).getLocation().isEmpty()) {
+        if (itemCompany > 0 && !all_lists.get(itemCompany-1).getLocation().isEmpty()) {
             index = 0;
-            for (String s : all_lists.get(itemCompany).Location.split(",")) {
+            for (String s : all_lists.get(itemCompany-1).Location.split(",")) {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                 if (!ss.isEmpty()) {
                     if (ss.equals(CompanyLocationJob.get(2))) itemLocation = index;     // location is passed into this activity as the second item
@@ -176,9 +180,9 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
                 }
             }
         } else itemLocation = -1;
-        if (!all_lists.get(itemCompany).getJob().isEmpty()) {
+        if (itemCompany > 0 && !all_lists.get(itemCompany-1).getJob().isEmpty()) {
             index = 0;
-            for (String s : all_lists.get(itemCompany).Job.split(",")) {
+            for (String s : all_lists.get(itemCompany-1).Job.split(",")) {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                 if (!ss.isEmpty()) {
                     if (ss.equals(CompanyLocationJob.get(3))) itemJob = index;   // location is passed into this activity as the third item
@@ -195,7 +199,7 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         Intent returnIntent = new Intent();
         ArrayList<String> CompanyLocationJob = new ArrayList<String>();
         CompanyLocationJob.add(getText(R.string.title_activity_employee_punch_menu).toString());        // caller
-        CompanyLocationJob.add((itemCompany >= 0) ? feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()) : "");              // company
+        CompanyLocationJob.add((itemCompany >= 1) ? feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()) : "");              // company
         CompanyLocationJob.add((itemLocation >= 0) ? feedLocationList.get(itemLocation).get(getText(R.string.column_key_location).toString()) : "");           // location
         CompanyLocationJob.add((itemJob >= 0) ? feedJobList.get(itemJob).get(getText(R.string.column_key_job).toString()) : "");                         // job
         returnIntent.putStringArrayListExtra("CompanyLocationJob", CompanyLocationJob);

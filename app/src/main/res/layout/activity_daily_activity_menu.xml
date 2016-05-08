@@ -4,6 +4,7 @@
     android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:focusableInTouchMode="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -84,7 +85,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.8"
+                        android:layout_weight="0.6"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:text="@string/column_view_first_name"
@@ -94,10 +95,25 @@
                         android:gravity="center" />
 
                     <Button
+                        android:id="@+id/sort_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortDateButtonClicked"
+                        android:gravity="center" />
+
+
+                    <Button
                         android:id="@+id/set_time_in"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.9"
+                        android:layout_weight="0.7"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
@@ -124,7 +140,7 @@
                         android:id="@+id/set_time_out"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.9"
+                        android:layout_weight="0.7"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
@@ -133,6 +149,7 @@
                         android:textSize="@dimen/medium_small_text_size"
                         android:gravity="center"
                         android:onClick="onSetTimeClicked"/>
+
                     <Button
                         android:id="@+id/clear_time_out"
                         android:layout_width="0dp"
@@ -233,7 +250,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
-                        android:text="@string/column_view_group_id"
+                        android:text="@string/column_view_group"
                         android:textSize="@dimen/medium_small_text_size"
                         android:clickable="true"
                         android:onClick="onSortGroupButtonClicked"

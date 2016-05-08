@@ -42,12 +42,14 @@ public class EmployeeMenuActivity extends ActionBarActivity {
     private EmployeeGroupCompanyDBWrapper dbGroup;
     private DailyActivityDBWrapper dbActivity;
     static final int PICK_JOB_REQUEST = 123;
+    static final int MOVE_JOB_REQUEST = 456;
     Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_menu);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         addListenerOnButton();
         Last_Name_View = (TextView) findViewById(R.id.employee_last_name_text);
@@ -282,7 +284,9 @@ public class EmployeeMenuActivity extends ActionBarActivity {
 
     public void employeePunchIn(View view) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateString = df.format(new Date());
+        String currentDateTimeString = tf.format(new Date());
         dbGroup.updateEmployeeListStatus(employeeID, 1);
         Activity = new DailyActivityList();
         Activity.setEmployeeID(Employee.getEmployeeID());
@@ -292,14 +296,14 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         if (!Employee.getCompany().isEmpty()) Activity.setCompany(Employee.getCompany());
         if (!Employee.getLocation().isEmpty()) Activity.setLocation(Employee.getLocation());
         if (!Employee.getJob().isEmpty()) Activity.setJob(Employee.getJob());
-        Activity.setDate(df.format(Calendar.getInstance().getTime()));
+        Activity.setDate(currentDateString);        // store time in date for indexing purpose
         Activity.setTimeIn(currentDateTimeString);
         dbActivity.createActivityList(Activity);
     }
 
     public void employeePunchOut(View view) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
+        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateTimeString = tf.format(new Date());
         dbGroup.updateEmployeeListStatus(employeeID, 0);
         Activity = dbActivity.getPunchedInActivityList(employeeID);
         if (Activity != null && Activity.getEmployeeID() > 0) {
@@ -334,6 +338,39 @@ public class EmployeeMenuActivity extends ActionBarActivity {
                 intent.putStringArrayListExtra("CompanyLocationJob", CompanyLocationJob);
                 startActivityForResult(intent, PICK_JOB_REQUEST);
             }
+        } else {
+            builder.setMessage(R.string.no_employee_message).setTitle(R.string.employee_punch_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        }
+    }
+
+    public void onMoveJobButtonClicked(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+        if (dbGroup.checkEmployeeID(employeeID)) {          // a valid ID is entered
+            Employee = dbGroup.getEmployeeList(employeeID);
+            if (dbGroup.getEmployeeListStatus(employeeID) == 1) {
+                builder.setMessage(getText(R.string.employee_already_punched_in_message).toString()).setTitle(R.string.employee_menu_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, view);
+            }
+            Intent intent = new Intent(this, CompanyJobLocationSelectionActivity.class);
+            ArrayList<String> CompanyLocationJob = new ArrayList<>();
+            CompanyLocationJob.add(getText(R.string.title_activity_employee_menu).toString());        // caller
+            // use the last selected one as default
+            CompanyLocationJob.add(Employee.getCompany());              // company
+            CompanyLocationJob.add(Employee.getLocation());             // location
+            CompanyLocationJob.add(Employee.getJob());                  // job
+            intent.putStringArrayListExtra("CompanyLocationJob", CompanyLocationJob);
+            startActivityForResult(intent, MOVE_JOB_REQUEST);
         } else {
             builder.setMessage(R.string.no_employee_message).setTitle(R.string.employee_punch_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -382,9 +419,9 @@ public class EmployeeMenuActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Check which request we're responding to
-        if (requestCode == PICK_JOB_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
+        // Make sure the request was successful
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_JOB_REQUEST || requestCode == MOVE_JOB_REQUEST) {
                 ArrayList<String> CompanyLocationJob = new ArrayList<String>();
                 CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
                 // update the selected employee
@@ -395,6 +432,10 @@ public class EmployeeMenuActivity extends ActionBarActivity {
                 Location_View.setText(Employee.getLocation().isEmpty() ? "" : Employee.getLocation());
                 Job_View.setText(Employee.getJob().isEmpty() ? "" : Employee.getJob());
                 dbGroup.updateEmployeeListCompanyLocationJob(employeeID, CompanyLocationJob.get(1), CompanyLocationJob.get(2), CompanyLocationJob.get(3));
+                if (requestCode == MOVE_JOB_REQUEST) {
+                    employeePunchOut(findViewById(android.R.id.content));
+                    employeePunchIn(findViewById(android.R.id.content));
+                }
             }
         }
     }

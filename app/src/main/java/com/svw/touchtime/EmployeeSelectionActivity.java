@@ -40,6 +40,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_selection);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         lv = (ListView) findViewById(R.id.employee_selection_list_view);
         Title = (TextView) findViewById(R.id.employee_selection_group);
