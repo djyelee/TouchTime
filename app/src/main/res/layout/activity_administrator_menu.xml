@@ -136,7 +136,7 @@
                 android:background="@drawable/roundshapebtn"
                 android:onClick="ReportReviewMenu" />
             <Button
-                android:text="@string/report_export_menu"
+                android:text="@string/time_sheet_menu"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -144,7 +144,7 @@
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/roundshapebtn"
-                android:onClick="ReportExportMenu" />
+                android:onClick="TimeSheetMenu" />
         </TableRow>
 
     </TableLayout>

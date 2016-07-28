@@ -42,6 +42,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     boolean sort_group_ascend = false;
     boolean sort_company_ascend = false;
     boolean sort_date_ascend = false;
+    boolean select_date = false;
     int itemPosition, Caller;
     int timeClickedID;
     Context context;
@@ -53,8 +54,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     private DatePickerDialog mDatePicker;
     DateFormat dateFormat;
     String ActivityDateString;
-    String TimeInString;
-    String TimeOutString;
+    String TimeInString = "";
+    String TimeOutString = "";
     static final int PICK_JOB_REQUEST = 123;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,13 +174,14 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
-                if (timeClickedID == R.id.set_time_in) {
+                if (select_date) {
+                    ActivityDateString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
+                    retrieveActivityRecord();
+                    select_date = false;
+                } else if (timeClickedID == R.id.set_time_in) {
                     TimeInString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
                 } else if (timeClickedID == R.id.set_time_out) {
                     TimeOutString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
-                } else if (timeClickedID == R.id.daily_activity_select_date) {
-                    ActivityDateString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
-                    retrieveActivityRecord();
                 }
             }
         }
@@ -205,34 +207,46 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
 
     public DailyActivityList getUniqueActivity(int item) {
         ArrayList<DailyActivityList> ActivityList;
-        String [] Column = new String[3];
-        String [] Compare = new String[3];
-        String [] Values = new String[3];
+        String [] Column = new String[6];
+        String [] Compare = new String[6];
+        String [] Values = new String[6];
         Column[0] = dbActivity.getIDColumnKey();
         Column[1] = dbActivity.getTimeInColumnKey();
         Column[2] = dbActivity.getTimeOutColumnKey();
+        Column[3] = dbActivity.getCompanyColumnKey();
+        Column[4] = dbActivity.getLocationColumnKey();
+        Column[5] = dbActivity.getJobColumnKey();
         Values[0] = String.valueOf(feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString()));
         Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
         Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
-        Compare[0] = Compare[1] = Compare[2] = "=";
+        Values[3] = feedActivityList.get(item).get(getText(R.string.column_key_company).toString());
+        Values[4] = feedActivityList.get(item).get(getText(R.string.column_key_location).toString());
+        Values[5] = feedActivityList.get(item).get(getText(R.string.column_key_job).toString());
+        Compare[0] = Compare[1] = Compare[2] = Compare[3] = Compare[4] = Compare[5] = "=";
         ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
         return (ActivityList.size() == 0) ? null : ActivityList.get(0);              // should only match and return one, so take the first one
     }
 
     public void setUniqueActivity(DailyActivityList uniqueActivity, int item) {
-        String [] Column = new String[3];
-        String [] Values = new String[3];
+        String [] Column = new String[6];
+        String [] Values = new String[6];
         Column[0] = dbActivity.getIDColumnKey();
         Column[1] = dbActivity.getTimeInColumnKey();
         Column[2] = dbActivity.getTimeOutColumnKey();
+        Column[3] = dbActivity.getCompanyColumnKey();
+        Column[4] = dbActivity.getLocationColumnKey();
+        Column[5] = dbActivity.getJobColumnKey();
         Values[0] = String.valueOf(feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString()));
         Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
         Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
+        Values[3] = feedActivityList.get(item).get(getText(R.string.column_key_company).toString());
+        Values[4] = feedActivityList.get(item).get(getText(R.string.column_key_location).toString());
+        Values[5] = feedActivityList.get(item).get(getText(R.string.column_key_job).toString());
         dbActivity.updateActivityList(uniqueActivity, Column, Values);
      }
 
     public void onSelectDateButtonClicked(View view) {
-        timeClickedID = view.getId();
+        select_date = true;
         mDatePicker.show();
     }
 
@@ -312,9 +326,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                         String.valueOf(Activity.Hours % 60)).replace(' ', '0'));
                     }
                     setUniqueActivity(Activity, itemPosition);          // must update activity first before changing feedActivityList
-                    if (timeClickedID == R.id.set_time_in) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
+                    if (view.getId() == R.id.textViewTimeIn && !TimeInString.isEmpty()) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
                         feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), TimeInString);
-                    } else if (timeClickedID == R.id.set_time_out) {
+                    }
+                    if (view.getId() == R.id.textViewTimeOut && !TimeOutString.isEmpty()) {
                         feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), TimeOutString);
                     }
                 }
@@ -332,11 +347,11 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
 
     public void onClearTimeClicked(View view) {
         if (feedActivityList.size() == 0 || itemPosition < 0) return;
-        timeClickedID = view.getId();
-        if (timeClickedID == R.id.clear_time_in) {
+        int timeClearID = view.getId();
+        if (timeClearID == R.id.clear_time_in) {
             TimeInString = "";
             SetTimeIn.setText(getText(R.string.column_view_timein).toString());
-        } else if (timeClickedID == R.id.clear_time_out) {
+        } else if (timeClearID == R.id.clear_time_out) {
             TimeOutString = "";
             SetTimeOut.setText(getText(R.string.column_view_timeout).toString());
         }
@@ -352,17 +367,17 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         } else {
             Activity = getUniqueActivity(itemPosition);
             if (Activity == null) return;
-            if (timeClickedID == R.id.clear_time_in) {
+            if (timeClearID == R.id.clear_time_in) {
                 Activity.setTimeIn(TimeInString);
-            } else if (timeClickedID == R.id.clear_time_out) {
+            } else if (timeClearID == R.id.clear_time_out) {
                 Activity.setTimeOut(TimeOutString);
             }
             Activity.setHours(0);
             feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(), "00:00");
             setUniqueActivity(Activity, itemPosition);              // update activity first
-            if (timeClickedID == R.id.clear_time_in) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
+            if (timeClearID == R.id.clear_time_in) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
                 feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), TimeInString);
-            } else if (timeClickedID == R.id.clear_time_out) {
+            } else if (timeClearID == R.id.clear_time_out) {
                 feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), TimeOutString);
             }
             adapter_activity.setSelectedItem(itemPosition);

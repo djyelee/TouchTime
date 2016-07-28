@@ -42,6 +42,13 @@
     <string name="column_key_comments">Comments</string>
     <string name="column_key_no_selection">-</string>
     <string name="column_key_name">Name</string>
+    <string name="column_key_sunday">Sunday</string>
+    <string name="column_key_monday">Monday</string>
+    <string name="column_key_tuesday">Tuesday</string>
+    <string name="column_key_wednesday">Wednesday</string>
+    <string name="column_key_thursday">Thursday</string>
+    <string name="column_key_friday">Friday</string>
+    <string name="column_key_saturday">Saturday</string>
 
     <!-- These are used for view headers.  Can be switch to a different language. -->
     <string name="column_view_employee_id">ID</string>
@@ -81,12 +88,12 @@
     <string name="company_profile_menu">Company Profile</string>
     <string name="job_location_menu">Job and Location</string>
     <string name="employee_profile_menu">Employee Profile</string>
-    <string name="work_group_menu">Work Group</string>
+    <string name="work_group_menu">Workgroup</string>
     <string name="individual_punch_menu">Individual Punch In/Out</string>
-    <string name="work_group_punch_menu">Work Group Punch In/Out</string>
+    <string name="work_group_punch_menu">Workgroup Punch In/Out</string>
     <string name="daily_activity_menu">Daily Activity</string>
-    <string name="report_review_menu">View Report</string>
-    <string name="report_export_menu">Export Report</string>
+    <string name="report_review_menu">Review Activities</string>
+    <string name="time_sheet_menu">Time Sheet</string>
 
     <!-- Company Profile Menu -->
     <string name="company_name_header">Company Name</string>
@@ -206,18 +213,36 @@
     <string name="enter_comment_hint">Enter comment...</string>
     <string name="enter_supervisor_hint">Enter supervisor..</string>
     <string name="enter_lunch_hint">Lunch..</string>
-    <string name="daily_activity_view_message">Daily Activity of </string>
-    <string name="daily_activity_no_message">No Daily Activity for </string>
+    <string name="daily_activity_view_message">Daily Activities of </string>
+    <string name="daily_activity_no_message">No Daily Activities for </string>
 
     <!-- Report Selection -->
     <string name="report_review_title">Report Review </string>
-    <string name="report_export_title">Report Export </string>
-    <string name="report_selection_id">Employee ID</string>
     <string name="report_selection_last_name">Last Name</string>
     <string name="report_selection_first_name">First Name</string>
     <string name="report_selection_start_date">Start Date</string>
     <string name="report_selection_end_date">End Date</string>
     <string name="report_selection_group">Group</string>
+    <string name="report_review_message">Activities of </string>
+    <string name="report_total_hours">Total Hours: </string>
+
+    <!-- Time Sheet Selection -->
+    <string name="time_sheet_title">Time Sheet</string>
+    <string name="time_sheet_message">Time Sheet</string>
+    <string name="time_sheet_name">Name</string>
+    <string name="time_sheet_company">Company</string>
+    <string name="time_sheet_location">Location</string>
+    <string name="time_sheet_job">Job</string>
+    <string name="time_sheet_sunday">SU</string>
+    <string name="time_sheet_monday">M</string>
+    <string name="time_sheet_tuesday">TU</string>
+    <string name="time_sheet_wednesday">W</string>
+    <string name="time_sheet_thursday">TH</string>
+    <string name="time_sheet_friday">F</string>
+    <string name="time_sheet_saturday">SA</string>
+    <string name="time_sheet_hours">Total</string>
+    <string name="time_sheet_no_message">No activities for the selected week !</string>
+    <string name="time_sheet_header">Time Sheet : Week of </string>
 
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
@@ -255,18 +280,24 @@
     <string name="button_upd">Update</string>
     <string name="button_sub">Submit</string>
     <string name="button_sel">Select</string>
-    <string name="button_clear_all">Clear Company</string>
+    <string name="button_clear_all">Clear</string>
     <string name="button_copy_to">Copy To</string>
     <string name="button_employee">Employees</string>
     <string name="button_punch_in">Punch In</string>
     <string name="button_punch_out">Punch Out</string>
     <string name="button_select_job">Select Job</string>
-    <string name="button_move_job">Move Job</string>
     <string name="button_remove_job">Remove Job</string>
+    <string name="button_move_job">Move Job</string>
     <string name="button_select_all">Select All</string>
     <string name="button_deselect_all">Clear All</string>
     <string name="button_select_date">Select Date</string>
     <string name="button_select_year">Select Year</string>
+    <string name="button_daily_view">Daily</string>
+    <string name="button_weekly_view">Weekly</string>
+    <string name="button_yearly_view">Yearly</string>
+    <string name="button_time_sheet_week">Week</string>
+    <string name="button_time_sheet_export">Export</string>
+    <string name="button_time_sheet_print">Print</string>
 
     <!-- Main Activity Names -->
     <string name="action_settings">Settings</string>
@@ -282,13 +313,11 @@
     <string name="title_activity_employee_punch_menu">Employee Punch In/Out Menu</string>
     <string name="title_activity_work_group_punch_menu">Work Group Punch Menu</string>
     <string name="title_activity_daily_activity_menu">Daily Activity Menu</string>
-    <string name="title_activity_report_export_menu">Report Export Menu</string>
+    <string name="title_activity_time_sheet_menu">Time Sheet Menu</string>
     <string name="title_activity_report_review_menu">Report Review Menu]</string>
 
     <string name="title_activity_employee_detail">Employee Detail</string>
     <string name="title_activity_employee_selection">Employee Selection</string>
     <string name="title_activity_company_job_location_selection">Company Job Location Selection</string>
-    <string name="hello_world">Hello world!</string>
-
 
 </resources>

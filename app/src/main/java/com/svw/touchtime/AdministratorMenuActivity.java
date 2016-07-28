@@ -65,8 +65,8 @@ public class AdministratorMenuActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void ReportExportMenu(View view) {
-        Intent intent = new Intent(this, ReportExportMenuActivity.class);
+    public void TimeSheetMenu(View view) {
+        Intent intent = new Intent(this, TimeSheetMenuActivity.class);
         intent.putExtra("Caller", Caller);
         startActivity(intent);
     }

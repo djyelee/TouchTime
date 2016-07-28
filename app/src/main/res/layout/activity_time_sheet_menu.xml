@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.svw.touchtime.CheckableLinearLayout
+
+    android:id="@+id/scrollView1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:focusableInTouchMode="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp">
+            <TextView
+                android:id="@+id/time_sheet_view"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/time_sheet_message"
+                android:textStyle="bold|italic"
+                android:textColor="@color/svw_blue"
+                android:layout_weight="1.5"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/time_sheet_week_button"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/roundshapebtn"
+                android:text="@string/button_time_sheet_week"
+                android:textSize="@dimen/medium_small_text_size"
+                android:textColor="@color/svw_blue"
+                android:clickable="true"
+                android:onClick="onSelectWeekButtonClicked"
+                android:gravity="center" />
+
+            <Spinner
+                android:id="@+id/time_sheet_name_spinner"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2.5"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@color/svw_dark_gray"
+                android:textSize="@dimen/medium_small_text_size"
+                android:touchscreenBlocksFocus="false"/>
+
+            <Button
+                android:id="@+id/time_sheet_export_button"
+                android:text="@string/button_time_sheet_export"
+                android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onExportButtonClicked"
+                android:layout_gravity="center_vertical" />
+
+            <Button
+                android:id="@+id/time_sheet_print_button"
+                android:text="@string/button_time_sheet_print"
+                android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onPrintButtonClicked"
+                android:layout_gravity="center_vertical" />
+
+        </TableRow>
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="14">
+
+            <LinearLayout android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="3dp"
+                android:orientation="vertical">
+                <TableRow
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_marginRight="3dp">
+
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_name"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewCompany"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.5"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_company"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewLocation"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_location"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewJob"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_job"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewSunday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_sunday"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewMonday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_monday"
+                        />
+                    <TextView
+                        android:id="@+id/textViewTuesday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_tuesday"
+                        />
+                    <TextView
+                        android:id="@+id/textViewWednesday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_wednesday"
+                        />
+                    <TextView
+                        android:id="@+id/textViewThursday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_thursday"
+                        />
+                    <TextView
+                        android:id="@+id/textViewFriday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_friday"
+                        />
+                    <TextView
+                        android:id="@+id/textViewSaturday"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.75"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_saturday"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewHours"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:text="@string/time_sheet_hours"
+                        />
+
+                 </TableRow>
+
+                <ListView
+                    android:id="@+id/time_sheet_list_view"
+                    android:layout_width="1866dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/list_view_border"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:choiceMode="singleChoice"
+                    android:listSelector="@android:color/darker_gray"
+                    />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+</com.svw.touchtime.CheckableLinearLayout>

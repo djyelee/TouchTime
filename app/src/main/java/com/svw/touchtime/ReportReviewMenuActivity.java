@@ -51,7 +51,6 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     ArrayList<String> ObjectKeys;
     ArrayList<String> itemsSelected;
     String  noSelection;
-    boolean NoActivity = true;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
 
     Context context;
@@ -574,7 +573,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             feedActivityList.add(map);
             i++;
         };
-        report_hours.setText(getText(R.string.report_total_hours).toString() + " " + String.format("%4s:%2s", String.valueOf(total_hours / 60), String.valueOf(total_hours % 60)));
+        String H = getText(R.string.report_total_hours).toString() + " " + String.format("%s:%2s", String.valueOf(total_hours / 60), String.valueOf(total_hours % 60)).replace(' ', '0');
+        report_hours.setText(H);
 
         if (readAll) {
             General.sortString(list_name);
@@ -603,7 +603,6 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     public void selectYear(View view, int year) {
         dbActivity = new DailyActivityDBWrapper(context, year);
         if (dbActivity.getActivityListCount() == 0) {
-            NoActivity = true;
             context.deleteDatabase(dbActivity.getDatabaseName());       // it is empty, might as well delete it
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
             builder.setMessage(getText(R.string.daily_activity_no_message).toString() + " " + String.valueOf(year)).setTitle(R.string.report_review_title);
@@ -616,7 +615,6 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             General.TouchTimeDialog(dialog, view);
         } else {
-            NoActivity = false;
             ObjectKeys.clear();
             itemsSelected.clear();
             ObjectKeys.add(dbActivity.getIDColumnKey());
