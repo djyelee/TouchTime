@@ -3,7 +3,9 @@ package com.svw.touchtime;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -16,20 +18,24 @@ import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class WorkGroupMenuActivity extends ActionBarActivity {
     private ListView work_group_list_view;
     private EditText GroupNameEdit, SupervisorEdit, ShiftNameEdit;
     private ArrayList<WorkGroupList> all_work_group_lists;
-    private ArrayList<String> unique_group;
     private ArrayList<String> unique_employee;
     private SimpleAdapter adapter_group;
     private SimpleAdapter adapter_employee;
@@ -45,6 +51,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     static final int PICK_GROUP_REQUEST = 123;          // The request code
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeGroupCompanyDBWrapper db;
+    String FileName = "Workgroup";
+    File NewGroupFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +66,6 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         ListView employee_list_view;
-
         work_group_list_view = (ListView) findViewById(R.id.work_group_list_view);
         employee_list_view = (ListView) findViewById(R.id.employee_list_view);
         GroupNameEdit = (EditText) findViewById(R.id.work_group_name_text);
@@ -67,36 +75,16 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         feedEmployeeList= new ArrayList<HashMap<String, String>>();
         // database and other data
         db = new EmployeeGroupCompanyDBWrapper(this);
-
-        // retrieve work group lists
-        all_work_group_lists = db.getAllWorkGroupLists();
-        unique_group = new ArrayList<String>();
         WorkGroup = new WorkGroupList();
-        if (all_work_group_lists.size() > 0) {
-            int i = 0;
-            do {
-                unique_group.add(String.valueOf(all_work_group_lists.get(i++).getGroupID()));
-            } while (i < all_work_group_lists.size());
-            // remove duplicates from work group list and resort alphabetically ignoring case
-            unique_group = General.removeDuplicates(unique_group);
-            General.sortString(unique_group);
-            i = 0;
-            while (i < unique_group.size()) {
-                map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_group_id).toString(), unique_group.get(i++));
-                feedGroupList.add(map);
-            };
-            WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(0)));
-            itemWorkGroup = 0;
-        }
         group_item[0] = getText(R.string.column_key_group_id).toString();
         group_id[0] = R.id.groupDisplayID;
         work_group_list_view.setItemsCanFocus(true);
         // work_group_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
         adapter_group = new SimpleAdapter(this, feedGroupList, R.layout.group_display_view, group_item, group_id);
         work_group_list_view.setAdapter(adapter_group);
+        itemWorkGroup = 0;
+        readWorkGroup();
         displayWorkGroup();
-
         // retrieve employee lists
         unique_employee = new ArrayList<String>();
         // display selected employees
@@ -111,6 +99,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_display_view, employee_item, employee_id);
         employee_list_view.setAdapter(adapter_employee);
         displayEmployee();
+        deleteCSVFiles();
 
         work_group_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,7 +108,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 view.animate().setDuration(100).alpha(0).withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
+                                WorkGroup = db.getWorkGroupList(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
                                 displayWorkGroup();
                                 displayEmployee();
                                 view.setAlpha(1);
@@ -130,10 +119,85 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         });
     }
 
+    public void readWorkGroup() {
+        all_work_group_lists = db.getAllWorkGroupLists();
+        feedGroupList.clear();
+        if (all_work_group_lists.size() > 0) {
+            int i = 0;
+            while (i < all_work_group_lists.size()) {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(all_work_group_lists.get(i++).getGroupID()));
+                feedGroupList.add(map);
+            };
+            General.SortIntegerList(feedGroupList, getText(R.string.column_key_group_id).toString(), true);     // sort accend
+
+            ////// update employee group
+            ////// Get Available Group ID
+        }
+    }
+
+    public void displayWorkGroup() {
+        WorkGroup = db.getWorkGroupList(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
+        GroupNameEdit.setText(WorkGroup.getGroupName().isEmpty() ? "" : WorkGroup.getGroupName());
+        SupervisorEdit.setText(WorkGroup.getSupervisor().isEmpty() ? "" : WorkGroup.getSupervisor());
+        ShiftNameEdit.setText(WorkGroup.getShiftName().isEmpty() ? "" : WorkGroup.getShiftName());
+        adapter_group.notifyDataSetChanged();
+        work_group_list_view.setItemChecked(itemWorkGroup, true);
+    }
+
+    public void displayEmployee() {
+        unique_employee.clear();      // c lear the old list
+        if (!WorkGroup.getEmployees().isEmpty()) {
+            String[] array = WorkGroup.getEmployees().split(",");
+            boolean invalidEmployee = false;
+            for (String s : array) {
+                String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                if (!ss.isEmpty()) {
+                    if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
+                        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+                        if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
+                                db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
+                                db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
+                                invalidEmployee = true;
+
+                            db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
+                        } else {
+                            unique_employee.add(ss);
+                            db.updateEmployeeListGroup(Integer.parseInt(ss), WorkGroup.getGroupID());
+                        }
+                    }
+                }
+            }
+            if (invalidEmployee) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                builder.setMessage(R.string.group_inactive_employee_message).setTitle(R.string.group_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
+            }
+            // update employee list in the group
+            JSONArray JobArray = new JSONArray(unique_employee);
+            WorkGroup.setEmployees(JobArray.toString());
+            db.updateWorkGroupList(WorkGroup);
+        }
+        feedEmployeeList.clear();     // clear the old list
+        for (String s : unique_employee) {
+            map = new HashMap<String, String>();
+            map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(db.getEmployeeList(Integer.parseInt(s)).getEmployeeID()));
+            map.put(getText(R.string.column_key_last_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getLastName());
+            map.put(getText(R.string.column_key_first_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getFirstName());
+            feedEmployeeList.add(map);
+        }
+        adapter_employee.notifyDataSetChanged();
+    }
+
     public void onEmployeeButtonClicked(View view) {
          if (itemWorkGroup >= 0) {
             Intent intent = new Intent(this, EmployeeSelectionActivity.class);
-            intent.putExtra("SelectedGroup", Integer.parseInt(unique_group.get(itemWorkGroup)));
+            intent.putExtra("SelectedGroup", Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
             startActivityForResult(intent, PICK_GROUP_REQUEST);
         } else {
              // put the dialog inside so it will not dim the screen when returns.
@@ -160,6 +224,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 JSONArray JobArray = new JSONArray(EmployeeIDList);
                 WorkGroup.setEmployees(JobArray.toString());
                 db.updateWorkGroupList(WorkGroup);
+                readWorkGroup();
                 displayWorkGroup();
                 displayEmployee();
             }
@@ -191,15 +256,8 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     WorkGroup.setLocation("");              // no location assigned yet
                     WorkGroup.setJob("");                   // no job assigned yet
                     WorkGroup.setStatus(0);
-                    unique_group.add(String.valueOf(WorkGroup.getGroupID()));
-                    Collections.sort(unique_group, new Comparator<String>() {
-                        @Override
-                        public int compare(String o1, String o2) {
-                            return o1.compareToIgnoreCase(o2);
-                        }
-                    });
                     db.createWorkGroupList(WorkGroup);
-                    itemWorkGroup = unique_group.indexOf(String.valueOf(WorkGroup.getGroupID()));
+                    readWorkGroup();
                     displayWorkGroup();
                     displayEmployee();
                 }
@@ -224,11 +282,12 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-           } else if (db.checkWorkGroupID(Integer.parseInt(unique_group.get(itemWorkGroup)))) {
+           } else if (db.checkWorkGroupID(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())))) {
                 builder.setMessage(R.string.group_update_message).setTitle(R.string.group_title);
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         db.updateWorkGroupList(WorkGroup);
+                        readWorkGroup();
                         displayWorkGroup();                             // name is already there
                         displayEmployee();
                         }
@@ -270,18 +329,18 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                             }
                         }
                         // delete group and update list
-                        db.deleteWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
-                        unique_group.remove(itemWorkGroup);
+                        db.deleteWorkGroupList(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
                         feedGroupList.remove(itemWorkGroup);
                         adapter_group.notifyDataSetChanged();
                         all_work_group_lists = db.getAllWorkGroupLists();
                         if (all_work_group_lists.size() > 0) {
                             itemWorkGroup = itemWorkGroup >= 1 ? itemWorkGroup-1 : 0;
-                            WorkGroup = db.getWorkGroupList(Integer.parseInt(unique_group.get(itemWorkGroup)));
+                            WorkGroup = db.getWorkGroupList(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
                         } else {
                             itemWorkGroup = -1;
                             WorkGroup = new WorkGroupList();
                         }
+                        readWorkGroup();
                         displayWorkGroup();
                         displayEmployee();
                     }
@@ -303,62 +362,195 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         General.TouchTimeDialog(dialog, view);
     }
 
-    public void displayWorkGroup() {
-        int i = 0;
-        GroupNameEdit.setText(WorkGroup.getGroupName().isEmpty() ? "" : WorkGroup.getGroupName());
-        SupervisorEdit.setText(WorkGroup.getSupervisor().isEmpty() ? "" : WorkGroup.getSupervisor());
-        ShiftNameEdit.setText(WorkGroup.getShiftName().isEmpty() ? "" : WorkGroup.getShiftName());
-        feedGroupList.clear();                  // clear the old list
-        while (i < unique_group.size()) {
-            map = new HashMap<String, String>();
-            map.put(getText(R.string.column_key_group_id).toString(), unique_group.get(i++));
-            feedGroupList.add(map);
-        };
-        adapter_group.notifyDataSetChanged();
-        work_group_list_view.setItemChecked(itemWorkGroup, true);
+    public void onImportButtonClicked(View view) {
+        boolean FileFound = false;
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        // for (File s : list) s.delete();
+        final File file = new File(Folder, FileName + ".csv");
+        for (File f : list) {
+            if (f.equals(file)) {
+                FileFound = true;
+                break;
+            }
+        }
+        if (!FileFound) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.group_not_found).setTitle(R.string.group_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+            deleteCSVFiles();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.group_will_be_lost).setTitle(R.string.company_profile_title);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    readCsvFile(file);
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        }
     }
 
-    public void displayEmployee() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-        unique_employee.clear();      // c lear the old list
-        if (!WorkGroup.getEmployees().isEmpty()) {
-            String[] array = WorkGroup.getEmployees().split(",");
-            for (String s : array) {
-                String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                if (!ss.isEmpty()) {
-                    if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                        if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
-                                db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
-                                db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
-                            builder.setMessage(R.string.group_inactive_employee_message).setTitle(R.string.group_title);
-                            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                }
-                            });
-                            AlertDialog dialog = builder.create();
-                            General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
-                            db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
-                        } else {
-                            unique_employee.add(ss);
-                        }
+    public void readCsvFile(File file) {
+        Pattern pattern = Pattern.compile("\"(.*?)\"");     // match "  "
+        Matcher matcher;
+        int noRecords = 0;
+        String line;
+        String Employee = "";
+        ArrayList<String> ID_list = new ArrayList<>();
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            while ((line = br.readLine()) != null) {
+                WorkGroupList G = new WorkGroupList();
+                // db.resetAllEmployeeGroup();         // remove group association by resetting all employees to group 0
+                if (line.isEmpty()) continue;       // skip empty lines
+                noRecords ++;
+                if (noRecords > 2) {  // the first two are header and column names
+                    Employee = "";
+                    matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+                        Employee = matcher.group(1);
+                        Employee = Employee.replace(",", "\",\"");   // replace , with ","
+                        Employee = "[\"" + Employee + "\"]";
                     }
+                    String[] item = line.replace("\"", "").split(",");
+                    if (item.length > 0) G = db.getWorkGroupList(Integer.parseInt(item[0]));                // Return ID=0 if a new ID
+                    if (item.length > 0) G.setGroupID(Integer.parseInt(item[0])); else G.setGroupID(0);   // override the return id
+                    if (item.length > 1) G.setGroupName(item[1]); else G.setGroupName("No Name");
+                    if (item.length > 2) G.setSupervisor(item[2]); else G.setSupervisor("");
+                    if (item.length > 3) G.setShiftName(item[3]); else G.setShiftName("");
+                    if (item.length > 4) G.setCompany(item[4]); else G.setCompany("");
+                    if (item.length > 5) G.setLocation(item[5]); else G.setLocation("");
+                    if (item.length > 6) G.setJob(item[6]); else G.setJob("");
+                    if (item.length > 7) G.setStatus(Integer.parseInt(item[7])); else G.setStatus(0);
+                    G.setEmployees(Employee);
+                    if (db.checkWorkGroupID(G.getGroupID())) { // ID already exists
+                        db.updateWorkGroupList(G);
+                    } else {
+                        db.createWorkGroupList(G);
+                    }
+                    ID_list.add(item[0]);   // keep a list for checking removed ID later
                 }
             }
-            // update employee list in the group
-            JSONArray JobArray = new JSONArray(unique_employee);
-            WorkGroup.setEmployees(JobArray.toString());
-            db.updateWorkGroupList(WorkGroup);
+            // check employees that have been removed
+            String ID;
+            boolean found = false;
+            for (int i=0; i<feedGroupList.size(); i++) {
+                ID = feedGroupList.get(i).get(getText(R.string.column_key_group_id).toString());
+                found = false;
+                for (String s : ID_list) {
+                    if (ID.equals(s)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) db.deleteWorkGroupList(Integer.parseInt(ID));
+            }
+            readWorkGroup();
+            itemWorkGroup = 0;
+            displayWorkGroup();
+            displayEmployee();
+            br.close();
+            deleteCSVFiles();
+        } catch(IOException e){
+            e.printStackTrace();
         }
-        feedEmployeeList.clear();     // clear the old list
-        for (String s : unique_employee) {
-            map = new HashMap<String, String>();
-            map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(db.getEmployeeList(Integer.parseInt(s)).getEmployeeID()));
-            map.put(getText(R.string.column_key_last_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getLastName());
-            map.put(getText(R.string.column_key_first_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getFirstName());
-            feedEmployeeList.add(map);
+    }
+
+    public void onExportButtonClicked(View view) {
+        String to = "svwtouchtime@gmail.com";
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("plain/text");
+        try {
+            deleteCSVFiles();
+//          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
+            NewGroupFile= new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileName + ".csv");  // download folder
+            if (!NewGroupFile.exists()) {
+                if (NewGroupFile.createNewFile()) {
+                    generateCsvFile(NewGroupFile);
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(NewGroupFile));
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
+                    i.putExtra(Intent.EXTRA_SUBJECT, FileName);
+                    i.putExtra(Intent.EXTRA_TEXT, FileName);
+                    startActivity(Intent.createChooser(i, "E-mail"));
+                    db.closeDB();
+                    finish();           // force it to quit to remove the file because email intent is asynchronous
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        adapter_employee.notifyDataSetChanged();
+    }
+
+    public void generateCsvFile(File sFileName) {
+        int i, j;
+        FileWriter writer = null;
+        String Header = "";
+        String ColumnNames = "";
+        String Entries;
+
+        Header = getText(R.string.group_title).toString();
+        Header = "\"" + Header + "\"" + "\n";
+        ColumnNames = getText(R.string.column_view_group_id).toString() + "," +
+                getText(R.string.group_name_title_text).toString() + "," +
+                getText(R.string.supervisor_title_text).toString() + "," +
+                getText(R.string.shift_title_text).toString() + "," +
+                getText(R.string.column_view_company).toString() + "," +
+                getText(R.string.location_title_text).toString() + "," +
+                getText(R.string.job_title_text).toString() + "," +
+                getText(R.string.column_view_status).toString() + "," +
+                getText(R.string.column_view_employee_id).toString() + "\n";
+        try {
+            writer = new FileWriter(sFileName);
+            writer.append(Header);
+            writer.append(ColumnNames);
+            for (i = 0; i < all_work_group_lists.size(); i++) {
+                String Employee = all_work_group_lists.get(i).getEmployees().replace("\"", "").replace("[", "").replace("]", "");
+                Entries = all_work_group_lists.get(i).getGroupID() + "," +
+                        all_work_group_lists.get(i).getGroupName() + "," +
+                        all_work_group_lists.get(i).getSupervisor() + "," +
+                        all_work_group_lists.get(i).getShiftName() + "," +
+                        all_work_group_lists.get(i).getCompany() + "," +
+                        all_work_group_lists.get(i).getLocation() + "," +
+                        all_work_group_lists.get(i).getJob() + "," +
+                        String.valueOf(all_work_group_lists.get(i).getStatus()) + "," +
+                        "\"" + Employee + "\"" + "\n";
+                writer.append(Entries);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteCSVFiles() {
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        for (File f : list) {
+            String name = f.getName();
+            if (name.substring(name.lastIndexOf(".") + 1, name.length()).equals("csv")) {
+                f.delete();
+            }
+        }
     }
 
     @Override
@@ -380,6 +572,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             return true;
         } else if (id == android.R.id.home) {
             db.closeDB();
+            deleteCSVFiles();
             onBackPressed();
             return true;
         }

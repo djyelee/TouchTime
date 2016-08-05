@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -22,6 +25,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,7 +86,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     private EmployeeGroupCompanyDBWrapper dbGroup;
     private DatePickerDialog mYearPicker;
     private DatePickerDialog mDatePicker;
+    DateFormat dtFormat;
     int itemPosition, Caller;
+    String FileName = "Activities";
+    File NewActivityFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +105,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);      // open database of the year and create if not exist
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
         CurrentDate = df.format(Calendar.getInstance().getTime());
         DateFormat yf = new SimpleDateFormat("yyyy");
+        dtFormat = new SimpleDateFormat(getText(R.string.date_time_format).toString());
         CurrentYear = yf.format(Calendar.getInstance().getTime());
 
         feedActivityList = new ArrayList<HashMap<String, String>>();
@@ -186,8 +198,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         GroupSpinner.setOnItemSelectedListener(OnSpinnerCL);
 
         selectYear(findViewById(android.R.id.content), Integer.parseInt(CurrentYear));
-
-
+        deleteCSVFiles();
         LunchMinuteEdit.setOnTouchListener(new TextView.OnTouchListener() {         // set blank whenever touched
             public boolean onTouch(View v, MotionEvent event) {
                 LunchMinuteEdit.setText("");
@@ -225,7 +236,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                                             String G = feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString());
                                             if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                             if (ID > 0) {
-                                                String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
+                                                String TI = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
                                                 dbGroup.updateEmployeeListStatus(ID, 0);        // set it to punch out anyway
                                                 dbActivity.deletePunchedInActivityList(ID, TI);
                                                 feedActivityList.remove(item);
@@ -285,9 +296,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         });
 
         Calendar calendar = Calendar.getInstance();
-        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        mYearPicker = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        mYearPicker = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
         {
             @Override
@@ -323,18 +334,28 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         itemsSelected.set(ObjectKeys.indexOf(dbActivity.getIDColumnKey()), Name[2]);
                     }
                     updateSpinnerListView(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
             } else if (parent == GroupSpinner) {
                      itemsSelected.set(ObjectKeys.indexOf(dbActivity.getWorkGroupColumnKey()), list_group.get(pos));
                     updateSpinnerListView(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
             } else if (parent == CompanySpinner) {
                     itemsSelected.set(ObjectKeys.indexOf(dbActivity.getCompanyColumnKey()), list_company.get(pos));
                     updateSpinnerListView(view);
+                    sort_company_ascend = true;
+                    onSortCompanyButtonClicked(view);
             } else if (parent == LocationSpinner) {
                     itemsSelected.set(ObjectKeys.indexOf(dbActivity.getLocationColumnKey()), list_location.get(pos));
                     updateSpinnerListView(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
             } else if (parent == JobSpinner) {
                     itemsSelected.set(ObjectKeys.indexOf(dbActivity.getJobColumnKey()), list_job.get(pos));
                     updateSpinnerListView(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
             }
         }
         public void onNothingSelected(AdapterView<?> parent) {
@@ -345,18 +366,18 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
-                String keyDate = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
+                String keyDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
                 switch (dateButtonID) {
                     case R.id.report_start_date_button:
                         if (feedActivityList.size() > 0) {
                             itemsSelected.set(ObjectKeys.indexOf(dbActivity.getDateColumnKey()), keyDate);
-                            StartDateButton.setText(keyDate);
+                            StartDateButton.setText(General.convertYMDtoMDY(keyDate));
                         }
                         break;
                     case R.id.report_end_date_button:
                         if (feedActivityList.size() > 0) {
                             itemsSelected.set(ObjectKeys.indexOf(dbActivity.getDateColumnKey())+1, keyDate);         // add 1 for the end date
-                            EndDateButton.setText(keyDate);
+                            EndDateButton.setText(General.convertYMDtoMDY(keyDate));
                         }
                         break;
                     case R.id.report_review_select_year:
@@ -369,8 +390,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                     if (!StartDate.equals(noSelection) && !EndDate.equals(noSelection) && StartDate.compareTo(EndDate) > 0) {     // swap if start date is larger than the end date
                         itemsSelected.set(ObjectKeys.indexOf(dbActivity.getDateColumnKey()), EndDate);
                         itemsSelected.set(ObjectKeys.indexOf(dbActivity.getDateColumnKey())+1, StartDate);
-                        StartDateButton.setText(EndDate);
-                        EndDateButton.setText(StartDate);
+                        StartDateButton.setText(General.convertYMDtoMDY(EndDate));
+                        EndDateButton.setText(General.convertYMDtoMDY(StartDate));
                     }
                     updateSpinnerListView(view);
                 }
@@ -400,8 +421,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         Column[2] = dbActivity.getTimeOutColumnKey();
         String[] Name = feedActivityList.get(item).get(getText(R.string.column_key_name).toString()).split(", ");       // name is stored as last, first, ID
         Values[0] = String.valueOf(Name[2]);            // getting the third component, which is the ID
-        Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
-        Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
+        Values[1] = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
         Compare[0] = Compare[1] = Compare[2] = "=";
         ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
         return (ActivityList.size() == 0) ? null : ActivityList.get(0);              // should only match and return one, so take the first one
@@ -415,8 +436,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         Column[2] = dbActivity.getTimeOutColumnKey();
         String[] Name = feedActivityList.get(item).get(getText(R.string.column_key_name).toString()).split(", ");       // name is stored as last, first, ID
         Values[0] = String.valueOf(Name[2]);            // getting the third component, which is the ID
-        Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
-        Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
+        Values[1] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
         dbActivity.updateActivityList(uniqueActivity, Column, Values);
     }
 
@@ -448,7 +469,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 break;
         }
         if (update) {
-            if (feedActivityList.get(itemPosition).get(getText(R.string.column_key_timeout).toString()).isEmpty()) {
+            if (General.convertMDYtoYMD(feedActivityList.get(itemPosition).get(getText(R.string.column_key_timeout).toString())).isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
                 builder.setMessage(R.string.employee_already_punched_in_message).setTitle(R.string.report_review_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -458,7 +479,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 AlertDialog dialog = builder.create();
                 General.TouchTimeDialog(dialog, view);
             } else {
-                long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
+                long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), Activity.getTimeOut());
                 diff = (diff > 0 && diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
                 Activity.setHours(diff);
                 feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(),
@@ -508,12 +529,12 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             all_activity_lists = dbActivity.getAllActivityLists();
             readAll = true;
             // actually don't have to clear, but just in case something in the future
-            list_name.clear();
-            list_company.clear();
-            list_location.clear();
-            list_job.clear();
-            list_group.clear();
         }
+        list_name.clear();
+        list_company.clear();
+        list_location.clear();
+        list_job.clear();
+        list_group.clear();
         HighlightListItem(0);
         i = 0;
         while (i < all_activity_lists.size()) {
@@ -523,7 +544,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             // converting 12 hour to 24 hour time
 /*            try {
                 DateFormat tf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
-                DateFormat ttf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat ttf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
                 Date d1 = tf.parse(Activity.getTimeIn());
                 Date d2 = tf.parse(Activity.getTimeOut());
                 dbActivity.deletePunchedInActivityList(Activity.getEmployeeID(), Activity.getTimeIn());
@@ -537,10 +558,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             String Name;
             Name = Activity.getLastName() + ", " + Activity.getFirstName() + ", " + String.valueOf(Activity.getEmployeeID());
             map.put(getText(R.string.column_key_name).toString(), Name);
-            if (readAll) list_name.add(Name);
-            map.put(getText(R.string.column_key_date).toString(), all_activity_lists.get(i).getDate());
-            map.put(getText(R.string.column_key_timein).toString(), Activity.getTimeIn());
-            map.put(getText(R.string.column_key_timeout).toString(), Activity.getTimeOut());
+            list_name.add(Name);
+            map.put(getText(R.string.column_key_date).toString(), General.convertYMDtoMDY(Activity.getDate()));
+            map.put(getText(R.string.column_key_timein).toString(), General.convertYMDTtoMDYT(Activity.getTimeIn()));
+            map.put(getText(R.string.column_key_timeout).toString(), General.convertYMDTtoMDYT(Activity.getTimeOut()));
             // convert from number of minutes to hh:mm
             map.put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(Activity.getLunch() / 60),
                     String.valueOf(Activity.getLunch() % 60)).replace(' ', '0'));
@@ -549,13 +570,13 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                     String.valueOf(Activity.getHours() % 60)).replace(' ', '0'));
             total_hours = total_hours + Activity.getHours();
             map.put(getText(R.string.column_key_company).toString(), Activity.getCompany());
-            if (readAll) list_company.add(Activity.getCompany());
+            list_company.add(Activity.getCompany());
             map.put(getText(R.string.column_key_location).toString(), Activity.getLocation());
-            if (readAll) list_location.add(Activity.getLocation());
+            list_location.add(Activity.getLocation());
             map.put(getText(R.string.column_key_job).toString(), Activity.getJob());
-            if (readAll) list_job.add(Activity.getJob());
+            list_job.add(Activity.getJob());
             map.put(getText(R.string.column_key_group_id).toString(), Activity.getWorkGroup());
-            if (readAll && !Activity.getWorkGroup().isEmpty()) list_group.add(Activity.getWorkGroup());
+            if (!Activity.getWorkGroup().isEmpty()) list_group.add(Activity.getWorkGroup());
             // Read the whole list the first time, check if they are all punched out
             if (readAll && Activity.getTimeOut().isEmpty() && CurrentDate.compareTo(Activity.getDate()) > 0) {
                 // reading the entire years record the first time, time out is empty and current date > punch in date, probably forgot to punch out
@@ -576,28 +597,26 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         String H = getText(R.string.report_total_hours).toString() + " " + String.format("%s:%2s", String.valueOf(total_hours / 60), String.valueOf(total_hours % 60)).replace(' ', '0');
         report_hours.setText(H);
 
-        if (readAll) {
-            General.sortString(list_name);
-            General.sortString(list_company);
-            General.sortString(list_location);
-            General.sortString(list_job);
-            General.sortString(list_group);
-            list_name = General.removeDuplicates(list_name);
-            list_company = General.removeDuplicates(list_company);
-            list_location = General.removeDuplicates(list_location);
-            list_job = General.removeDuplicates(list_job);
-            list_group = General.removeDuplicates(list_group);
-            list_name.add(0, noSelection);
-            list_company.add(0, noSelection);
-            list_location.add(0, noSelection);
-            list_job.add(0, noSelection);
-            list_group.add(0, noSelection);
-            adapter_name.notifyDataSetChanged();
-            adapter_group.notifyDataSetChanged();
-            adapter_company.notifyDataSetChanged();
-            adapter_location.notifyDataSetChanged();
-            adapter_job.notifyDataSetChanged();
-        }
+        General.sortString(list_name);
+        General.sortString(list_company);
+        General.sortString(list_location);
+        General.sortString(list_job);
+        General.sortString(list_group);
+        list_name = General.removeDuplicates(list_name);
+        list_company = General.removeDuplicates(list_company);
+        list_location = General.removeDuplicates(list_location);
+        list_job = General.removeDuplicates(list_job);
+        list_group = General.removeDuplicates(list_group);
+        list_name.add(0, noSelection);
+        list_company.add(0, noSelection);
+        list_location.add(0, noSelection);
+        list_job.add(0, noSelection);
+        list_group.add(0, noSelection);
+        adapter_name.notifyDataSetChanged();
+        adapter_group.notifyDataSetChanged();
+        adapter_company.notifyDataSetChanged();
+        adapter_location.notifyDataSetChanged();
+        adapter_job.notifyDataSetChanged();
     }
 
     public void selectYear(View view, int year) {
@@ -628,7 +647,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             ObjectKeys.add(dbActivity.getWorkGroupColumnKey());
             for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
             updateSpinnerListView(view);
-            report_view.setText(getText(R.string.report_review_message) + " " + year);
+            report_view.setText(String.valueOf(year));
+            sort_name_ascend = true;
+            onSortNameButtonClicked(view);
         }
     }
 
@@ -636,10 +657,10 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         if (feedActivityList.size() == 0 || itemPosition < 0) return;
         String [] Items = new String [5];
         Items [0] = getText(R.string.column_key_name).toString();
-        Items [1] = getText(R.string.column_key_group_id).toString();
-        Items [2] = getText(R.string.column_key_company).toString();
-        Items [3] = getText(R.string.column_key_date).toString();
-        Items [4] = getText(R.string.column_key_timein).toString();
+        Items [1] = getText(R.string.column_key_date).toString();
+        Items [2] = getText(R.string.column_key_timein).toString();
+        Items [3] = getText(R.string.column_key_group_id).toString();
+        Items [4] = getText(R.string.column_key_company).toString();
         General.SortStringList(feedActivityList, Items, sort_name_ascend);
         sort_group_ascend = sort_company_ascend = false;
         sort_name_ascend = !sort_name_ascend;
@@ -652,9 +673,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         String [] Items = new String [5];
         Items [0] = getText(R.string.column_key_group_id).toString();
         Items [1] = getText(R.string.column_key_name).toString();
-        Items [2] = getText(R.string.column_key_company).toString();
-        Items [3] = getText(R.string.column_key_date).toString();
-        Items [4] = getText(R.string.column_key_timein).toString();
+        Items [2] = getText(R.string.column_key_date).toString();
+        Items [3] = getText(R.string.column_key_timein).toString();
+        Items [4] = getText(R.string.column_key_company).toString();
         General.SortStringList(feedActivityList, Items, sort_group_ascend);
         sort_name_ascend = sort_company_ascend = false;
         sort_group_ascend = !sort_group_ascend;
@@ -677,6 +698,185 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         daily_activity_list_view.setAdapter(adapter_activity);
     }
 
+    public void onImportButtonClicked(final View view) {
+        boolean FileFound = false;
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        // for (File s : list) s.delete();
+        final File file = new File(Folder, FileName + ".csv");
+        for (File f : list) {
+            if (f.equals(file)) {
+                FileFound = true;
+                break;
+            }
+        }
+        if (!FileFound) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.report_file_not_found).setTitle(R.string.report_review_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+            deleteCSVFiles();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.report_file_will_be_lost).setTitle(R.string.report_review_title);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    readCsvFile(file);
+                    updateSpinnerListView(view);
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        }
+    }
+
+    public void readCsvFile(File file) {
+        String line;
+        int noRecords = 0;
+        ArrayList<String> ID_list = new ArrayList<>();
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            DailyActivityList D = new DailyActivityList();
+            int Count = dbActivity.getActivityListCount();
+            dbActivity.deleteIDAllActivityList();
+            Count = dbActivity.getActivityListCount();
+            while ((line = br.readLine()) != null) {
+                if (line.isEmpty()) continue;       // skip empty lines
+                noRecords++;
+                if (noRecords > 2) {  // the first two are header and column names
+                    String[] item = line.split(",");
+                    if (item.length > 0) D.setEmployeeID(Integer.parseInt(item[0])); else D.setEmployeeID(0);   // override the return id
+                    if (item.length > 1) D.setLastName(item[1]); else D.setLastName("No Name");
+                    if (item.length > 2) D.setFirstName(item[2]); else D.setFirstName("No Name");
+                    if (item.length > 3) D.setDate(General.convertMDYtoYMD(item[3].replace("[", "").replace("]", ""))); else D.setDate("");
+                    if (item.length > 4) D.setTimeIn(General.convertMDYTtoYMDT(item[4].replace("[", "").replace("]", ""))); else D.setTimeIn("");
+                    if (item.length > 5) D.setTimeOut(General.convertMDYTtoYMDT(item[5].replace("[", "").replace("]", ""))); else D.setTimeOut("");
+                    if (item.length > 6) D.setLunch(Long.parseLong(item[6])); else D.setLunch(0);
+                    if (item.length > 7) D.setHours(Long.parseLong(item[7])); else D.setHours(0);
+                    if (item.length > 8) D.setCompany(item[8]); else D.setCompany("");
+                    if (item.length > 9) D.setLocation(item[9]); else D.setLocation("");
+                    if (item.length > 10) D.setJob(item[10]); else D.setJob("");
+                    if (item.length > 11) D.setWorkGroup(item[11]); else D.setWorkGroup("");
+                    if (item.length > 12) D.setSupervisor(item[12]); else D.setSupervisor("");
+                    if (item.length > 13) D.setComments(item[13]); else D.setComments("");
+                    dbActivity.createActivityList(D);
+                    ID_list.add(item[0]);   // keep a list for checking removed ID later
+                }
+            }
+            Count = dbActivity.getActivityListCount();
+            all_activity_lists = dbActivity.getAllActivityLists();
+            for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
+            br.close();
+            deleteCSVFiles();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void onExportButtonClicked(View view) {
+        String to = "svwtouchtime@gmail.com";
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("plain/text");
+        try {
+            deleteCSVFiles();
+//          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
+            NewActivityFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileName + ".csv");  // download folder
+            if (!NewActivityFile.exists()) {
+                if (NewActivityFile.createNewFile()) {
+                    generateCsvFile(NewActivityFile);
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(NewActivityFile));
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
+                    i.putExtra(Intent.EXTRA_SUBJECT, FileName);
+                    i.putExtra(Intent.EXTRA_TEXT, FileName);
+                    startActivity(Intent.createChooser(i, "E-mail"));
+                    dbActivity.closeDB();
+                    dbGroup.closeDB();
+                    finish();           // force it to quit to remove the file because email intent is asynchronous
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateCsvFile(File sFileName) {
+        int i, j;
+        FileWriter writer = null;
+        String Header = "";
+        String ColumnNames = "";
+        String Entries;
+
+        Header = getText(R.string.report_review_title).toString();
+        Header = "\"" + Header + "\"" + "\n";
+        ColumnNames = getText(R.string.column_view_employee_id).toString() + ":" + "," +
+                getText(R.string.column_view_last_name).toString() + ":" + "," +
+                getText(R.string.column_view_first_name).toString() + ":" + "," +
+                getText(R.string.column_view_date).toString() + "," +
+                getText(R.string.column_view_timein).toString() + "," +
+                getText(R.string.column_view_timeout).toString() + "," +
+                getText(R.string.column_view_lunch).toString() + "," +
+                getText(R.string.column_key_minutes).toString() + "," +
+                getText(R.string.column_view_company).toString() + "," +
+                getText(R.string.column_view_location).toString() + "," +
+                getText(R.string.column_view_job).toString() + "," +
+                getText(R.string.column_view_group_id).toString() + ":" + "," +
+                getText(R.string.column_view_supervisor).toString() + "," +
+                getText(R.string.column_view_comments).toString() + "," +"\n";
+       try {
+            writer = new FileWriter(sFileName);
+            writer.append(Header);
+           writer.append(ColumnNames);
+            for (i = 0; i < all_activity_lists.size(); i++) {
+                Entries = String.valueOf(all_activity_lists.get(i).getEmployeeID()) + "," +
+                        all_activity_lists.get(i).getLastName() + "," +
+                        all_activity_lists.get(i).getFirstName() + "," +
+                        "[" + General.convertYMDtoMDY(all_activity_lists.get(i).getDate()) + "]" + "," +
+                        "[" + General.convertYMDTtoMDYT(all_activity_lists.get(i).getTimeIn()) + "]" + "," +
+                        "[" + General.convertYMDTtoMDYT(all_activity_lists.get(i).getTimeOut()) + "]" + "," +
+                        String.valueOf(all_activity_lists.get(i).getLunch()) + "," +
+                        String.valueOf(all_activity_lists.get(i).getHours()) + "," +
+                        all_activity_lists.get(i).getCompany() + "," +
+                        all_activity_lists.get(i).getLocation() + "," +
+                        all_activity_lists.get(i).getJob() + "," +
+                        all_activity_lists.get(i).getWorkGroup() + "," +
+                        all_activity_lists.get(i).getSupervisor() + "," +
+                        all_activity_lists.get(i).getComments() + "," + "\n";
+                writer.append(Entries);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteCSVFiles() {
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        for (File f : list) {
+            String name = f.getName();
+            if (name.substring(name.lastIndexOf(".") + 1, name.length()).equals("csv")) {
+                f.delete();
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -695,6 +895,9 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
+            dbActivity.closeDB();
+            dbGroup.closeDB();
+            deleteCSVFiles();
             onBackPressed();
             return true;
         }

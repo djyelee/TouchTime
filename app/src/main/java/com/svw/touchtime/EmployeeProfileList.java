@@ -39,8 +39,8 @@ public class EmployeeProfileList {
     // constructors
     public EmployeeProfileList() {
         this.EmployeeID = 0;            // starts from 0
-        this.LastName ="";
-        this.FirstName ="";
+        this.LastName ="No Name";
+        this.FirstName ="No Name";
         this.Street ="";
         this.City ="";
         this.State ="";
@@ -48,8 +48,8 @@ public class EmployeeProfileList {
         this.Country ="";
         this.Phone ="";
         this.Email ="";
-        this.HourlyRate = 0.0;
-        this.PieceRate = 0.0;
+        this.HourlyRate = 10.0;
+        this.PieceRate = 10.0;
         this.SSNumber ="";
         this.DoB ="";
         this.DoH ="";

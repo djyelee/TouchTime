@@ -13,6 +13,7 @@
     <color name="svw_orange">#ffffa441</color>
     <color name="svw_dark_gray">#ffd0d0d0</color>
     <color name="svw_black">#000000</color>
+    <color name="svw_red">#ffff0000</color>
     <color name="svw_view_background">#ffc7e3ff</color>
     <color name="svw_view_selector">#ffa0a0a0</color>
 
@@ -37,6 +38,7 @@
     <string name="column_key_date">Date</string>
     <string name="column_key_lunch">Lunch</string>
     <string name="column_key_hours">Hours</string>
+    <string name="column_key_minutes">Minutes</string>
     <string name="column_key_timein">TimeIn</string>
     <string name="column_key_timeout">TimeOut</string>
     <string name="column_key_comments">Comments</string>
@@ -49,6 +51,10 @@
     <string name="column_key_thursday">Thursday</string>
     <string name="column_key_friday">Friday</string>
     <string name="column_key_saturday">Saturday</string>
+    <string name="date_time_format">yyyy/MM/dd HH:mm:ss</string>
+    <string name="date_YMD_format">yyyy/MM/dd</string>
+    <string name="date_MDY_format">MM/dd/yyyy</string>
+    <string name="time_format">HH:mm:ss</string>
 
     <!-- These are used for view headers.  Can be switch to a different language. -->
     <string name="column_view_employee_id">ID</string>
@@ -57,6 +63,7 @@
     <string name="column_view_active">Active</string>
     <string name="column_view_current">Current</string>
     <string name="column_view_status">Status</string>
+    <string name="column_view_s">S</string>
     <string name="column_view_company">Company</string>
     <string name="column_view_location">Location</string>
     <string name="column_view_job">Job</string>
@@ -71,6 +78,7 @@
     <string name="column_view_comments">Comments</string>
     <string name="column_view_group_number">Group #</string>
     <string name="column_view_group">Group</string>
+    <string name="column_view_g">G</string>
     <string name="column_view_start_date">Start Date</string>
     <string name="column_view_end_date">End Date</string>
     <string name="column_view_name">Name</string>
@@ -89,8 +97,8 @@
     <string name="job_location_menu">Job and Location</string>
     <string name="employee_profile_menu">Employee Profile</string>
     <string name="work_group_menu">Workgroup</string>
-    <string name="individual_punch_menu">Individual Punch In/Out</string>
-    <string name="work_group_punch_menu">Workgroup Punch In/Out</string>
+    <string name="individual_punch_menu">Individual Punch</string>
+    <string name="work_group_punch_menu">Workgroup Punch</string>
     <string name="daily_activity_menu">Daily Activity</string>
     <string name="report_review_menu">Review Activities</string>
     <string name="time_sheet_menu">Time Sheet</string>
@@ -103,6 +111,9 @@
     <string name="company_update_message">Update company profile ?</string>
     <string name="company_duplicate_message">Company already exists, enter a new name ?</string>
     <string name="company_delete_confirm_message">Delete company permanently ?</string>
+    <string name="company_file_not_found">Company profile is lost! Download again.</string>
+    <string name="company_file_will_be_lost">Replace company profiles!  Are you sure ?</string>
+
     <!-- The followings can also be used by Employee Profile -->
     <string name="name_title_text">Name:</string>
     <string name="street_title_text">Street:</string>
@@ -141,6 +152,9 @@
     <string name="employee_add_new_message">Add New</string>
     <string name="employee_new_state_message">Add the new state ?</string>
     <string name="employee_new_city_message">Add the new city ?</string>
+    <string name="employee_document_expired">Document expired, cannot be active !</string>
+    <string name="employee_file_not_found">Employee profile is lost! Download again.</string>
+    <string name="employee_file_will_be_lost">Replace employee profiles!  Are you sure ?</string>
 
     <!-- TextView title text -->
     <string name="comma_title_text"> , </string>
@@ -164,6 +178,8 @@
     <string name="group_invalid_employee">Assign inactive or not current employees ?</string>
     <string name="group_reassign_employee_">Reassign group ?</string>
     <string name="group_select_employee">Select employees for group </string>
+    <string name="group_not_found">Group file is lost! Download again.</string>
+    <string name="group_will_be_lost">Replace group file!  Are you sure ?</string>
     <!-- TextView title text -->
     <string name="group_name_title_text">Group Name:</string>
     <string name="supervisor_title_text">Supervisor:</string>
@@ -179,14 +195,17 @@
     <string name="employee_already_punched_in_message">Employee already punched in !</string>
     <string name="employee_already_punched_out_message">Employee already punched out !</string>
     <string name="employee_must_punch_out_message">Employee must be punched out first !</string>
-    <string name="employee_must_punch_in_message">Employee has not been punched in. Punch in now ?</string>
+    <string name="employee_must_punch_in_message">Employee has not punched in. Punch in now ?</string>
     <string name="employee_group_not_punch_in_message">Group is not punched in, punch in employee anyway ?</string>
     <string name="employee_punch_in_same_job_message">Punch in to the same job as the group ?</string>
     <string name="employee_punch_in_different_job_message">Punch in to a different job from the group ?</string>
     <string name="employee_group_already_punch_out_message">Group already punched out, punch out employee as well ?</string>
     <string name="employee_punch_out_same_job_message">Punch out from the same job as the group ?</string>
     <string name="employee_punch_out_different_job_message">Punch out from a different job from the group ?</string>
-    <string name="employee_are_not_changed_message">Employees already punched in are not changed !</string>
+    <string name="employee_are_not_changed_message">Punched in employees are not changed !</string>
+    <string name="employee_out_punch_in_message">Punched out employees will be punched in !</string>
+    <string name="employee_move_job">Employee already punched in ! Move to a new job ?</string>
+    <string name="employee_same_job">Selected the same job ! No actions taken !</string>
 
     <!-- Work Group Punch In -->
     <string name="group_punch_title">Group Punch In/Out</string>
@@ -203,6 +222,9 @@
     <string name="group_must_punch_in_message">Group(s) has not been punched in. Punch in now ?</string>
     <string name="group_inactive_employee_message">Inactive employees have been removed !</string>
     <string name="group_are_not_changed_message">Groups already punched in are not changed </string>
+    <string name="group_out_punch_in_message">Punched out groups will be punched in !</string>
+    <string name="group_move_job">Group already punched in ! Move to a new job ?</string>
+    <string name="group_same_job">Selected the same job ! No actions taken !</string>
 
     <!-- Daily Activity -->
     <string name="daily_activity_title">Daily Activity </string>
@@ -225,6 +247,8 @@
     <string name="report_selection_group">Group</string>
     <string name="report_review_message">Activities of </string>
     <string name="report_total_hours">Total Hours: </string>
+    <string name="report_file_not_found">Activity file not found! Download again.</string>
+    <string name="report_file_will_be_lost">Replace activities!  Are you sure ?</string>
 
     <!-- Time Sheet Selection -->
     <string name="time_sheet_title">Time Sheet</string>
@@ -243,6 +267,7 @@
     <string name="time_sheet_hours">Total</string>
     <string name="time_sheet_no_message">No activities for the selected week !</string>
     <string name="time_sheet_header">Time Sheet : Week of </string>
+    <string name="time_sheet_week_of">Week of </string>
 
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
@@ -291,13 +316,14 @@
     <string name="button_select_all">Select All</string>
     <string name="button_deselect_all">Clear All</string>
     <string name="button_select_date">Select Date</string>
+    <string name="button_select_week">Select Week</string>
     <string name="button_select_year">Select Year</string>
     <string name="button_daily_view">Daily</string>
     <string name="button_weekly_view">Weekly</string>
     <string name="button_yearly_view">Yearly</string>
-    <string name="button_time_sheet_week">Week</string>
-    <string name="button_time_sheet_export">Export</string>
-    <string name="button_time_sheet_print">Print</string>
+    <string name="button_export">Export</string>
+    <string name="button_import">Import</string>
+    <string name="button_print">Print</string>
 
     <!-- Main Activity Names -->
     <string name="action_settings">Settings</string>

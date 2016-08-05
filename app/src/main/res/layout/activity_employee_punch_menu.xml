@@ -19,7 +19,7 @@
         <TextView
             android:id="@+id/current_date"
             android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1"
+            android:layout_weight="1.4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="5dp"
@@ -41,7 +41,7 @@
         <Button
             android:id="@+id/employee_select_all"
             android:text="@string/button_deselect_all"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/medium_small_text_size"
             android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -53,8 +53,8 @@
         <Button
             android:id="@+id/employee_select_job"
             android:text="@string/button_select_job"
-            android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1"
+            android:textSize="@dimen/medium_small_text_size"
+            android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
@@ -65,8 +65,8 @@
         <Button
             android:id="@+id/employee_move_job"
             android:text="@string/button_move_job"
-            android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1.2"
+            android:textSize="@dimen/medium_small_text_size"
+            android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
@@ -77,7 +77,7 @@
         <Button
             android:id="@+id/employee_punch_in"
             android:text="@string/button_punch_in"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/medium_small_text_size"
             android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -89,8 +89,8 @@
         <Button
             android:id="@+id/employee_punch_out"
             android:text="@string/button_punch_out"
-            android:textSize="@dimen/medium_text_size"
-            android:layout_weight="1.0"
+            android:textSize="@dimen/medium_small_text_size"
+            android:layout_weight="0.9"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
@@ -104,7 +104,7 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1.5"
         android:layout_marginBottom="5dp">
         <Button
             android:id="@+id/sort_id"
@@ -115,7 +115,6 @@
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_employee_id"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortIDButtonClicked"
             android:gravity="center" />
@@ -126,9 +125,8 @@
             android:layout_weight="1.4"
             android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/column_view_status"
+            android:text="@string/column_view_s"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortStatusButtonClicked"
             android:gravity="center" />
@@ -139,9 +137,8 @@
             android:layout_weight="1.2"
             android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
-            android:text="@string/column_view_group"
+            android:text="@string/column_view_g"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortGroupButtonClicked"
             android:gravity="center" />
@@ -154,7 +151,6 @@
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_last_name"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortLastNameButtonClicked"
             android:gravity="center" />
@@ -166,7 +162,6 @@
             android:layout_marginRight="5dp"
             android:text="@string/column_view_first_name"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center" />
@@ -180,7 +175,6 @@
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_key_company"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortCompanyButtonClicked"
             android:gravity="center" />
@@ -192,7 +186,6 @@
             android:layout_marginRight="5dp"
             android:text="@string/column_key_location"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center" />
@@ -204,7 +197,6 @@
             android:layout_marginRight="5dp"
             android:text="@string/column_key_job"
             android:textSize="@dimen/medium_small_text_size"
-            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center" />

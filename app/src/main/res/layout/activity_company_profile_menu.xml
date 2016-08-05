@@ -10,17 +10,50 @@
     android:layout_marginBottom="5dp"
     android:background="?android:attr/activatedBackgroundIndicator">
 
-    <TableLayout
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_marginRight="5dp">
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp">
+            <Button
+                android:text="@string/button_import"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onImportButtonClicked"
+                android:layout_gravity="center" />
+
+            <Button
+                android:text="@string/button_export"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onExportButtonClicked"
+                android:layout_gravity="center" />
+        </TableRow>
+
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
             android:layout_marginBottom="5dp"
             android:text="@string/company_name_header"
             android:textSize="@dimen/medium_text_size"
@@ -33,7 +66,7 @@
             android:id="@+id/company_profile_list_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_weight="8"
             android:background="@drawable/list_view_border"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -41,9 +74,10 @@
             android:paddingBottom="5dp"
             android:choiceMode="singleChoice"
             android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
-    </TableLayout>
-    <TableLayout
-        android:orientation="horizontal"
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
@@ -116,17 +150,16 @@
                 android:textColor="@color/svw_blue"
                 android:layout_weight="1.3"
                 android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/company_city_text"
+
+            <Spinner
+                android:id="@+id/city_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
                 android:layout_weight="4.7"
-                android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
+                android:textSize="@dimen/medium_text_size"
+                android:touchscreenBlocksFocus="false"
+                android:gravity="center" />
         </TableRow>
         <TableRow
             android:layout_weight="1"
@@ -142,17 +175,17 @@
                 android:textColor="@color/svw_blue"
                 android:layout_weight="1.3"
                 android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/company_state_text"
+            <Spinner
+                android:id="@+id/state_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.6"
-                android:paddingLeft="10dp"
+                android:layout_weight="2.1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
+                android:textSize="@dimen/medium_text_size"
+                android:touchscreenBlocksFocus="false"
+                android:gravity="center" />
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
@@ -160,8 +193,8 @@
                 android:text="@string/zip_code_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.5"
-                android:paddingLeft="10dp"
+                android:layout_weight="1.4"
+                android:paddingLeft="5dp"
                 android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_zip_code_text"
@@ -170,8 +203,8 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="1.6"
-                android:paddingLeft="10dp"
+                android:layout_weight="1.2"
+                android:paddingLeft="5dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="center_vertical" />
         </TableRow>
@@ -189,17 +222,17 @@
                 android:textColor="@color/svw_blue"
                 android:layout_weight="1.3"
                 android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/company_country_text"
+            <Spinner
+                android:id="@+id/country_spinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.6"
-                android:paddingLeft="10dp"
+                android:layout_weight="2.1"
+                android:layout_marginEnd="3dp"
+                android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
+                android:textSize="@dimen/medium_text_size"
+                android:touchscreenBlocksFocus="false"
+                android:gravity="center" />
             <TextView
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
@@ -207,8 +240,8 @@
                 android:text="@string/phone_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
+                android:layout_weight="0.7"
+                android:paddingLeft="5dp"
                 android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_phone_text"
@@ -217,7 +250,7 @@
                 android:textSize="@dimen/medium_text_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
-                android:layout_weight="2.1"
+                android:layout_weight="1.9"
                 android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="center_vertical" />
@@ -325,6 +358,6 @@
                 android:onClick="onDeleteButtonClicked"
                 android:layout_gravity="center_vertical" />
         </TableRow>
-    </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -49,6 +49,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
     private RadioButton currentYesButton, currentNoButton;
     private ImageView photoView;
     private DatePickerDialog CalendarDialog;
+    DateFormat df;
     private int dateButtonID;
     private int itemCountry, itemState, itemCity;
     private int Caller, employeeID;
@@ -93,7 +94,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         currentYesButton = (RadioButton) findViewById(R.id.radio_current_yes);
         currentNoButton = (RadioButton) findViewById(R.id.radio_current_no);
         photoView = (ImageView) findViewById(R.id.photo);
-
+        df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
         // database and other data
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);
         dbCountry = new CountryStateCityDBWrapper(this);
@@ -126,7 +127,7 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
         // get current date information
         calendar = Calendar.getInstance();
-        CalendarDialog = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        CalendarDialog = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         int [] Data = new int[2];
@@ -169,16 +170,13 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             }
         }
 
-        if (Request == PICK_UPDATE_REQUEST) EmployeeIDEdit.setFocusable(false);   // should not be changed
+        // if (Request == PICK_UPDATE_REQUEST) EmployeeIDEdit.setFocusable(false);   // can be changed if for new or copyto
+        EmployeeIDEdit.setFocusable(false);     // id will ne generated automatically, no need to edit (08/04/2016)
         if (Request == PICK_UPDATE_REQUEST || Request == PICK_COPY_REQUEST) {   // display what is selected
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             Employee = dbGroup.getEmployeeList(employeeID);
             if (Employee.getDocExp().compareTo(df.format(Calendar.getInstance().getTime())) < 0) {
                 radioGroupCurrent.check(R.id.radio_current_no);
                 Employee.setCurrent(0);
-            } else {
-                radioGroupCurrent.check(R.id.radio_current_yes);
-                Employee.setCurrent(1);
             }
             itemCountry = adapter_country.getPosition(Employee.getCountry());
             if (itemCountry > 0) {
@@ -350,25 +348,24 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
-                String newDate = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
+                String newDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
                 switch (dateButtonID) {
                     case R.id.dob_button:
                         if (!newDate.equals(Employee.getDoB())) {
                             Employee.setDoB(newDate);
-                            DoBButton.setText(newDate);
+                            DoBButton.setText(General.convertYMDtoMDY(newDate));
                         }
                         break;
                     case R.id.doh_button:
                         if (!newDate.equals(Employee.getDoH())) {
                             Employee.setDoH(newDate);
-                            DoHButton.setText(newDate);
+                            DoHButton.setText(General.convertYMDtoMDY(newDate));
                         }
                         break;
                     case R.id.doc_exp_button:
                         if (!newDate.equals(Employee.getDocExp())) {
-                            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                             Employee.setDocExp(newDate);
-                            DocExpButton.setText(Employee.getDocExp());
+                            DocExpButton.setText(General.convertYMDtoMDY(Employee.getDocExp()));
                             if (newDate.compareTo(df.format(Calendar.getInstance().getTime())) < 0) {
                                 radioGroupCurrent.check(R.id.radio_current_no);
                                 Employee.setCurrent(0);
@@ -385,26 +382,24 @@ public class EmployeeDetailActivity extends ActionBarActivity {
 
     public void onSetDateButtonClicked(View view) {
         dateButtonID = view.getId();
+        String item[] = new String[3];
         switch (dateButtonID) {
             case R.id.dob_button:
                 if (!Employee.getDoB().isEmpty()) {
-                    int y = Integer.parseInt(Employee.getDoB().substring(0, 4));
-                    int m = Integer.parseInt(Employee.getDoB().substring(5, 7));
-                    int d = Integer.parseInt(Employee.getDoB().substring(8, 10));
-                    CalendarDialog.updateDate(Integer.parseInt(Employee.getDoB().substring(0, 4)),
-                            Integer.parseInt(Employee.getDoB().substring(5, 7))-1, Integer.parseInt(Employee.getDoB().substring(8, 10)));
+                    item = Employee.getDoB().split("/");
+                    CalendarDialog.updateDate(Integer.parseInt(item[0]), Integer.parseInt(item[1]) - 1, Integer.parseInt(item[2]));
                 }
                 break;
             case R.id.doh_button:
                 if (!Employee.getDoH().isEmpty()) {
-                    CalendarDialog.updateDate(Integer.parseInt(Employee.getDoH().substring(0, 4)),
-                            Integer.parseInt(Employee.getDoH().substring(5, 7))-1, Integer.parseInt(Employee.getDoH().substring(8, 10)));
+                    item = Employee.getDoH().split("/");
+                    CalendarDialog.updateDate(Integer.parseInt(item[0]), Integer.parseInt(item[1])-1, Integer.parseInt(item[2]));
                 }
                 break;
             case R.id.doc_exp_button:
                 if (!Employee.getDocExp().isEmpty()) {
-                    CalendarDialog.updateDate(Integer.parseInt(Employee.getDocExp().substring(0, 4)),
-                            Integer.parseInt(Employee.getDocExp().substring(5, 7)), Integer.parseInt(Employee.getDocExp().substring(8, 10)));
+                    item = Employee.getDocExp().split("/");
+                    CalendarDialog.updateDate(Integer.parseInt(item[0]), Integer.parseInt(item[1])-1, Integer.parseInt(item[2]));
                 }
                 break;
         }
@@ -452,17 +447,17 @@ public class EmployeeDetailActivity extends ActionBarActivity {
          int ID = EmployeeIDEdit.getText().toString().isEmpty() ? 0 : Integer.parseInt(EmployeeIDEdit.getText().toString());
          if (ID == 0) {      // employee ID is not entered
              // generate a new ID
-             // Employee.setEmployeeID(db.getAvailableEmployeeID());                        // get an unused ID
-             // EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
+             Employee.setEmployeeID(dbGroup.getAvailableEmployeeID());                        // get an unused ID
+             EmployeeIDEdit.setText(String.valueOf(Employee.getEmployeeID()));
              builder.setMessage(R.string.employee_assign_ID_message).setTitle(R.string.employee_profile_title);
              builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int id) {
-                     //addUpdateProfile(true);
-                     //Intent returnIntent = new Intent();
-                     //returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
-                     //setResult(RESULT_OK, returnIntent);
-                     //db.closeDB();
-                     //finish();
+                     addUpdateProfile(true);
+                     Intent returnIntent = new Intent();
+                     returnIntent.putExtra("EmployeeID", Employee.getEmployeeID());
+                     setResult(RESULT_OK, returnIntent);
+                     dbGroup.closeDB();
+                     finish();
                  }
              });
              AlertDialog dialog = builder.create();
@@ -596,15 +591,28 @@ public class EmployeeDetailActivity extends ActionBarActivity {
         int checkedCurrent = radioGroupActive.getCheckedRadioButtonId() == currentYesButton.getId() ? 1 : 0;
         if (checkedActive != Employee.getActive()) {
             Employee.setActive(checkedActive);
+            if (checkedActive == 0) Employee.setGroup(0);
         }
-        if (checkedCurrent != Employee.getCurrent()) {
+        if (Employee.getDocExp().compareTo(df.format(Calendar.getInstance().getTime())) < 0) {
+            Employee.setCurrent(0);
+            Employee.setGroup(0);
+            radioGroupCurrent.check(R.id.radio_current_no);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setMessage(R.string.employee_document_expired).setTitle(R.string.employee_profile_title);
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        } else if (checkedCurrent != Employee.getCurrent()) {
             Employee.setCurrent(checkedCurrent);
+            if (checkedCurrent == 0) Employee.setGroup(0);
         }
     }
 
     public void displayEmployeeProfile() {
-        EmployeeIDEdit.setText(Employee.getEmployeeID() <= 0 ? "" : String.valueOf(Employee.getEmployeeID()));
-        if (Request == PICK_COPY_REQUEST) {     // some things cannot be copied
+         if (Request == PICK_COPY_REQUEST) {     // some things cannot be copied
             Employee.setLastName("");
             Employee.setFirstName("");
             Employee.setStatus(0);
@@ -616,7 +624,9 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             Employee.setLocation("");
             Employee.setJob("");
             Employee.setGroup(0);
-        }
+        } else {
+             EmployeeIDEdit.setText(Employee.getEmployeeID() <= 0 ? "" : String.valueOf(Employee.getEmployeeID()));
+         }
         LastNameEdit.setText(Employee.getLastName().isEmpty() ? "" : Employee.getLastName());
         FirstNameEdit.setText(Employee.getFirstName().isEmpty() ? "" : Employee.getFirstName());
         StreetEdit.setText(Employee.getStreet().isEmpty() ? "" : Employee.getStreet());
@@ -628,9 +638,9 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             PieceRateEdit.setText(Employee.getPieceRate() <= 0.0 ? "" : String.valueOf(Employee.getPieceRate()));
             SSNumberEdit.setText(Employee.getSSNumber().isEmpty() ? "" : Employee.getSSNumber());
         }
-        DoBButton.setText(Employee.getDoB().isEmpty() ? "" : Employee.getDoB());
-        DoHButton.setText(Employee.getDoH().isEmpty() ? "" : Employee.getDoH());
-        DocExpButton.setText(Employee.getDocExp().isEmpty() ? "" : Employee.getDocExp());
+        DoBButton.setText(Employee.getDoB().isEmpty() ? "" : General.convertYMDtoMDY(Employee.getDoB()));
+        DoHButton.setText(Employee.getDoH().isEmpty() ? "" : General.convertYMDtoMDY(Employee.getDoH()));
+        DocExpButton.setText(Employee.getDocExp().isEmpty() ? "" : General.convertYMDtoMDY(Employee.getDocExp()));
         CommentsEdit.setText(Employee.getComments().isEmpty() ? "" : Employee.getComments());
         radioGroupActive.check(Employee.getActive() == 1 ? R.id.radio_active_yes : R.id.radio_active_no);
         radioGroupCurrent.check(Employee.getCurrent() == 1 ? R.id.radio_current_yes : R.id.radio_current_no);
@@ -649,12 +659,13 @@ public class EmployeeDetailActivity extends ActionBarActivity {
             Employee.setPieceRate((PieceRateEdit.getText().toString().isEmpty()) ? 0.0 : Double.parseDouble(PieceRateEdit.getText().toString()));
             Employee.setSSNumber((SSNumberEdit.getText().toString().isEmpty()) ? "" : SSNumberEdit.getText().toString());
         }
-        Employee.setDoB((DoBButton.getText().toString().isEmpty()) ? "" : DoBButton.getText().toString());
-        Employee.setDoH((DoHButton.getText().toString().isEmpty()) ? "" : DoHButton.getText().toString());
-        Employee.setDocExp((DocExpButton.getText().toString().isEmpty()) ? "" : DocExpButton.getText().toString());
+        Employee.setDoB((DoBButton.getText().toString().isEmpty()) ? "" : General.convertMDYtoYMD(DoBButton.getText().toString()));
+        Employee.setDoH((DoHButton.getText().toString().isEmpty()) ? "" : General.convertMDYtoYMD(DoHButton.getText().toString()));
+        Employee.setDocExp((DocExpButton.getText().toString().isEmpty()) ? "" : General.convertMDYtoYMD(DocExpButton.getText().toString()));
         Employee.setComments((CommentsEdit.getText().toString().isEmpty()) ? "" : CommentsEdit.getText().toString());
         Employee.setActive(radioGroupActive.getCheckedRadioButtonId() == activeYesButton.getId() ? 1 : 0);
         Employee.setCurrent(radioGroupCurrent.getCheckedRadioButtonId() == currentYesButton.getId() ? 1 : 0);
+        if (Employee.getActive() == 0 || Employee.getCurrent() == 0) Employee.setGroup(0);
         BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
         Employee.setPhoto((drawable == null) ? null : drawable.getBitmap());
         if (Add) {

@@ -13,7 +13,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,14 +66,39 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         return list;
     }
 
-    public String TimeDifference(String OldTime, String NewTime) {
-        DateFormat tf = new SimpleDateFormat("HH:mm:ss");
+    public String convertYMDtoMDY(String YMD) {
+        if (YMD.isEmpty()) return "";
+        YMD.replace("-", "/");
+        String item[] = YMD.split("/");
+        return (item.length == 3 ? item[1] + "/" + item[2] + "/" + item[0] : "");
+    }
+
+    public String convertYMDTtoMDYT(String YMD) {
+        if (YMD.isEmpty()) return "";
+        String item[] = YMD.substring(0, YMD.indexOf(" ")).replace("-", "/").split("/");
+        return (item.length == 3 ? item[1] + "/" + item[2] + "/" + item[0] + " " + YMD.substring(YMD.indexOf(" ")+1, YMD.length()) : "");
+    }
+
+    public String convertMDYtoYMD(String MDY) {
+        if (MDY.isEmpty()) return "";
+        MDY.replace("-", "/");
+        String item[] = MDY.split("/");
+        return (item.length == 3 ? item[2] + "/" + item[0] + "/" + item[1] : "");
+    }
+
+    public String convertMDYTtoYMDT(String MDY) {
+        if (MDY.isEmpty()) return "";
+        String item[] = MDY.substring(0, MDY.indexOf(" ")).replace("-", "/").split("/");
+        return (item.length == 3 ? item[2] + "/" + item[0] + "/" + item[1] + " " + MDY.substring(MDY.indexOf(" ")+1, MDY.length()) : "");
+    }
+
+    public String TimeDifference(DateFormat df, String OldTime, String NewTime) {
         if (OldTime == null || NewTime == null) return null;
         long diffMinutes = 0;
         long diffHours = 0;
         try {
-            Date d1 = tf.parse(OldTime);
-            Date d2 = tf.parse(NewTime);
+            Date d1 = df.parse(OldTime);
+            Date d2 = df.parse(NewTime);
             long diff = d2.getTime() - d1.getTime();
             diffMinutes = diff / (60 * 1000) % 60;
             diffHours = diff / (60 * 60 * 1000) % 24;
@@ -84,13 +108,12 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         return String.format("%2s:%2s", String.valueOf(diffHours), String.valueOf(diffMinutes)).replace(' ', '0');     // return in hh:mm format
     }
 
-    public long MinuteDifference(String OldTime, String NewTime) {
-        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public long MinuteDifference(DateFormat df, String OldTime, String NewTime) {
         if (OldTime == null || NewTime == null) return 0;
         long diffMinutes = 0;
         try {
-            Date d1 = tf.parse(OldTime);
-            Date d2 = tf.parse(NewTime);
+            Date d1 = df.parse(OldTime);
+            Date d2 = df.parse(NewTime);
             long diff = d2.getTime() - d1.getTime();
             diff = (diff < 0) ? -diff : diff;   // make sure it is always positive of the difference between two times
             diffMinutes = diff / (60 * 1000);

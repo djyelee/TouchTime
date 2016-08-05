@@ -20,4 +20,19 @@
             <item name="android:textSize">30dp</item>
             <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="TouchTimeCalendar"
+        parent="android:Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="android:textColor">#00FF00</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:keyTextSize">30dp</item>
+        <item name="android:labelTextSize">30dp</item>
+        <item name="android:windowTitleSize">50dp</item>
+        <item name="android:screenSize">xlarge</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

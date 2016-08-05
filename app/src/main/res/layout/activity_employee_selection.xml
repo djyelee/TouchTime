@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4.2"
+            android:layout_weight="4.5"
             android:layout_marginRight="5dp"
             android:paddingLeft="10dp"
             android:text="@string/column_view_first_name"
@@ -92,27 +92,6 @@
             android:textSize="@dimen/medium_text_size"
             android:clickable="true"
             android:onClick="onSortGroupIDButtonClicked" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:layout_marginRight="5dp"
-            android:text="@string/column_view_active"
-            android:textSize="@dimen/medium_text_size"
-            android:textColor="@color/svw_black"
-            android:background="@color/svw_orange"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.8"
-            android:text="@string/column_view_current"
-            android:textSize="@dimen/medium_text_size"
-            android:textColor="@color/svw_black"
-            android:background="@color/svw_orange"
-            android:gravity="center_horizontal" />
 
     </TableRow>
     <ListView

@@ -3,7 +3,10 @@ package com.svw.touchtime;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -18,10 +21,21 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.svw.touchtime.R.layout.general_edit_text_view;
 
@@ -36,16 +50,25 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     private ArrayList<String> unique_com;
     private SimpleAdapter adapter_com;
     ArrayList<HashMap<String, String>> feedCompanyList;
+    ArrayList<String> list_com;
     HashMap<String, String> map;
     String[] list_items = new String[5];
     int[] list_id = new int[5];
     private int itemCompany = -1;
     private int itemCountry, itemState, itemCity;
+    String FileName = "Company Profile";
     CompanyJobLocationList Company;
     Context context;
+    File NewProfileFile;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeGroupCompanyDBWrapper dbGroup;
     private CountryStateCityDBWrapper dbCountry;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +89,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         PhoneEdit = (EditText) findViewById(R.id.company_phone_text);
         ContactEdit = (EditText) findViewById(R.id.company_contact_text);
         EmailEdit = (EditText) findViewById(R.id.company_email_text);
-        ArrayList<String> list_com;
-        feedCompanyList= new ArrayList<HashMap<String, String>>();
+        feedCompanyList = new ArrayList<HashMap<String, String>>();
 
         // database and other data
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);
@@ -104,38 +126,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         unique_com = new ArrayList<String>();
         Company = new CompanyJobLocationList();
 
-        int i = 0;
-        dbCountry.clearAllList();           // clear the database for country, state, city spinner
-        if (all_lists.size() > 0) {
-            do {
-                list_com.add(all_lists.get(i).getName());
-                // building database for country, state, city spinner from company list
-                dbCountry.addMissingList(all_lists.get(i).getCountry(), all_lists.get(i).getState(), all_lists.get(i).getCity());
-            } while (++i < all_lists.size());
-            // remove duplicates from both lists and resort alphabetically ignoring case
-            unique_com = General.removeDuplicates(list_com);
-            Collections.sort(unique_com, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return o1.compareToIgnoreCase(o2);
-                }
-            });
-            i=0;
-            do {
-                map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
-                feedCompanyList.add(map);
-            } while (++i < unique_com.size());
-            Company = dbGroup.getCompanyList(unique_com.get(0));
-            // building database for country, state, city spinner from employee list
-            ArrayList<EmployeeProfileList> Lists;
-            Lists = dbGroup.getAllEmployeeLists();
-            if (Lists.size() > 0) {
-                for (i = 0; i < Lists.size(); i++) {
-                    dbCountry.addMissingList(Lists.get(i).getCountry(), Lists.get(i).getState(), Lists.get(i).getCity());
-                }
-            }
-        }
+        ReadDisplayCompany();
+        deleteCSVFiles();
 
         list_items[0] = getText(R.string.column_key_company).toString();
         list_id[0] = R.id.companyDisplayID;
@@ -163,6 +155,9 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                         });
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public AdapterView.OnItemSelectedListener OnSpinnerCL = new AdapterView.OnItemSelectedListener() {
@@ -275,7 +270,8 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                         }
                     }
                 }
-            } if (parent == CitySpinner) {
+            }
+            if (parent == CitySpinner) {
                 if (pos == 1) {             // 0 is blank, 1 is add new
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
                     builder.setMessage(R.string.employee_enter_city_message).setTitle(R.string.company_profile_title).setView(textEntryView);
@@ -306,9 +302,48 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                 }
             }
         }
+
         public void onNothingSelected(AdapterView<?> parent) {
         }
     };
+
+    public void ReadDisplayCompany() {
+        int i = 0;
+        list_com.clear();
+        unique_com.clear();
+        feedCompanyList.clear();
+        dbCountry.clearAllList();           // clear the database for country, state, city spinner
+        if (all_lists.size() > 0) {
+            do {
+                list_com.add(all_lists.get(i).getName());
+                // building database for country, state, city spinner from company list
+                dbCountry.addMissingList(all_lists.get(i).getCountry(), all_lists.get(i).getState(), all_lists.get(i).getCity());
+            } while (++i < all_lists.size());
+            // remove duplicates from both lists and resort alphabetically ignoring case
+            unique_com = General.removeDuplicates(list_com);
+            Collections.sort(unique_com, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+            i = 0;
+            do {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
+                feedCompanyList.add(map);
+            } while (++i < unique_com.size());
+            Company = dbGroup.getCompanyList(unique_com.get(0));
+            // building database for country, state, city spinner from employee list
+            ArrayList<EmployeeProfileList> Lists;
+            Lists = dbGroup.getAllEmployeeLists();
+            if (Lists.size() > 0) {
+                for (i = 0; i < Lists.size(); i++) {
+                    dbCountry.addMissingList(Lists.get(i).getCountry(), Lists.get(i).getState(), Lists.get(i).getCity());
+                }
+            }
+        }
+    }
 
     public void displayCompanyProfile() {
         NameEdit.setText(Company.getName());
@@ -381,6 +416,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
                                 adapter_com.notifyDataSetChanged();
                                 itemCompany = unique_com.indexOf(Company.getName());       // get the index of the new company
                                 displayCompanyProfile();
+                                company_list_view.smoothScrollToPosition(unique_com.indexOf(Company.getName())); // scroll to the newly added item
                             }
                         });
                         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -457,30 +493,31 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             adapter_com.notifyDataSetChanged();
             displayCompanyProfile();             // display after SetAdapter to show the checked item
         }
-     }
+    }
 
     public void onDeleteButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
         if (unique_com.size() > 0) {
             builder.setMessage(R.string.company_delete_confirm_message).setTitle(R.string.company_profile_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dbGroup.deleteCompanyList(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
-                // whether the group or employee is already punched in or not they must be cleared
-                dbGroup.clearEmployeeListCompany(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
-                dbGroup.clearWorkGroupListCompany(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
-                unique_com.remove(itemCompany);
-                int i = 0;
+                public void onClick(DialogInterface dialog, int id) {
+                    dbGroup.deleteCompanyList(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
+                    // whether the group or employee is already punched in or not they must be cleared
+                    dbGroup.clearEmployeeListCompany(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
+                    dbGroup.clearWorkGroupListCompany(feedCompanyList.get(itemCompany).get(getText(R.string.column_key_company).toString()));
+                    unique_com.remove(itemCompany);
+                    int i = 0;
                     feedCompanyList.clear();
                     while (i < unique_com.size()) {
                         map = new HashMap<String, String>();
                         map.put(getText(R.string.column_key_company).toString(), unique_com.get(i++));
                         feedCompanyList.add(map);
-                    } ;
+                    }
+                    ;
                     adapter_com.notifyDataSetChanged();
                     all_lists = dbGroup.getAllCompanyLists();
                     if (all_lists.size() > 0) {
-                        itemCompany = (itemCompany > 0) ? itemCompany-1 : 0;
+                        itemCompany = (itemCompany > 0) ? itemCompany - 1 : 0;
                         Company = dbGroup.getCompanyList(all_lists.get(itemCompany).getName());
                         displayCompanyProfile();
                     } else {
@@ -498,7 +535,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
+                    // User cancelled the dialog
                 }
             });
         } else {
@@ -510,6 +547,203 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         }
         AlertDialog dialog = builder.create();
         General.TouchTimeDialog(dialog, view);
+    }
+
+    public void onImportButtonClicked(View view) {
+        boolean FileFound = false;
+            File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File list[] = Folder.listFiles();
+            // for (File s : list) s.delete();
+            final File file = new File(Folder, FileName + ".csv");
+            for (File f : list) {
+                if (f.equals(file)) {
+                    FileFound = true;
+                    break;
+                }
+            }
+            if (!FileFound) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                builder.setMessage(R.string.company_file_not_found).setTitle(R.string.company_profile_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, view);
+                deleteCSVFiles();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                builder.setMessage(R.string.company_file_will_be_lost).setTitle(R.string.company_profile_title);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        readCsvFile(file);
+                    }
+                });
+                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, view);
+            }
+    }
+
+    public void readCsvFile(File file) {
+        Pattern pattern = Pattern.compile("\"(.*?)\"");     // match "  "
+        Matcher matcher;
+        int noRecords = 0;
+        String line;
+        String Location = "", Job = "";
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            for (int i = 0; i < all_lists.size(); i++) {
+                dbGroup.deleteCompanyList(all_lists.get(i).getName());
+            }
+            while ((line = br.readLine()) != null) {
+                if (line.isEmpty()) continue;       // skip empty lines
+                noRecords ++;
+                if (noRecords > 2) {  // the first two are header and column names
+                    Location = "";
+                    Job = "";
+                    matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+                        Location = matcher.group(1);
+                        Location = Location.replace(",", "\",\"");   // replace , with ","
+                        Location = "[\"" + Location + "\"]";
+                    }
+                    if (matcher.find()) {
+                        Job = matcher.group(1);
+                        Job = Job.replace(",", "\",\"");
+                        Job = "[\"" + Job + "\"]";
+                    }
+                    String[] item = line.replace("\"", "").split(",");
+                    CompanyJobLocationList C = new CompanyJobLocationList();
+                    if (item.length > 0) C.setName(item[0]);
+                    else C.setName("No Name");
+                    if (item.length > 1) C.setStreet(item[1]);
+                    else C.setStreet("");
+                    if (item.length > 2) C.setCity(item[2]);
+                    else C.setCity("");
+                    if (item.length > 3) C.setState(item[3]);
+                    else C.setState("");
+                    if (item.length > 4) C.setZipCode(item[4]);
+                    else C.setZipCode("");
+                    if (item.length > 5) C.setCountry(item[5]);
+                    else C.setCountry("");
+                    if (item.length > 6) C.setContact(item[6]);
+                    else C.setContact("");
+                    if (item.length > 7) C.setPhone(item[7]);
+                    else C.setPhone("");
+                    if (item.length > 8) C.setEmail(item[8]);
+                    else C.setEmail("");
+                    C.setLocation(Location);
+                    C.setJob(Job);
+                    dbGroup.createCompanyList(C);
+                }
+            }
+            all_lists = dbGroup.getAllCompanyLists();
+            ReadDisplayCompany();
+            if (all_lists.size() > 0) {
+                itemCompany = 0;
+                displayCompanyProfile();
+            }
+            br.close();
+            deleteCSVFiles();
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void onExportButtonClicked(View view) {
+        String to = "svwtouchtime@gmail.com";
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("plain/text");
+        try {
+            deleteCSVFiles();
+//          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
+            NewProfileFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileName + ".csv");  // download folder
+            if (!NewProfileFile.exists()) {
+                if (NewProfileFile.createNewFile()) {
+                    generateCsvFile(NewProfileFile);
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(NewProfileFile));
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
+                    i.putExtra(Intent.EXTRA_SUBJECT, FileName);
+                    i.putExtra(Intent.EXTRA_TEXT, FileName);
+                    startActivity(Intent.createChooser(i, "E-mail"));
+                    dbGroup.closeDB();
+                    finish();           // force it to quit to remove the file because email intent is asynchronous
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateCsvFile(File sFileName) {
+        int i, j;
+        FileWriter writer = null;
+        String Header = "";
+        String ColumnNames = "";
+        String Entries;
+
+        Header = getText(R.string.company_profile_title).toString();
+        Header = "\"" + Header + "\"" + "\n";
+        ColumnNames = getText(R.string.name_title_text).toString() + "," +
+                getText(R.string.street_title_text).toString() + "," +
+                getText(R.string.city_title_text).toString() + "," +
+                getText(R.string.state_title_text).toString() + "," +
+                getText(R.string.zip_code_title_text).toString() + "," +
+                getText(R.string.country_title_text).toString() + "," +
+                getText(R.string.contact_title_text).toString() + "," +
+                getText(R.string.phone_title_text).toString() + "," +
+                getText(R.string.email_title_text).toString() + "," +
+                getText(R.string.location_title_text).toString() + "," +
+                getText(R.string.job_title_text).toString() + "\n";
+
+        try {
+            writer = new FileWriter(sFileName);
+            writer.append(Header);
+            writer.append(ColumnNames);
+            for (i = 0; i < all_lists.size(); i++) {
+                String Location = all_lists.get(i).getLocation().replace("\"", "").replace("[", "").replace("]", "");
+                String Job = all_lists.get(i).getJob().replace("\"", "").replace("[", "").replace("]", "");
+                Entries = all_lists.get(i).getName() + "," +
+                        all_lists.get(i).getStreet() + "," +
+                        all_lists.get(i).getCity() + "," +
+                        all_lists.get(i).getState() + "," +
+                        all_lists.get(i).getZipCode() + "," +
+                        all_lists.get(i).getCountry() + "," +
+                        all_lists.get(i).getContact() + "," +
+                        all_lists.get(i).getPhone() + "," +
+                        all_lists.get(i).getEmail() + "," +
+                        "\"" + Location + "\"" + "," +      // include comma
+                        "\"" + Job + "\"" + "\n";
+                writer.append(Entries);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteCSVFiles() {
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        for (File f : list) {
+            String name = f.getName();
+            if (name.substring(name.lastIndexOf(".") + 1, name.length()).equals("csv")) {
+                f.delete();
+            }
+        }
     }
 
     @Override
@@ -531,10 +765,51 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
             return true;
         } else if (id == android.R.id.home) {
             dbGroup.closeDB();
+            deleteCSVFiles();
             onBackPressed();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "CompanyProfileMenu Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "CompanyProfileMenu Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

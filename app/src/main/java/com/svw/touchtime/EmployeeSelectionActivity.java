@@ -14,14 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class EmployeeSelectionActivity extends ActionBarActivity {
-    ListView lv;
+    ListView employee_list_view;
     TextView Title;
     boolean sort_id_ascend = true;
     boolean sort_last_name_ascend = true;
@@ -42,7 +39,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         setContentView(R.layout.activity_employee_selection);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
 
-        lv = (ListView) findViewById(R.id.employee_selection_list_view);
+        employee_list_view = (ListView) findViewById(R.id.employee_selection_list_view);
         Title = (TextView) findViewById(R.id.employee_selection_group);
         feedList= new ArrayList<HashMap<String, String>>();
 
@@ -53,27 +50,24 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         int i = 0;
         if (all_lists.size() > 0) {
             do {
+                if (all_lists.get(i).getActive() == 0 || all_lists.get(i).getCurrent() == 0) continue;  // do not list inactive or not current employees
                 map = new HashMap<String, String>();
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_lists.get(i).getEmployeeID()));
                 map.put(getText(R.string.column_key_last_name).toString(), all_lists.get(i).getLastName());
                 map.put(getText(R.string.column_key_first_name).toString(), all_lists.get(i).getFirstName());
                 map.put(getText(R.string.column_key_group_id).toString(), all_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_lists.get(i).getGroup()));
-                map.put(getText(R.string.column_key_active).toString(), all_lists.get(i).getActive() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
-                map.put(getText(R.string.column_key_current).toString(), all_lists.get(i).getCurrent() == 0 ? getText(R.string.no).toString() : getText(R.string.yes).toString());
-                map.put(getText(R.string.column_key_doc_exp).toString(), all_lists.get(i).getDocExp());
                 feedList.add(map);
             } while (++i < all_lists.size());
         }
         String [] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(),
-                getText(R.string.column_key_first_name).toString(), getText(R.string.column_key_group_id).toString(),
-                getText(R.string.column_key_active).toString(), getText(R.string.column_key_current).toString()};
-        int [] list_id = {R.id.textViewID, R.id.textViewLastName, R.id.textViewFirstName, R.id.textViewGroup, R.id.textViewActive, R.id.textViewCurrent};
+                getText(R.string.column_key_first_name).toString(), getText(R.string.column_key_group_id).toString()};
+        int [] list_id = {R.id.textViewID, R.id.textViewLastName, R.id.textViewFirstName, R.id.textViewGroup};
         adapter_employee = new TouchTimeGeneralAdapter(this, feedList, R.layout.employee_selection_view, list_items, list_id, 60);
-        // lv.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false), null, false);
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        lv.setAdapter(adapter_employee);
-        lv.setItemsCanFocus(true);
-        // lv.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false));
+        // employee_list_viewaddHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false), null, false);
+        employee_list_view.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        employee_list_view.setAdapter(adapter_employee);
+        employee_list_view.setItemsCanFocus(true);
+        // employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_selection_header, null, false));
 
         // receive selected group
         selectedGroup = getIntent().getIntExtra("SelectedGroup", -1);
@@ -82,48 +76,23 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         WorkGroup = db.getWorkGroupList(selectedGroup);
 
         context = this;
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        employee_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 itemSelected = position;
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
-                if (feedList.get(itemSelected).get(getText(R.string.column_key_active)).equals(getText(R.string.no).toString())) {
-                    builder.setMessage(getText(R.string.employee_not_active).toString()).setTitle(R.string.group_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            lv.setItemChecked(itemSelected, false);
-                        }
-                    });
-                    // put the dialog inside so it will not dim the screen when returns.
-                    AlertDialog dialog = builder.create();
-                    General.TouchTimeDialog(dialog, view);
-                } else if (feedList.get(itemSelected).get(getText(R.string.column_key_current)).equals(getText(R.string.no).toString()) ||
-                        feedList.get(itemSelected).get(getText(R.string.column_key_doc_exp)).compareTo(df.format(Calendar.getInstance().getTime()))<0) {
-                    builder.setMessage(getText(R.string.employee_doc_expire).toString()).setTitle(R.string.group_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            lv.setItemChecked(itemSelected, false);
-                        }
-                    });
-                    // put the dialog inside so it will not dim the screen when returns.
-                    AlertDialog dialog = builder.create();
-                    General.TouchTimeDialog(dialog, view);
-                } else {
-                    String G = feedList.get(itemSelected).get(getText(R.string.column_key_group_id).toString());
-                    displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);
-                    if (selectedGroup != displayGroup) {   // already selected but different or not selected, need to be reset to selected group
-                        feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), String.valueOf(selectedGroup));
-                    } else {        // already selected, need to be reset to 0 or restore to the original group
-                        EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.column_key_employee_id).toString())));
-                        employeeGroup = Employee.getGroup();
-                        if (displayGroup == employeeGroup) {
-                            feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
-                        } else {
-                            feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
-                        }
+                String G = feedList.get(itemSelected).get(getText(R.string.column_key_group_id).toString());
+                displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);
+                if (selectedGroup != displayGroup) {   // already selected but different or not selected, need to be reset to selected group
+                    feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), String.valueOf(selectedGroup));
+                } else {        // already selected, need to be reset to 0 or restore to the original group
+                    EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.column_key_employee_id).toString())));
+                    employeeGroup = Employee.getGroup();
+                    if (displayGroup == employeeGroup) {
+                        feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), displayGroup >= 0 ? "" : String.valueOf(employeeGroup));
+                    } else {
+                        feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
                     }
-                    markSelectedItems();
                 }
+                markSelectedItems();
             };
         });
     }
@@ -132,11 +101,13 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         int i=0;
         while(i < feedList.size()) {
             String G = feedList.get(i).get(getText(R.string.column_key_group_id).toString());
-            lv.setItemChecked(i, !G.isEmpty() && selectedGroup == Integer.parseInt(G));
+            employee_list_view.setItemChecked(i, !G.isEmpty() && selectedGroup == Integer.parseInt(G));
             i++;
         }
         adapter_employee.setSelectedItem(itemSelected);
         adapter_employee.notifyDataSetChanged();
+        employee_list_view.smoothScrollToPosition(itemSelected);
+
     }
 
     public void onSortIDButtonClicked(View view) {
@@ -151,7 +122,6 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             adapter_employee.setSelectedItem(itemSelected);
         }
         sort_id_ascend = !sort_id_ascend;
-        adapter_employee.notifyDataSetChanged();
         markSelectedItems();
     }
 
@@ -171,7 +141,6 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             adapter_employee.setSelectedItem(itemSelected);
         }
         sort_last_name_ascend = !sort_last_name_ascend;
-        adapter_employee.notifyDataSetChanged();
         markSelectedItems();
     }
 
@@ -188,12 +157,10 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             adapter_employee.setSelectedItem(itemSelected);
         }
         sort_group_id_ascend = !sort_group_id_ascend;
-        adapter_employee.notifyDataSetChanged();
         markSelectedItems();
     }
 
     public void onSubmitButtonClicked(View view) {
-        boolean validEmployee = true;
         boolean reassignEmployee = false;
         employeeIDList.clear();
         EmployeeProfileList Employee = new EmployeeProfileList();
@@ -230,31 +197,11 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
                 }
                 // create a new list of selected employees to be passed back
                 if (newGroup == selectedGroup) {
-                    if (validEmployee) validEmployee = Employee.getCurrent() != 0 && Employee.getActive() != 0;    // stop checking if already false
-                    employeeIDList.add(String.valueOf(Employee.getEmployeeID()));
+                     employeeIDList.add(String.valueOf(Employee.getEmployeeID()));
                 }
            } while (++i < feedList.size());
         }
-        if (!validEmployee) {   // employee is not current or invalid
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-            builder.setMessage(R.string.group_invalid_employee).setTitle(R.string.group_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putStringArrayListExtra("SelectedEmployees", employeeIDList);
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-
-
-                }
-            });
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
-        } else if (reassignEmployee) {
+        if (reassignEmployee) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             builder.setMessage(R.string.group_reassign_employee_).setTitle(R.string.group_title);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

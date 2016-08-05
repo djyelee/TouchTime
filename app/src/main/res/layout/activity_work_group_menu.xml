@@ -9,13 +9,36 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:background="?android:attr/activatedBackgroundIndicator">
-    <TableLayout
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp">
+        <Button
+            android:text="@string/button_import"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1.5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:clickable="true"
+            android:onClick="onImportButtonClicked"
+            android:layout_gravity="center" />
+
+        <Button
+            android:text="@string/button_export"
+            android:textSize="@dimen/medium_text_size"
+            android:layout_weight="1.5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:clickable="true"
+            android:onClick="onExportButtonClicked"
+            android:layout_gravity="center" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -32,7 +55,7 @@
             android:id="@+id/work_group_list_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="14.5"
+            android:layout_weight="11.5"
             android:background="@drawable/list_view_border"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -40,9 +63,9 @@
             android:paddingBottom="5dp"
             android:choiceMode="singleChoice"
             android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
-    </TableLayout>
+    </LinearLayout>
 
-    <TableLayout
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_weight="5"
@@ -50,7 +73,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp">
             <TextView
@@ -91,9 +114,9 @@
 
         <ListView
             android:id="@+id/employee_list_view"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="15"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="14.5"
             android:background="@drawable/list_view_border"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -102,13 +125,15 @@
             android:layout_marginRight="5dp"
             android:choiceMode="singleChoice"
             android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
-    </TableLayout>
-    <TableLayout
+    </LinearLayout>
+
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.5"
         >
+
         <TextView
             android:textSize="@dimen/medium_text_size"
             android:layout_width="match_parent"
@@ -221,6 +246,6 @@
             android:onClick="onEmployeeButtonClicked"
             android:layout_gravity="center_vertical" />
 
-    </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>

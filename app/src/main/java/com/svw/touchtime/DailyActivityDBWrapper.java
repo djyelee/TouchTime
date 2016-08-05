@@ -8,10 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
     public class DailyActivityDBWrapper extends SQLiteOpenHelper {
         private SQLiteDatabase database;
@@ -175,6 +172,10 @@ import java.util.Locale;
             return count;
         }
 
+        public void deleteIDAllActivityList() {
+            database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " > " + "'" + 0 + "'", null);
+        }
+
         // Deleting an Activity list
         public void deleteIDActivityList(int EmployeeID) {
             database.delete(TABLE_ACTIVITY, KEY_EMPLOYEE_ID + " = " + "'" + EmployeeID + "'", null);
@@ -248,16 +249,6 @@ import java.util.Locale;
             SQLiteDatabase db = this.getReadableDatabase();
             if (db != null && db.isOpen())
                 db.close();
-        }
-
-        /**
-         * get datetime
-         * */
-        private String getDateTime() {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            Date date = new Date();
-            return dateFormat.format(date);
         }
     }
 

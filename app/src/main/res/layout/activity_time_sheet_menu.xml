@@ -24,41 +24,30 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="@string/time_sheet_message"
+                android:text="@string/time_sheet_header"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="1.5"
-                android:gravity="center" />
+                android:layout_weight="3.8"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical|start" />
 
             <Button
                 android:id="@+id/time_sheet_week_button"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
                 android:background="@drawable/roundshapebtn"
-                android:text="@string/button_time_sheet_week"
+                android:text="@string/button_select_week"
                 android:textSize="@dimen/medium_small_text_size"
-                android:textColor="@color/svw_blue"
                 android:clickable="true"
                 android:onClick="onSelectWeekButtonClicked"
                 android:gravity="center" />
 
-            <Spinner
-                android:id="@+id/time_sheet_name_spinner"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="2.5"
-                android:layout_marginEnd="3dp"
-                android:layout_marginRight="3dp"
-                android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/medium_small_text_size"
-                android:touchscreenBlocksFocus="false"/>
-
             <Button
                 android:id="@+id/time_sheet_export_button"
-                android:text="@string/button_time_sheet_export"
+                android:text="@string/button_export"
                 android:textSize="@dimen/medium_small_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -72,7 +61,7 @@
 
             <Button
                 android:id="@+id/time_sheet_print_button"
-                android:text="@string/button_time_sheet_print"
+                android:text="@string/button_print"
                 android:textSize="@dimen/medium_small_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -88,7 +77,7 @@
             android:id="@+id/horizontalScrollView1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="14">
+            android:layout_weight="12.5">
 
             <LinearLayout android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
@@ -100,7 +89,7 @@
                 android:layout_marginBottom="3dp"
                 android:orientation="vertical">
                 <TableRow
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
@@ -110,41 +99,48 @@
                     android:layout_marginEnd="3dp"
                     android:layout_marginRight="3dp">
 
-                    <TextView
-                        android:id="@+id/textViewName"
-                        android:layout_height="match_parent"
+                    <Spinner
+                        android:id="@+id/time_sheet_name_spinner"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:paddingLeft="5dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.8"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
-                        android:textColor="#000000"
-                        android:background="@color/svw_orange"
+                        android:background="@color/svw_dark_gray"
                         android:textSize="@dimen/medium_small_text_size"
-                        android:text="@string/time_sheet_name"
-                        />
+                        android:touchscreenBlocksFocus="false"/>
 
-                    <TextView
-                        android:id="@+id/textViewCompany"
-                        android:layout_height="match_parent"
+                    <Button
+                        android:id="@+id/sort_name"
                         android:layout_width="0dp"
-                        android:layout_weight="1.5"
-                        android:gravity="center"
-                        android:paddingLeft="5dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
-                        android:textColor="#000000"
-                        android:background="@color/svw_orange"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/up"
                         android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortNameButtonClicked" />
+
+                    <Button
+                        android:id="@+id/sort_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
                         android:text="@string/time_sheet_company"
-                        />
+                        android:textSize="@dimen/medium_small_text_size"
+                        android:clickable="true"
+                        android:onClick="onSortCompanyButtonClicked" />
 
                     <TextView
                         android:id="@+id/textViewLocation"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="1.2"
                         android:gravity="center"
                         android:paddingLeft="5dp"
                         android:layout_marginEnd="3dp"
@@ -159,7 +155,7 @@
                         android:id="@+id/textViewJob"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="1.2"
                         android:gravity="center"
                         android:paddingLeft="5dp"
                         android:layout_marginEnd="3dp"
@@ -174,7 +170,7 @@
                         android:id="@+id/textViewSunday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -188,7 +184,7 @@
                         android:id="@+id/textViewMonday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -201,7 +197,7 @@
                         android:id="@+id/textViewTuesday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -214,7 +210,7 @@
                         android:id="@+id/textViewWednesday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -227,7 +223,7 @@
                         android:id="@+id/textViewThursday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -240,7 +236,7 @@
                         android:id="@+id/textViewFriday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -253,7 +249,7 @@
                         android:id="@+id/textViewSaturday"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="0.75"
+                        android:layout_weight="0.5"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -267,7 +263,7 @@
                         android:id="@+id/textViewHours"
                         android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_weight="0.75"
                         android:gravity="center"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
@@ -281,9 +277,9 @@
 
                 <ListView
                     android:id="@+id/time_sheet_list_view"
-                    android:layout_width="1866dp"
+                    android:layout_width="2000dp"
                     android:layout_height="0dp"
-                    android:layout_weight="9"
+                    android:layout_weight="9.5"
                     android:background="@drawable/list_view_border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
@@ -292,8 +288,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
                     android:choiceMode="singleChoice"
-                    android:listSelector="@android:color/darker_gray"
-                    />
+                    android:listSelector="@color/svw_cyan"/>   <!-- Set to the same color as the background so it does not highlight-->
 
             </LinearLayout>
 

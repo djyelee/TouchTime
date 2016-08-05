@@ -10,12 +10,9 @@ import android.util.Log;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Locale;
 
 public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
     private SQLiteDatabase database;
@@ -360,9 +357,22 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
         c.moveToFirst();        // somehow it has to move to first to work
     }
 
+    // reset group is to a new group or 0to 0 for all employee
+    public void resetAllEmployeeGroup() {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_GROUP + " = ?"
+                + " WHERE " + KEY_EMPLOYEE_ID + " > ?", new String[] { String.valueOf(0) , String.valueOf(0)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
     public void updateEmployeeListStatus(int EmployeeID, int status) {
         Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_STATUS + " = ?" + " WHERE " + KEY_EMPLOYEE_ID + " = ?",
                 new String[] { String.valueOf(status) , String.valueOf(EmployeeID)});
+        c.moveToFirst();        // somehow it has to move to first to work
+    }
+
+    public void resetAllEmployeeStatus() {
+        Cursor c = database.rawQuery("UPDATE " + TABLE_EMPLOYEE + " SET " + KEY_STATUS + " = ?" + " WHERE " + KEY_EMPLOYEE_ID + " > ?",
+                new String[] { String.valueOf(0) , String.valueOf(0)});
         c.moveToFirst();        // somehow it has to move to first to work
     }
 
@@ -483,7 +493,9 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
             Collections.sort(WorkGroupID_list, new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
-                    return o1.compareToIgnoreCase(o2);
+                    int First = Integer.parseInt(o1);
+                    int Second = Integer.parseInt(o2);
+                    return (First > Second ? 1 : -1);
                 }
             });
             for(i=0; i<WorkGroupID_list.size(); i++) {    // checking unused ID
@@ -786,15 +798,5 @@ public class EmployeeGroupCompanyDBWrapper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         if (db != null && db.isOpen())
             db.close();
-    }
-
-    /**
-     * get datetime
-     * */
-    private String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
     }
 }

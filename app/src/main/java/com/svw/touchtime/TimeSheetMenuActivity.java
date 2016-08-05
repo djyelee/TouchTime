@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.print.PrintManager;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -20,6 +20,10 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -34,15 +38,15 @@ import java.util.HashMap;
 import static com.svw.touchtime.R.layout.general_edit_text_view;
 
 public class TimeSheetMenuActivity extends ActionBarActivity {
-    private static final int   NUMBER_ITEMS = 2;
-    private static final int   NUMBER_COLUMNS = 12;
+    private static final int NUMBER_ITEMS = 2;
+    private static final int NUMBER_COLUMNS = 12;
     public ListView time_sheet_list_view;
     Context context;
     Spinner NameSpinner;
-    Button WeekButton, ExportButton, PrintButton;
-    private TextView name_view, company_view, location_view, job_view;
+    Button WeekButton, ExportButton, PrintButton, SortNameButton;
+    private TextView header_view;
     private TextView sunday_view, monday_view, tuesday_view, wednesday_view;
-    private TextView thursday_view, friday_view, saturday_view, hours_view;
+    private TextView thursday_view, friday_view, saturday_view;
     private TouchTimeGeneralAdapter adapter_time_sheet;
     ArrayList<HashMap<String, String>> newTimeSheetList;
     ArrayList<HashMap<String, String>> feedTimeSheetList;
@@ -54,7 +58,9 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     int[] activity_id = new int[NUMBER_COLUMNS];
     DateFormat df, tf;
     Calendar calendar;
-    File NewTimeSheetFile, OldTimeSheetFile;
+    File NewTimeSheetFile;
+    boolean sort_company_ascend = true;
+    boolean sort_name_ascend = true;
 
     String CurrentDate;
     String StartDate, EndDate;
@@ -68,6 +74,11 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     HashMap<String, String> map;
     private DailyActivityDBWrapper dbActivity;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +98,8 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         WeekButton = (Button) findViewById(R.id.time_sheet_week_button);
         ExportButton = (Button) findViewById(R.id.time_sheet_export_button);
         PrintButton = (Button) findViewById(R.id.time_sheet_print_button);
-        name_view = (TextView) findViewById(R.id.textViewName);
-        company_view = (TextView) findViewById(R.id.textViewCompany);
-        location_view = (TextView) findViewById(R.id.textViewLocation);
-        job_view = (TextView) findViewById(R.id.textViewJob);
+        SortNameButton = (Button) findViewById(R.id.sort_name);
+        header_view = (TextView) findViewById(R.id.time_sheet_view);
         sunday_view = (TextView) findViewById(R.id.textViewSunday);
         monday_view = (TextView) findViewById(R.id.textViewMonday);
         tuesday_view = (TextView) findViewById(R.id.textViewTuesday);
@@ -98,11 +107,10 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         thursday_view = (TextView) findViewById(R.id.textViewThursday);
         friday_view = (TextView) findViewById(R.id.textViewFriday);
         saturday_view = (TextView) findViewById(R.id.textViewSaturday);
-        hours_view = (TextView) findViewById(R.id.textViewHours);
 
         context = this;
-        df = new SimpleDateFormat("yyyy-MM-dd");
-        tf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+        tf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
         CurrentDate = df.format(Calendar.getInstance().getTime());
 
         activity_item[0] = getText(R.string.column_key_name).toString();
@@ -134,6 +142,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         time_sheet_list_view.setItemsCanFocus(true);
         adapter_time_sheet = new TouchTimeGeneralAdapter(this, feedTimeSheetList, R.layout.time_sheet_view, activity_item, activity_id, 60);
         time_sheet_list_view.setAdapter(adapter_time_sheet);
+        adapter_time_sheet.setSelectedItem(-1);         // set to -1 so not highlight will show
         noSelection = getText(R.string.column_key_no_selection).toString();
         list_name = new ArrayList<String>();
         list_name.add(noSelection);
@@ -144,13 +153,16 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         NameSpinner.setOnItemSelectedListener(OnSpinnerCL);
 
         calendar = Calendar.getInstance();
-        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         itemsSelected = new ArrayList<String>();
         ObjectKeys = new ArrayList<String>();
-        OldTimeSheetFile = new File(context.getExternalCacheDir(), "TimeSheet" + ".csv");
-        selectedName =  noSelection;
+        deleteCSVFiles();
+        selectedName = noSelection;
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public AdapterView.OnItemSelectedListener OnSpinnerCL = new AdapterView.OnItemSelectedListener() {
@@ -159,12 +171,18 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             if (parent == NameSpinner) {
                 if (list_name.get(pos).equals(noSelection)) {
                     selectedName = noSelection;
+                    filterTimeSheetActivities(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
                 } else {
                     selectedName = list_name.get(pos);
+                    filterTimeSheetActivities(view);
+                    sort_company_ascend = true;
+                    onSortCompanyButtonClicked(view);
                 }
-                filterTimeSheetActivities(view);
             }
         }
+
         public void onNothingSelected(AdapterView<?> parent) {
         }
     };
@@ -173,7 +191,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
-                String keyDate = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
+                String keyDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
                 // WeekButton.setText(keyDate);
                 Date date = new Date();
                 try {
@@ -185,30 +203,31 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 while (calendar.get(Calendar.DAY_OF_WEEK) > calendar.getFirstDayOfWeek()) {
                     calendar.add(Calendar.DATE, -1);                   // Substract 1 day until first day of week (1: Sunday).
                 }
-                StartDate = String.format("%4s-%2s-%2s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH)).replace(' ', '0');   // monthOfYear starts from 0
+                StartDate = String.format("%4s/%2s/%2s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)).replace(' ', '0');   // monthOfYear starts from 0
                 StartYear = calendar.get(Calendar.YEAR);
-                WeekButton.setText(StartDate);
-                keyDate = getText(R.string.time_sheet_sunday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                header_view.setText(getText(R.string.time_sheet_header).toString() + " " + General.convertYMDtoMDY(StartDate));
+
+                keyDate = getText(R.string.time_sheet_sunday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 sunday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_monday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_monday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 monday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_tuesday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_tuesday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 tuesday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_wednesday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_wednesday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 wednesday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_thursday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_thursday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 thursday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_friday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_friday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 friday_view.setText(keyDate);
                 calendar.add(Calendar.DATE, 1);
-                keyDate = getText(R.string.time_sheet_saturday).toString()+' '+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+                keyDate = getText(R.string.time_sheet_saturday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 saturday_view.setText(keyDate);
-                EndDate = String.format("%4s-%2s-%2s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH)).replace(' ', '0');   // monthOfYear starts from 0
+                EndDate = String.format("%4s/%2s/%2s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)).replace(' ', '0');   // monthOfYear starts from 0
                 selectTimeSheetActivities(view);
             }
         }
@@ -243,13 +262,14 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             itemsSelected.add(StartDate);
             itemsSelected.add(EndDate);
             readTimeSheetActivities(view);
+            onSortNameButtonClicked(view);
         }
     }
 
     public void readTimeSheetActivities(View view) {
-        String [] Column = new String[NUMBER_ITEMS];
-        String [] Compare = new String[NUMBER_ITEMS];
-        String [] Values = new String[NUMBER_ITEMS];
+        String[] Column = new String[NUMBER_ITEMS];
+        String[] Compare = new String[NUMBER_ITEMS];
+        String[] Values = new String[NUMBER_ITEMS];
         int i = 0, j = 0, k, count = 0;
         int DayOfWeek;
         double ActivityTotal, TimeSheetTotal;
@@ -304,9 +324,9 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     }
                     calendar.setTime(date);
                     DayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);                             // DayOfWeek 1: Sunday
-                    Hours = (double)Activity.getHours() / 60;
-                    for (j=1; j<=7; j++) {
-                        if (j==DayOfWeek) {
+                    Hours = (double) Activity.getHours() / 60;
+                    for (j = 1; j <= 7; j++) {
+                        if (j == DayOfWeek) {
                             map.put(activity_item[j + 3], String.format("%1$.2f", Hours)); // activity_items 4: Sunday.  Divided by 60 to get fraction of an hour
                         } else {
                             map.put(activity_item[j + 3], "");                              // blank
@@ -314,7 +334,8 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     }
                     newTimeSheetList.add(map);
                     i++;
-                };
+                }
+                ;
             }
         }
         if (time_sheet_activities.size() > 0) {
@@ -403,15 +424,43 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         adapter_time_sheet.notifyDataSetChanged();
     }
 
+    public void onSortNameButtonClicked(View view) {
+        if (feedTimeSheetList.size() == 0) return;
+        String [] Items = new String [4];
+        Items [0] = getText(R.string.column_key_name).toString();
+        Items [1] = getText(R.string.column_key_company).toString();
+        Items [2] = getText(R.string.column_key_location).toString();
+        Items [3] = getText(R.string.column_key_job).toString();
+        General.SortStringList(feedTimeSheetList, Items, sort_name_ascend);
+        sort_company_ascend = false;
+        sort_name_ascend = !sort_name_ascend;
+        SortNameButton.setText(sort_name_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
+        adapter_time_sheet.notifyDataSetChanged();
+    }
+
+    public void onSortCompanyButtonClicked(View view) {
+        if (feedTimeSheetList.size() == 0) return;
+        String [] Items = new String [4];
+        Items [0] = getText(R.string.column_key_company).toString();
+        Items [1] = getText(R.string.column_key_name).toString();
+        Items [2] = getText(R.string.column_key_location).toString();
+        Items [3] = getText(R.string.column_key_job).toString();
+        General.SortStringList(feedTimeSheetList, Items, sort_company_ascend);
+        sort_name_ascend = false;
+        sort_company_ascend = !sort_company_ascend;
+        adapter_time_sheet.notifyDataSetChanged();
+    }
+
     public void onExportButtonClicked(View view) {
-        String to = "djlee@smartvisionworks.com";
+        String to = "svwtouchtime@gmail.com";
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {
             String CurrentTime = tf.format(Calendar.getInstance().getTime());
-            String Subject = "Time Sheet " + CurrentTime;
-            if (OldTimeSheetFile.exists()) OldTimeSheetFile.delete();
-            NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");
+            String Subject = "TimeSheet " + CurrentTime;
+            deleteCSVFiles();
+//          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
+            NewTimeSheetFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), Subject + ".csv");  // download folder
             if (!NewTimeSheetFile.exists()) {
                 if (NewTimeSheetFile.createNewFile()) {
                     FileWriter out = (FileWriter) generateCsvFile(NewTimeSheetFile);
@@ -420,7 +469,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     i.putExtra(Intent.EXTRA_SUBJECT, Subject);
                     i.putExtra(Intent.EXTRA_TEXT, Subject);
                     startActivity(Intent.createChooser(i, "E-mail"));
-                    OldTimeSheetFile = NewTimeSheetFile;        // because email intent is asynchronous, keep track of the file opened and delete it
+                    finish();           // force it to quit to remove the file because email intent is asynchronous
                 }
             }
         } catch (IOException e) {
@@ -429,47 +478,57 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     }
 
     public FileWriter generateCsvFile(File sFileName) {
-            int i, j;
-            FileWriter writer = null;
-            String Header = "";
-            String ColumnNames = "";
-            String Entries;
+        int i, j;
+        FileWriter writer = null;
+        String Header = "";
+        String ColumnNames = "";
+        String Entries;
 
-            Header = getText(R.string.time_sheet_header).toString() + " " + StartDate + " " + ((selectedName.equals(noSelection)) ? "" : selectedName);
-            Header = "\"" + Header + "\""  + "\n";
-            for (i=0; i<NUMBER_COLUMNS; i++) ColumnNames += activity_item[i] + ',';
-            ColumnNames += "\n";
-            try {
-                writer = new FileWriter(sFileName);
-                writer.append(Header);
-                writer.append(ColumnNames);
-                for (i=0; i<feedTimeSheetList.size(); i++) {
-                    Entries = "";
-                    for (j=0; j<NUMBER_COLUMNS; j++) {
-                        Entries += "\"" + feedTimeSheetList.get(i).get(activity_item[j]) + "\"" + ",";
-                    }
-                    Entries += "\n";
-                    writer.append(Entries);
+        Header = getText(R.string.time_sheet_header).toString() + " " + StartDate + " " + ((selectedName.equals(noSelection)) ? "" : selectedName);
+        Header = "\"" + Header + "\"" + "\n";
+        for (i = 0; i < NUMBER_COLUMNS; i++) ColumnNames += activity_item[i] + ',';
+        ColumnNames += "\n";
+        try {
+            writer = new FileWriter(sFileName);
+            writer.append(Header);
+            writer.append(ColumnNames);
+            for (i = 0; i < feedTimeSheetList.size(); i++) {
+                Entries = "";
+                for (j = 0; j < NUMBER_COLUMNS; j++) {
+                    Entries += "\"" + feedTimeSheetList.get(i).get(activity_item[j]) + "\"" + ",";
                 }
-                writer.flush();
+                Entries += "\n";
+                writer.append(Entries);
+            }
+            writer.flush();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }finally
-            {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
             }
-            return writer;
+        }
+        return writer;
     }
 
-    public void setPrintButtonClicked(View view) {
-        PrintManager printManager = (PrintManager) this.getSystemService(Context.PRINT_SERVICE);
- //       printManager.print("My document", new CustomPrintDocumentAdapter(this), null);
+    public void onPrintButtonClicked(View view) {
+
+
+    }
+
+    public void deleteCSVFiles() {
+        File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File list[] = Folder.listFiles();
+        for (File f : list) {
+            String name = f.getName();
+            if (name.substring(name.lastIndexOf(".") + 1, name.length()).equals("csv")) {
+                f.delete();
+            }
+        }
     }
 
     @Override
@@ -490,11 +549,51 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            if (OldTimeSheetFile.exists()) OldTimeSheetFile.delete();
+            deleteCSVFiles();
             onBackPressed();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "TimeSheetMenu Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "TimeSheetMenu Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.svw.touchtime/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

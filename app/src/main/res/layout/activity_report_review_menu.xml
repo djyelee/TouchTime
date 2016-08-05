@@ -27,7 +27,7 @@
                 android:text="@string/daily_activity_view_message"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center" />
 
             <TextView
@@ -37,27 +37,52 @@
                 android:layout_height="match_parent"
                 android:text="@string/report_total_hours"
                 android:textColor="@color/svw_black"
-                android:layout_weight="3"
+                android:layout_weight="3.2"
                 android:gravity="start" />
 
             <Button
                 android:id="@+id/report_review_select_year"
                 android:text="@string/button_select_year"
                 android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1.2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onSelectDateButtonClicked"
+                android:layout_gravity="center_vertical" />
+            <Button
+                android:id="@+id/report_review_import"
+                android:text="@string/button_import"
+                android:textSize="@dimen/medium_small_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onImportButtonClicked"
+                android:layout_gravity="center_vertical" />
+            <Button
+                android:id="@+id/report_review_export"
+                android:text="@string/button_export"
+                android:textSize="@dimen/medium_small_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
                 android:clickable="true"
-                android:onClick="onSelectDateButtonClicked"
+                android:onClick="onExportButtonClicked"
                 android:layout_gravity="center_vertical" />
+
         </TableRow>
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="14">
+            android:layout_weight="12.5">
 
             <LinearLayout android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
@@ -267,7 +292,7 @@
                     android:id="@+id/daily_activity_list_view"
                     android:layout_width="2300dp"
                     android:layout_height="0dp"
-                    android:layout_weight="9"
+                    android:layout_weight="9.5"
                     android:background="@drawable/list_view_border"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"

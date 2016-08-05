@@ -52,7 +52,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
 
     private TimePickerDialog mTimePicker;
     private DatePickerDialog mDatePicker;
-    DateFormat dateFormat;
+    DateFormat dtFormat, dateFormat;
     String ActivityDateString;
     String TimeInString = "";
     String TimeOutString = "";
@@ -80,10 +80,11 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         feedActivityList = new ArrayList<HashMap<String, String>>();
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);      // open database of the year and create if not exist
         Activity = new DailyActivityList();
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+        dtFormat = new SimpleDateFormat(getText(R.string.date_time_format).toString());
         ActivityDateString = dateFormat.format(Calendar.getInstance().getTime());
 
-        retrieveActivityRecord();
+        retrieveActivityRecord(findViewById(android.R.id.content));
 
         LunchMinuteEdit.setOnTouchListener(new TextView.OnTouchListener() {         // set blank whenever touched
             public boolean onTouch(View v, MotionEvent event) {
@@ -163,9 +164,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         });
 
         Calendar calendar = Calendar.getInstance();
-        mTimePicker = new TimePickerDialog(new ContextThemeWrapper(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        mTimePicker = new TimePickerDialog(new ContextThemeWrapper(context, R.style.TouchTimeCalendar),
                 myTimeListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar),
+        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
                 myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
     }
@@ -174,14 +175,15 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
+                String newDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
                 if (select_date) {
-                    ActivityDateString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
-                    retrieveActivityRecord();
+                    ActivityDateString = newDate;
+                    retrieveActivityRecord(view);
                     select_date = false;
                 } else if (timeClickedID == R.id.set_time_in) {
-                    TimeInString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
+                    TimeInString = newDate;    // monthOfYear starts from 0
                 } else if (timeClickedID == R.id.set_time_out) {
-                    TimeOutString = String.format("%4s-%2s-%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
+                    TimeOutString = newDate;    // monthOfYear starts from 0
                 }
             }
         }
@@ -193,7 +195,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             Calendar calendar = Calendar.getInstance();     // current date and time
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
             calendar.set(Calendar.MINUTE, selectedMinute);
-            DateFormat dtf = new SimpleDateFormat("HH:mm:ss");
+            DateFormat dtf = new SimpleDateFormat(getText(R.string.time_format).toString());
             String TimeString = dtf.format(calendar.getTime());
             if (timeClickedID == R.id.set_time_in) {
                 TimeInString = TimeInString + " " + TimeString;
@@ -217,8 +219,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Column[4] = dbActivity.getLocationColumnKey();
         Column[5] = dbActivity.getJobColumnKey();
         Values[0] = String.valueOf(feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString()));
-        Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
-        Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
+        Values[1] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
         Values[3] = feedActivityList.get(item).get(getText(R.string.column_key_company).toString());
         Values[4] = feedActivityList.get(item).get(getText(R.string.column_key_location).toString());
         Values[5] = feedActivityList.get(item).get(getText(R.string.column_key_job).toString());
@@ -237,8 +239,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Column[4] = dbActivity.getLocationColumnKey();
         Column[5] = dbActivity.getJobColumnKey();
         Values[0] = String.valueOf(feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString()));
-        Values[1] = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
-        Values[2] = feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString());
+        Values[1] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
         Values[3] = feedActivityList.get(item).get(getText(R.string.column_key_company).toString());
         Values[4] = feedActivityList.get(item).get(getText(R.string.column_key_location).toString());
         Values[5] = feedActivityList.get(item).get(getText(R.string.column_key_job).toString());
@@ -290,7 +292,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                     break;
             }
             if (update) {
-                if (dbGroup.getEmployeeListStatus(Integer.parseInt(feedActivityList.get(itemPosition).get(getText(R.string.column_key_employee_id).toString()))) == 1) {
+                if (dateFormat.format(Calendar.getInstance().getTime()).equals(feedActivityList.get(itemPosition).get(getText(R.string.column_key_date).toString())) &&
+                        dbGroup.getEmployeeListStatus(Integer.parseInt(feedActivityList.get(itemPosition).get(getText(R.string.column_key_employee_id).toString()))) == 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
                     builder.setMessage(R.string.employee_already_punched_in_message).setTitle(R.string.daily_activity_title);
                     builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -318,7 +321,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                         AlertDialog dialog = builder.create();
                         General.TouchTimeDialog(dialog, view);
                     } else {
-                        long diff = General.MinuteDifference(Activity.getTimeIn(), Activity.getTimeOut());
+                        long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), Activity.getTimeOut());
                         diff = (diff > 0 && diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
                         Activity.setHours(diff);
                         feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(),
@@ -327,10 +330,10 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                     }
                     setUniqueActivity(Activity, itemPosition);          // must update activity first before changing feedActivityList
                     if (view.getId() == R.id.textViewTimeIn && !TimeInString.isEmpty()) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
-                        feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), TimeInString);
+                        feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), General.convertYMDTtoMDYT(TimeInString));
                     }
                     if (view.getId() == R.id.textViewTimeOut && !TimeOutString.isEmpty()) {
-                        feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), TimeOutString);
+                        feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), General.convertYMDTtoMDYT(TimeOutString));
                     }
                 }
             } else {
@@ -355,7 +358,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             TimeOutString = "";
             SetTimeOut.setText(getText(R.string.column_view_timeout).toString());
         }
-        if (dbGroup.getEmployeeListStatus(Integer.parseInt(feedActivityList.get(itemPosition).get(getText(R.string.column_key_employee_id).toString()))) == 1) {
+        if (dateFormat.format(Calendar.getInstance().getTime()).equals(feedActivityList.get(itemPosition).get(getText(R.string.column_key_date).toString())) &&
+                dbGroup.getEmployeeListStatus(Integer.parseInt(feedActivityList.get(itemPosition).get(getText(R.string.column_key_employee_id).toString()))) == 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
             builder.setMessage(R.string.employee_already_punched_in_message).setTitle(R.string.daily_activity_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -376,9 +380,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
             feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(), "00:00");
             setUniqueActivity(Activity, itemPosition);              // update activity first
             if (timeClearID == R.id.clear_time_in) {            // these two items are used for indexing purpose. They cannot be updated before activity is updated
-                feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), TimeInString);
+                feedActivityList.get(itemPosition).put(getText(R.string.column_key_timein).toString(), General.convertYMDTtoMDYT(TimeInString));
             } else if (timeClearID == R.id.clear_time_out) {
-                feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), TimeOutString);
+                feedActivityList.get(itemPosition).put(getText(R.string.column_key_timeout).toString(), General.convertYMDTtoMDYT(TimeOutString));
             }
             adapter_activity.setSelectedItem(itemPosition);
             adapter_activity.notifyDataSetChanged();
@@ -434,14 +438,15 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Items [0] = getText(R.string.column_key_employee_id).toString();
         Items [1] = getText(R.string.column_key_last_name).toString();
         Items [2] = getText(R.string.column_key_first_name).toString();
-        Items [3] = getText(R.string.column_key_group_id).toString();
-        Items [4] = getText(R.string.column_key_company).toString();
-        Items [5] = getText(R.string.column_key_date).toString();
-        Items [6] = getText(R.string.column_key_timein).toString();
-        General.SortIntegerStringList(feedActivityList, Items, sort_id_ascend);
+        Items [3] = getText(R.string.column_key_date).toString();
+        Items [4] = getText(R.string.column_key_timein).toString();
+        Items [5] = getText(R.string.column_key_group_id).toString();
+        Items [6] = getText(R.string.column_key_company).toString();
+        General.SortStringList(feedActivityList, Items, sort_id_ascend);
         sort_last_name_ascend = sort_group_ascend = sort_company_ascend = sort_date_ascend = false;
         sort_id_ascend = !sort_id_ascend;
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortLastNameButtonClicked(View view) {
@@ -449,14 +454,15 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         String [] Items = new String [6];
         Items [0] = getText(R.string.column_key_last_name).toString();
         Items [1] = getText(R.string.column_key_first_name).toString();
-        Items [2] = getText(R.string.column_key_group_id).toString();
-        Items [3] = getText(R.string.column_key_company).toString();
-        Items [4] = getText(R.string.column_key_date).toString();
-        Items [5] = getText(R.string.column_key_timein).toString();
+        Items [2] = getText(R.string.column_key_date).toString();
+        Items [3] = getText(R.string.column_key_timein).toString();
+        Items [4] = getText(R.string.column_key_group_id).toString();
+        Items [5] = getText(R.string.column_key_company).toString();
         General.SortStringList(feedActivityList, Items, sort_last_name_ascend);
         sort_id_ascend = sort_group_ascend = sort_company_ascend = sort_date_ascend = false;
         sort_last_name_ascend = !sort_last_name_ascend;
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortGroupButtonClicked(View view) {
@@ -465,29 +471,31 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Items [0] = getText(R.string.column_key_group_id).toString();
         Items [1] = getText(R.string.column_key_last_name).toString();
         Items [2] = getText(R.string.column_key_first_name).toString();
-        Items [3] = getText(R.string.column_key_company).toString();
-        Items [4] = getText(R.string.column_key_date).toString();
-        Items [5] = getText(R.string.column_key_timein).toString();
+        Items [3] = getText(R.string.column_key_date).toString();
+        Items [4] = getText(R.string.column_key_timein).toString();
+        Items [5] = getText(R.string.column_key_company).toString();
         General.SortStringList(feedActivityList, Items, sort_group_ascend);
         sort_id_ascend = sort_last_name_ascend = sort_company_ascend = sort_date_ascend = false;
         sort_group_ascend = !sort_group_ascend;
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortCompanyButtonClicked(View view) {
         if (feedActivityList.size() == 0 || itemPosition < 0) return;
         String [] Items = new String [6];
         Items [0] = getText(R.string.column_key_company).toString();
-        Items [1] = getText(R.string.column_key_group_id).toString();
-        Items [2] = getText(R.string.column_key_last_name).toString();
-        Items [3] = getText(R.string.column_key_first_name).toString();
-        Items [4] = getText(R.string.column_key_date).toString();
-        Items [5] = getText(R.string.column_key_timein).toString();
+        Items [1] = getText(R.string.column_key_last_name).toString();
+        Items [2] = getText(R.string.column_key_first_name).toString();
+        Items [3] = getText(R.string.column_key_date).toString();
+        Items [4] = getText(R.string.column_key_timein).toString();
+        Items [5] = getText(R.string.column_key_group_id).toString();
         General.SortStringList(feedActivityList, Items, sort_company_ascend);
         sort_id_ascend = sort_last_name_ascend = sort_group_ascend = sort_date_ascend = false;
         sort_company_ascend = !sort_company_ascend;
         CompanySort.setText(sort_company_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortDateButtonClicked(View view) {
@@ -497,16 +505,17 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         Items [1] = getText(R.string.column_key_timein).toString();
         Items [2] = getText(R.string.column_key_last_name).toString();
         Items [3] = getText(R.string.column_key_first_name).toString();
-        Items [4] = getText(R.string.column_key_group_id).toString();
-        Items [5] = getText(R.string.column_key_company).toString();
+        Items [4] = getText(R.string.column_key_company).toString();
+        Items [5] = getText(R.string.column_key_group_id).toString();
         General.SortStringList(feedActivityList, Items, sort_date_ascend);
         sort_id_ascend = sort_last_name_ascend = sort_group_ascend = sort_company_ascend = false;
         sort_date_ascend = !sort_date_ascend;
         DateSort.setText(sort_date_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
-    public void retrieveActivityRecord() {
+    public void retrieveActivityRecord(View view) {
         String[] employee_item = new String[20];
         int[] employee_id = new int[20];
         ArrayList<DailyActivityList> all_activity_lists;
@@ -554,9 +563,9 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_activity_lists.get(i).getEmployeeID()));  // need it for indexing but not display
                 map.put(getText(R.string.column_key_last_name).toString(), all_activity_lists.get(i).getLastName());
                 map.put(getText(R.string.column_key_first_name).toString(), all_activity_lists.get(i).getFirstName());
-                map.put(getText(R.string.column_key_date).toString(), all_activity_lists.get(i).getDate());
-                map.put(getText(R.string.column_key_timein).toString(), all_activity_lists.get(i).getTimeIn());
-                map.put(getText(R.string.column_key_timeout).toString(), all_activity_lists.get(i).getTimeOut());
+                map.put(getText(R.string.column_key_date).toString(), General.convertYMDtoMDY(all_activity_lists.get(i).getDate()));
+                map.put(getText(R.string.column_key_timein).toString(), General.convertYMDTtoMDYT(all_activity_lists.get(i).getTimeIn()));
+                map.put(getText(R.string.column_key_timeout).toString(), General.convertYMDTtoMDYT(all_activity_lists.get(i).getTimeOut()));
                 // convert from number of minutes to hh:mm
                 map.put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(all_activity_lists.get(i).getHours() / 60),
                         String.valueOf(all_activity_lists.get(i).getHours() % 60)).replace(' ', '0'));
@@ -571,11 +580,13 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 map.put(getText(R.string.column_key_comments).toString(), all_activity_lists.get(i).getComments());
                 feedActivityList.add(map);
             } while (++i < all_activity_lists.size());
-            DailyActivityView.setText(getText(R.string.daily_activity_view_message) + " " + Values[0]);
+            DailyActivityView.setText(getText(R.string.daily_activity_view_message) + " " + General.convertYMDtoMDY(Values[0]));
+            sort_last_name_ascend = true;
+            onSortLastNameButtonClicked(view);
         } else {
-            DailyActivityView.setText(getText(R.string.daily_activity_no_message) + " " + Values[0]);
+            DailyActivityView.setText(getText(R.string.daily_activity_no_message) + " " + General.convertYMDtoMDY(Values[0]));
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-            builder.setMessage(getText(R.string.no_daily_activity_message) + " for " + Values[0] + " !").setTitle(R.string.daily_activity_title);
+            builder.setMessage(getText(R.string.no_daily_activity_message) + " for " + General.convertYMDtoMDY(Values[0]) + " !").setTitle(R.string.daily_activity_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // finish();

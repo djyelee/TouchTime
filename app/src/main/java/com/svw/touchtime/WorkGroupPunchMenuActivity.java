@@ -137,7 +137,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
 
         Current_date = (TextView) findViewById(R.id.current_date);
         Current_time = (TextView) findViewById(R.id.current_time);
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat(getText(R.string.date_MDY_format).toString());
         // Current_date.setText(df.getDateInstance().format(new Date()));
         Current_date.setText(df.format(Calendar.getInstance().getTime()));
         CountDownTimer uy = new CountDownTimer(2000000000, 1000) {
@@ -173,7 +173,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
 
     public void onPunchInButtonClicked(final View view) {
         if (itemGroup >= 0 && unique_groupID.size() > 0) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
             LinkedList validGroup = new LinkedList();
             LinkedList validGroupID = new LinkedList();
             final LinkedList listIndex = new LinkedList();
@@ -215,35 +215,35 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                     for (String s : array) {
                         String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                         if (!ss.isEmpty() && dbGroup.checkEmployeeID(Integer.parseInt(ss))) {    // make sure employee is still available
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                            //AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                             Employee = dbGroup.getEmployeeList(Integer.parseInt(ss));
                             EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
                             if (Employee.getStatus() == 1) {
                                 validEmployee.add(false);
-                                builder.setMessage(getText(R.string.employee_already_punched_in_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                //builder.setMessage(getText(R.string.employee_already_punched_in_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                             } else if (Employee.getCompany().isEmpty() || Employee.getLocation().isEmpty() || Employee.getJob().isEmpty()) {
                                 validEmployee.add(false);
-                                builder.setMessage(getText(R.string.no_company_location_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                //builder.setMessage(getText(R.string.no_company_location_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                             } else if (Employee.getActive() == 0) {
                                 validEmployee.add(false);
-                                builder.setMessage(getText(R.string.employee_not_active).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                //builder.setMessage(getText(R.string.employee_not_active).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                             } else if (Employee.getCurrent() == 0 || Employee.getDocExp().compareTo(df.format(Calendar.getInstance().getTime())) < 0) {
                                 validEmployee.add(false);
-                                builder.setMessage(getText(R.string.employee_doc_expire).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                //builder.setMessage(getText(R.string.employee_doc_expire).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                             } else {
                                 validEmployee.add(true);
                             }
                             if (validEmployee.getLast() == false) {
-                                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                General.TouchTimeDialog(dialog, view);
+                                //builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                //    public void onClick(DialogInterface dialog, int id) {
+                                //    }
+                                //});
+                                //AlertDialog dialog = builder.create();
+                                //General.TouchTimeDialog(dialog, view);
                             }
                         }
                         if (validEmployee.getLast() == true) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                            //AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                             if (Employee.getGroup() > 0) {      // employee belongs to a group
                                 GroupSelected = dbGroup.getWorkGroupList(Employee.getGroup());
                                 EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
@@ -251,24 +251,24 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                 if (!Employee.getCompany().equals(GroupSelected.getCompany())
                                         || !Employee.getLocation().equals(GroupSelected.getLocation())
                                         || !Employee.getJob().equals(GroupSelected.getJob())) {            // same job as the company
-                                    builder.setMessage(getText(R.string.employee_punch_in_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                    //builder.setMessage(getText(R.string.employee_punch_in_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                                     involve_group = true;
                                 }
                                 if (involve_group) {
                                     listIndex.add(Employee.getEmployeeID());                  // store employee ID
-                                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
+                                    //builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                     //   public void onClick(DialogInterface dialog, int id) {
                                             dbGroup.updateEmployeeListCompanyLocationJob((int) listIndex.getLast(), GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
                                             punchInDailyActivity((int) listIndex.removeLast());
-                                        }
-                                    });
-                                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            listIndex.removeLast();         // still need to be removed even it is not used
-                                        }
-                                    });
-                                    AlertDialog dialog = builder.create();
-                                    General.TouchTimeDialog(dialog, view);
+                                    //    }
+                                    //});
+                                    //builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    //    public void onClick(DialogInterface dialog, int id) {
+                                    //        listIndex.removeLast();         // still need to be removed even it is not used
+                                    //    }
+                                    //});
+                                    //AlertDialog dialog = builder.create();
+                                    //General.TouchTimeDialog(dialog, view);
                                 } else {
                                     listIndex.add(Employee.getEmployeeID());                  // store employee ID
                                     punchInDailyActivity((int) listIndex.removeLast());
@@ -296,7 +296,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
 
     public void onPunchOutButtonClicked(final View view) {
         if (itemGroup >= 0 && unique_groupID.size() > 0) {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             LinkedList validGroup = new LinkedList();
             LinkedList validGroupID = new LinkedList();
             final LinkedList listIndex = new LinkedList();
@@ -334,26 +333,26 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                     for (String s : array) {
                         String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                         if (!ss.isEmpty() && dbGroup.checkEmployeeID(Integer.parseInt(ss))) {    // make sure employee is still available
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                            //AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                             Employee = dbGroup.getEmployeeList(Integer.parseInt(ss));
                             EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
                             if (Employee.getStatus() == 0) {
                                 validEmployee.add(false);
-                                builder.setMessage(getText(R.string.employee_already_punched_out_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                //builder.setMessage(getText(R.string.employee_already_punched_out_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                             } else {
                                 validEmployee.add(true);
                             }
                             if (validEmployee.getLast() == false) {
-                                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                    }
-                                });
-                                AlertDialog dialog = builder.create();
-                                General.TouchTimeDialog(dialog, view);
+                                //builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                //    public void onClick(DialogInterface dialog, int id) {
+                                //    }
+                                //});
+                                //AlertDialog dialog = builder.create();
+                                //General.TouchTimeDialog(dialog, view);
                             }
                         }
                         if (validEmployee.getLast() == true) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                            //AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                             if (Employee.getGroup() > 0) {      // employee belongs to a group
                                 GroupSelected = dbGroup.getWorkGroupList(Employee.getGroup());
                                 EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
@@ -361,24 +360,24 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                 if (!Employee.getCompany().equals(GroupSelected.getCompany())
                                         || !Employee.getLocation().equals(GroupSelected.getLocation())
                                         || !Employee.getJob().equals(GroupSelected.getJob())) {            // same job as the company
-                                    builder.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                    //builder.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                                     involve_group = true;
                                 }
                                 if (involve_group) {
                                     listIndex.add(Employee.getEmployeeID());                       // store indexes
-                                    builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
+                                    //builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    //   public void onClick(DialogInterface dialog, int id) {
                                         dbGroup.updateEmployeeListCompanyLocationJob((int) listIndex.getLast(), GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
                                         punchOutDailyActivity((int) listIndex.removeLast());
-                                        }
-                                    });
-                                    builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                        listIndex.removeLast();         // still need to be removed even it is not used
-                                        }
-                                    });
-                                    AlertDialog dialog = builder.create();
-                                    General.TouchTimeDialog(dialog, view);
+                                    //    }
+                                    //});
+                                    //builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    //    public void onClick(DialogInterface dialog, int id) {
+                                    //    listIndex.removeLast();         // still need to be removed even it is not used
+                                    //    }
+                                    //});
+                                    //AlertDialog dialog = builder.create();
+                                    //General.TouchTimeDialog(dialog, view);
                                 } else {
                                     listIndex.add(Employee.getEmployeeID());                       // store indexes
                                     punchOutDailyActivity((int) listIndex.removeLast());
@@ -405,8 +404,8 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     }
 
     public void punchInDailyActivity(int EmployeeID) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+        DateFormat tf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
         String currentDateString = df.format(new Date());
         String currentDateTimeString = tf.format(new Date());
         EmployeeProfileList EmployeeNew = new EmployeeProfileList();
@@ -433,12 +432,12 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
      }
 
     public void punchOutDailyActivity(int EmployeeID) {
-        DateFormat tf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat tf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
         String currentDateTimeString = tf.format(new Date());
         dbGroup.updateEmployeeListStatus(EmployeeID, 0);
         Activity = dbActivity.getPunchedInActivityList(EmployeeID);
         if (Activity != null && Activity.getEmployeeID() > 0) {
-            long diff = General.MinuteDifference(Activity.getTimeIn(), currentDateTimeString);
+            long diff = General.MinuteDifference(tf, Activity.getTimeIn(), currentDateTimeString);
             diff = diff > 0 && diff > Activity.Lunch ? diff-Activity.Lunch : 0;
             Activity.setHours(diff);
             Activity.setTimeOut(currentDateTimeString);
@@ -536,199 +535,141 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
         }
     }
 
-    public void onRemoveJobButtonClicked(final View view) {
-        if (feedGroupList.size() == 0) return;
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-        if (itemGroup >= 0 && unique_groupID.size() > 0) {
-            valid_groupID.clear();
-            for (int i = 0; i < unique_groupID.size(); i++) {      // check if anyone is lready punched in
-                if (feedGroupList.get(unique_itemNumber.get(i)).get(getText(R.string.column_key_status)).equals(getText(R.string.out))) {
-                    valid_groupID.add(unique_groupID.get(i));
-                }
-            }
-            if (valid_groupID.size() < unique_groupID.size()) {
-                builder.setMessage(getText(R.string.group_are_not_changed_message).toString()).setTitle(R.string.group_punch_title);
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                General.TouchTimeDialog(dialog, view);
-            }
-            if (valid_groupID.size() > 0) {
-                Group.setCompany("");
-                Group.setLocation("");
-                Group.setJob("");
-                WorkGroupList GroupClicked = new WorkGroupList();
-                for (int i = 0; i < valid_groupID.size(); i++) {
-                    for (int j = 0; j < feedGroupList.size(); j++) {
-                        if (feedGroupList.get(j).get(getText(R.string.column_key_group_id).toString()).equals(String.valueOf(valid_groupID.get(i)))) {
-                            // feedGroupList.set(j, map);
-                            feedGroupList.get(j).put(getText(R.string.column_key_company).toString(), "");
-                            feedGroupList.get(j).put(getText(R.string.column_key_location).toString(), "");
-                            feedGroupList.get(j).put(getText(R.string.column_key_job).toString(), "");
-                            universal_list_view.setItemChecked(j, false);
-                            unique_groupID.remove(unique_groupID.indexOf(valid_groupID.get(i)));
-                            unique_itemNumber.remove(unique_itemNumber.indexOf(j));
-                            break;
-                        }
-                    }
-                    dbGroup.clearWorkGroupListCompanyLocationJob(valid_groupID.get(i));
-                    GroupClicked = dbGroup.getWorkGroupList(valid_groupID.get(i));
-                    // update employees in the group
-                    if (!GroupClicked.getEmployees().isEmpty()) {
-                        String[] array = GroupClicked.Employees.split(",");
-                        for (String s : array) {
-                            String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                            if (!ss.isEmpty()) {
-                                if (dbGroup.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
-                                    dbGroup.clearEmployeeListCompanyLocationJob(Integer.parseInt(ss));
-                                    // clear company, location, and job for employees in this group
-                                }
-                            }
-                        }
-                    }
-                }
-                adapter_group.notifyDataSetChanged();
-            }
-        } else {
-            // put the dialog inside so it will not dim the screen when returns.
-            builder.setMessage(R.string.no_work_group_message).setTitle(R.string.group_punch_title);
-            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            });
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {  // Make sure the request was successful
-            if (requestCode == PICK_JOB_REQUEST) {           // Check which request we're responding to
-                if (valid_groupID.size() < unique_groupID.size()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-                    builder.setMessage(getText(R.string.group_are_not_changed_message).toString()).setTitle(R.string.group_punch_title);
-                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
-                }
-
-                ArrayList<String> CompanyLocationJob = new ArrayList<String>();
-                WorkGroupList GroupClicked = new WorkGroupList();
-                CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
-                // update the selected employee
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            ArrayList<String> CompanyLocationJob = new ArrayList<String>();
+            CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
+            WorkGroupList GroupClicked = new WorkGroupList();
+            if (!Group.getCompany().equals(CompanyLocationJob.get(1)) ||
+                    !Group.getLocation().equals(CompanyLocationJob.get(2)) ||
+                    !Group.getJob().equals(CompanyLocationJob.get(3))) {
                 Group.setCompany(CompanyLocationJob.get(1));
                 Group.setLocation(CompanyLocationJob.get(2));
                 Group.setJob(CompanyLocationJob.get(3));
-                // update all that are selected
-                for (int i=0; i<valid_groupID.size(); i++) {
-                    for (int j = 0; j < feedGroupList.size(); j++) {
-                        if (feedGroupList.get(j).get(getText(R.string.column_key_group_id).toString()).equals(String.valueOf(valid_groupID.get(i)))) {
-                            feedGroupList.get(j).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));
-                            feedGroupList.get(j).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));
-                            feedGroupList.get(j).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));
-                            universal_list_view.setItemChecked(j, false);
-                            unique_groupID.remove(unique_groupID.indexOf(valid_groupID.get(i)));
-                            unique_itemNumber.remove(unique_itemNumber.indexOf(j));
-                            break;
-                        }
-                    }
-                    dbGroup.updateWorkGroupListCompanyLocationJob(valid_groupID.get(i), CompanyLocationJob.get(1),
-                            CompanyLocationJob.get(2), CompanyLocationJob.get(3));
-                    GroupClicked = dbGroup.getWorkGroupList(valid_groupID.get(i));
 
-                    // update employees in the group
-                    if (!GroupClicked.getEmployees().isEmpty()) {
-                        String[] array = GroupClicked.Employees.split(",");
-                        for (String s : array) {
-                            String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                            if (!ss.isEmpty()) {
-                                if (dbGroup.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
-                                    dbGroup.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), CompanyLocationJob.get(1),
-                                            CompanyLocationJob.get(2), CompanyLocationJob.get(3));
-                                    // update company, location, and job for employees in this group, don't care if punched in
+                if (requestCode == PICK_JOB_REQUEST) {
+                    builder.setMessage(getText(R.string.group_are_not_changed_message).toString()).setTitle(R.string.employee_punch_title);
+                } else {
+                    builder.setMessage(getText(R.string.group_out_punch_in_message).toString()).setTitle(R.string.employee_punch_title);
+                }
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+
+                if (requestCode == MOVE_JOB_REQUEST) {           // Check which request we're responding to
+                    // update all that are selected
+                    for (int i=0; i<unique_groupID.size(); i++) {           // all selected groups will change job
+                        dbGroup.updateWorkGroupListCompanyLocationJob(unique_groupID.get(i), CompanyLocationJob.get(1),
+                                CompanyLocationJob.get(2), CompanyLocationJob.get(3));
+                        GroupSelected = dbGroup.getWorkGroupList(unique_groupID.get(i));
+                        for (int j = 0; j < feedGroupList.size(); j++) {
+                            if (feedGroupList.get(j).get(getText(R.string.column_key_group_id).toString()).equals(String.valueOf(unique_groupID.get(i)))) {
+                                feedGroupList.get(j).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));
+                                feedGroupList.get(j).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));
+                                feedGroupList.get(j).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));
+                                feedGroupList.get(j).put(getText(R.string.column_key_status).toString(), getText(R.string.in).toString());
+                                universal_list_view.setItemChecked(j, false);
+                                break;
+                            }
+                        }
+                        dbGroup.updateWorkGroupListStatus(unique_groupID.get(i), 1);
+                        // update employees in the group
+                        if (!GroupSelected.getEmployees().isEmpty()) {
+                            String[] array = GroupSelected.Employees.split(",");
+                            EmployeeProfileList Employee = new EmployeeProfileList();
+                            final LinkedList employeeID = new LinkedList();
+                            for (String s : array) {
+                                String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                                if (!ss.isEmpty()) {
+                                    if (dbGroup.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
+                                        if (dbGroup.getEmployeeListStatus(Integer.parseInt(ss)) == 1) {  // employee already punched in
+                                            // Need to confirm if switch job if punched in different job
+                                            // check if employee job is the same as the group job.  if the same, good.  If not, confirm
+                                            Employee = dbGroup.getEmployeeList(Integer.parseInt(ss));
+                                            String EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
+                                            if (!Employee.getCompany().equals(GroupSelected.getCompany())
+                                                    || !Employee.getLocation().equals(GroupSelected.getLocation())
+                                                    || !Employee.getJob().equals(GroupSelected.getJob())) {            // different job as the company
+
+                                                employeeID.add(Employee.getEmployeeID());
+                                                //AlertDialog.Builder builder1 = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                                                //builder1.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
+                                                //builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                                //    public void onClick(DialogInterface dialog, int id) {
+                                                        dbGroup.updateEmployeeListCompanyLocationJob((int) employeeID.getLast(),
+                                                                GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
+                                                        punchOutDailyActivity((int) employeeID.getLast());
+                                                        punchInDailyActivity((int) employeeID.getLast());
+                                                        employeeID.removeLast();
+                                                //    }
+                                                //});
+                                                //builder1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                                //    public void onClick(DialogInterface dialog, int id) {
+                                                //    }
+                                                //});
+                                                //AlertDialog dialog = builder1.create();
+                                                // General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+                                            }
+                                        } else {            // if not already punched in, jus change it.  This will work the same as "Select Job"
+                                            dbGroup.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), CompanyLocationJob.get(1),
+                                                    CompanyLocationJob.get(2), CompanyLocationJob.get(3));
+                                            punchInDailyActivity((int) Integer.parseInt(ss));
+                                        }
+                                     }
                                 }
                             }
                         }
                     }
                     adapter_group.notifyDataSetChanged();
-                }
-             } else if (requestCode == MOVE_JOB_REQUEST) {           // Check which request we're responding to
-                ArrayList<String> CompanyLocationJob = new ArrayList<String>();
-                CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
-                // update the last selected group, may not be used again
-                Group.setCompany(CompanyLocationJob.get(1));
-                Group.setLocation(CompanyLocationJob.get(2));
-                Group.setJob(CompanyLocationJob.get(3));
-                // update all that are selected
-                for (int i=0; i<unique_groupID.size(); i++) {           // all selected groups will change job
-                    dbGroup.updateWorkGroupListCompanyLocationJob(unique_groupID.get(i), CompanyLocationJob.get(1),
-                            CompanyLocationJob.get(2), CompanyLocationJob.get(3));
-                    GroupSelected = dbGroup.getWorkGroupList(unique_groupID.get(i));
-                    for (int j = 0; j < feedGroupList.size(); j++) {
-                        if (feedGroupList.get(j).get(getText(R.string.column_key_group_id).toString()).equals(String.valueOf(unique_groupID.get(i)))) {
-                            feedGroupList.get(j).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));
-                            feedGroupList.get(j).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));
-                            feedGroupList.get(j).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));
-                            universal_list_view.setItemChecked(j, false);
-                            break;
-                        }
-                    }
-                    // update employees in the group
-                    if (!GroupSelected.getEmployees().isEmpty()) {
-                        String[] array = GroupSelected.Employees.split(",");
-                        EmployeeProfileList Employee = new EmployeeProfileList();
-                        final LinkedList employeeID = new LinkedList();
-                        for (String s : array) {
-                            String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                            if (!ss.isEmpty()) {
-                                if (dbGroup.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
-                                    if (dbGroup.getEmployeeListStatus(Integer.parseInt(ss)) == 1) {  // employee already punched in
-                                        // Need to confirm if switch job if punched in different job
-                                        // check if employee job is the same as the group job.  if the same, good.  If not, confirm
-                                        Employee = dbGroup.getEmployeeList(Integer.parseInt(ss));
-                                        String EmployeeName = Employee.getLastName() + ", " + Employee.getFirstName() + ", " + String.valueOf(Employee.getEmployeeID());
-                                        if (!Employee.getCompany().equals(GroupSelected.getCompany())
-                                                || !Employee.getLocation().equals(GroupSelected.getLocation())
-                                                || !Employee.getJob().equals(GroupSelected.getJob())) {            // different job as the company
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-                                            employeeID.add(Employee.getEmployeeID());
-                                            builder.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
-                                            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dbGroup.updateEmployeeListCompanyLocationJob((int) employeeID.getLast(),
-                                                            GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
-                                                    punchOutDailyActivity((int) employeeID.getLast());
-                                                    punchInDailyActivity((int) employeeID.getLast());
-                                                    employeeID.removeLast();
-                                                }
-                                            });
-                                            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                }
-                                            });
-                                            AlertDialog dialog = builder.create();
-                                            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
-                                        }
-                                    } else {            // if not already punched in, jus change it.  This will work the same as "Select Job"
-                                        dbGroup.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), CompanyLocationJob.get(1),
-                                                CompanyLocationJob.get(2), CompanyLocationJob.get(3));
-                                    }
-                                 }
+                    unique_groupID.clear();
+                    unique_itemNumber.clear();
+                } else if (requestCode == PICK_JOB_REQUEST) {           // Check which request we're responding to
+                    // update all that are selected
+                    for (int i=0; i<valid_groupID.size(); i++) {
+                        for (int j = 0; j < feedGroupList.size(); j++) {
+                            if (feedGroupList.get(j).get(getText(R.string.column_key_group_id).toString()).equals(String.valueOf(valid_groupID.get(i)))) {
+                                feedGroupList.get(j).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));
+                                feedGroupList.get(j).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));
+                                feedGroupList.get(j).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));
+                                universal_list_view.setItemChecked(j, false);
+                                unique_groupID.remove(unique_groupID.indexOf(valid_groupID.get(i)));
+                                unique_itemNumber.remove(unique_itemNumber.indexOf(j));
+                                break;
                             }
                         }
+                        dbGroup.updateWorkGroupListCompanyLocationJob(valid_groupID.get(i), CompanyLocationJob.get(1),
+                                CompanyLocationJob.get(2), CompanyLocationJob.get(3));
+                        GroupClicked = dbGroup.getWorkGroupList(valid_groupID.get(i));
+                        // update employees in the group
+                        if (!GroupClicked.getEmployees().isEmpty()) {
+                            String[] array = GroupClicked.Employees.split(",");
+                            for (String s : array) {
+                                String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                                if (!ss.isEmpty()) {
+                                    if (dbGroup.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
+                                        dbGroup.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), CompanyLocationJob.get(1),
+                                                CompanyLocationJob.get(2), CompanyLocationJob.get(3));
+                                        // update company, location, and job for employees in this group, don't care if punched in
+                                    }
+                                }
+                            }
+                        }
+                        adapter_group.notifyDataSetChanged();
                     }
                 }
-                adapter_group.notifyDataSetChanged();
-                unique_groupID.clear();
-                unique_itemNumber.clear();
+            } else {
+                builder.setMessage(getText(R.string.group_same_job).toString()).setTitle(R.string.employee_menu_title);
+                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
             }
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
         }
     }
 
@@ -751,7 +692,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
         }
         markSelectedItems();
         sort_group_id_ascend = !sort_group_id_ascend;
-        adapter_group.notifyDataSetChanged();
     }
 
     public void onSortStatusButtonClicked(View view) {
@@ -772,7 +712,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
         }
         markSelectedItems();
         sort_status_ascend = !sort_status_ascend;
-        adapter_group.notifyDataSetChanged();
     }
 
     public void onSortCompanyButtonClicked(View view) {
@@ -792,7 +731,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
         }
         markSelectedItems();
         sort_company_ascend = !sort_company_ascend;
-        adapter_group.notifyDataSetChanged();
     }
 
     public void onSortGroupNameButtonClicked(View view) {
@@ -812,7 +750,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
         }
         markSelectedItems();
         sort_group_name_ascend = !sort_group_name_ascend;
-        adapter_group.notifyDataSetChanged();
     }
 
     public void markSelectedItems () {
@@ -828,6 +765,8 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 }
             }
         }
+        adapter_group.notifyDataSetChanged();
+        universal_list_view.smoothScrollToPosition(itemGroup);
     }
 
     @Override
