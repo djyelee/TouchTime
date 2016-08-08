@@ -456,7 +456,8 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {
-            String CurrentTime = tf.format(Calendar.getInstance().getTime());
+            DateFormat dtf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");       // Cannot use "/" in file name, use "-" instead.
+            String CurrentTime = dtf.format(Calendar.getInstance().getTime());
             String Subject = "TimeSheet " + CurrentTime;
             deleteCSVFiles();
 //          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
@@ -495,7 +496,10 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             for (i = 0; i < feedTimeSheetList.size(); i++) {
                 Entries = "";
                 for (j = 0; j < NUMBER_COLUMNS; j++) {
-                    Entries += "\"" + feedTimeSheetList.get(i).get(activity_item[j]) + "\"" + ",";
+                    if (j < NUMBER_COLUMNS-1)
+                        Entries += "\"" + feedTimeSheetList.get(i).get(activity_item[j]) + "\"" + ",";
+                    else
+                        Entries += "\"" + feedTimeSheetList.get(i).get(activity_item[j]) + "\"";
                 }
                 Entries += "\n";
                 writer.append(Entries);

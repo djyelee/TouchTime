@@ -830,7 +830,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 getText(R.string.column_view_job).toString() + "," +
                 getText(R.string.column_view_group_id).toString() + ":" + "," +
                 getText(R.string.column_view_supervisor).toString() + "," +
-                getText(R.string.column_view_comments).toString() + "," +"\n";
+                getText(R.string.column_view_comments).toString() +"\n";
        try {
             writer = new FileWriter(sFileName);
             writer.append(Header);
@@ -849,7 +849,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                         all_activity_lists.get(i).getJob() + "," +
                         all_activity_lists.get(i).getWorkGroup() + "," +
                         all_activity_lists.get(i).getSupervisor() + "," +
-                        all_activity_lists.get(i).getComments() + "," + "\n";
+                        all_activity_lists.get(i).getComments() + "\n";
                 writer.append(Entries);
             }
             writer.flush();

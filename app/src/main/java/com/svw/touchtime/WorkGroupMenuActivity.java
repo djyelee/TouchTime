@@ -126,13 +126,30 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
             int i = 0;
             while (i < all_work_group_lists.size()) {
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(all_work_group_lists.get(i++).getGroupID()));
+                map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(all_work_group_lists.get(i).getGroupID()));
                 feedGroupList.add(map);
+                // update group for all employees
+                String[] array = all_work_group_lists.get(i).getEmployees().split(",");
+                for (String s : array) {
+                    String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                    if (!ss.isEmpty()) {
+                        if (db.checkEmployeeID(Integer.parseInt(ss))) {  // make sure employee is still available
+                            DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+                            if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
+                                    db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
+                                    db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
+                                db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
+                            } else {
+                                db.updateEmployeeListGroup(Integer.parseInt(ss), all_work_group_lists.get(i).getGroupID());
+                                db.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), all_work_group_lists.get(i).getCompany(),
+                                        all_work_group_lists.get(i).getLocation(), all_work_group_lists.get(i).getJob());
+                            }
+                        }
+                    }
+                }
+                i++;
             };
             General.SortIntegerList(feedGroupList, getText(R.string.column_key_group_id).toString(), true);     // sort accend
-
-            ////// update employee group
-            ////// Get Available Group ID
         }
     }
 

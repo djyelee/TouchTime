@@ -250,7 +250,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                 boolean involve_group = false;
                                 if (!Employee.getCompany().equals(GroupSelected.getCompany())
                                         || !Employee.getLocation().equals(GroupSelected.getLocation())
-                                        || !Employee.getJob().equals(GroupSelected.getJob())) {            // same job as the company
+                                        || !Employee.getJob().equals(GroupSelected.getJob())) {            // different job as the company
                                     //builder.setMessage(getText(R.string.employee_punch_in_different_job_message).toString() + " - " + EmployeeName).setTitle(R.string.group_punch_title);
                                     involve_group = true;
                                 }
@@ -258,6 +258,7 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                     listIndex.add(Employee.getEmployeeID());                  // store employee ID
                                     //builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                      //   public void onClick(DialogInterface dialog, int id) {
+                                            // force employees to the same job
                                             dbGroup.updateEmployeeListCompanyLocationJob((int) listIndex.getLast(), GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
                                             punchInDailyActivity((int) listIndex.removeLast());
                                     //    }
@@ -270,11 +271,11 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                     //AlertDialog dialog = builder.create();
                                     //General.TouchTimeDialog(dialog, view);
                                 } else {
-                                    listIndex.add(Employee.getEmployeeID());                  // store employee ID
+                                    listIndex.add(Employee.getEmployeeID());                    // store employee ID
                                     punchInDailyActivity((int) listIndex.removeLast());
                                 }
                             } else {
-                                listIndex.add(Employee.getEmployeeID());                  // store employee ID
+                                listIndex.add(Employee.getEmployeeID());                        // store employee ID
                                 punchInDailyActivity((int) listIndex.removeLast());
                             }
                         }
@@ -367,7 +368,8 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                                     listIndex.add(Employee.getEmployeeID());                       // store indexes
                                     //builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                     //   public void onClick(DialogInterface dialog, int id) {
-                                        dbGroup.updateEmployeeListCompanyLocationJob((int) listIndex.getLast(), GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
+                                        // punch put does not change the employee's job
+                                        //dbGroup.updateEmployeeListCompanyLocationJob((int) listIndex.getLast(), GroupSelected.getCompany(), GroupSelected.getLocation(), GroupSelected.getJob());
                                         punchOutDailyActivity((int) listIndex.removeLast());
                                     //    }
                                     //});
@@ -539,7 +541,6 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {  // Make sure the request was successful
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             ArrayList<String> CompanyLocationJob = new ArrayList<String>();
             CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
             WorkGroupList GroupClicked = new WorkGroupList();
@@ -550,15 +551,25 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                 Group.setLocation(CompanyLocationJob.get(2));
                 Group.setJob(CompanyLocationJob.get(3));
 
-                if (requestCode == PICK_JOB_REQUEST) {
+                if (requestCode == PICK_JOB_REQUEST && valid_groupID.size() < unique_groupID.size()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                     builder.setMessage(getText(R.string.group_are_not_changed_message).toString()).setTitle(R.string.employee_punch_title);
-                } else {
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+                } else if (requestCode == MOVE_JOB_REQUEST && valid_groupID.size() > 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                     builder.setMessage(getText(R.string.group_out_punch_in_message).toString()).setTitle(R.string.employee_punch_title);
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
                 }
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
 
                 if (requestCode == MOVE_JOB_REQUEST) {           // Check which request we're responding to
                     // update all that are selected
@@ -662,14 +673,15 @@ public class WorkGroupPunchMenuActivity extends ActionBarActivity {
                     }
                 }
             } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                 builder.setMessage(getText(R.string.group_same_job).toString()).setTitle(R.string.employee_menu_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
             }
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
         }
     }
 

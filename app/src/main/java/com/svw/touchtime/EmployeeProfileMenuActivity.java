@@ -463,7 +463,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                 getText(R.string.column_view_company).toString() + "," +
                 getText(R.string.location_title_text).toString() + "," +
                 getText(R.string.job_title_text).toString() + "," +
-                getText(R.string.column_view_status).toString() + "," +"\n";
+                getText(R.string.column_view_status).toString() + "\n";
         try {
             writer = new FileWriter(sFileName);
             writer.append(Header);
@@ -492,7 +492,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                         all_employee_lists.get(i).getCompany() + "," +
                         all_employee_lists.get(i).getLocation() + "," +
                         all_employee_lists.get(i).getJob() + "," +
-                        String.valueOf(all_employee_lists.get(i).getStatus()) + "," + "\n";
+                        String.valueOf(all_employee_lists.get(i).getStatus()) + "\n";
                 writer.append(Entries);
             }
             writer.flush();

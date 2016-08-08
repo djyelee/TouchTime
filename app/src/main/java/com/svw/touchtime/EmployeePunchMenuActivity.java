@@ -230,9 +230,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                             involve_group = true;
                         } else if (!EmployeeSelected.getCompany().equals(EmployeeWorkGroup.getCompany())
                                 || !EmployeeSelected.getLocation().equals(EmployeeWorkGroup.getLocation())
-                                || !EmployeeSelected.getJob().equals(EmployeeWorkGroup.getJob())) {            // same job as the company
+                                || !EmployeeSelected.getJob().equals(EmployeeWorkGroup.getJob())) {            // different job as the company
                             // builder.setMessage(getText(R.string.employee_punch_in_different_job_message).toString() + " - " + Name).setTitle(R.string.employee_punch_title);
-                            involve_group = true;
+                             involve_group = true;
                         }
                         if (involve_group) {
                             listIndex.add(i);                       // store indexes
@@ -319,7 +319,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                             involve_group = true;
                         } else if (!EmployeeSelected.getCompany().equals(EmployeeWorkGroup.getCompany())
                                 || !EmployeeSelected.getLocation().equals(EmployeeWorkGroup.getLocation())
-                                || !EmployeeSelected.getJob().equals(EmployeeWorkGroup.getJob())) {            // same job as the company
+                                || !EmployeeSelected.getJob().equals(EmployeeWorkGroup.getJob())) {            // different job as the company
                             //builder.setMessage(getText(R.string.employee_punch_out_different_job_message).toString() + " - " + Name).setTitle(R.string.employee_punch_title);
                             involve_group = true;
                         }
@@ -502,7 +502,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {              // Make sure the request was successful
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
             ArrayList<String> CompanyLocationJob = new ArrayList<String>();
             CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
             if (!Employee.getCompany().equals(CompanyLocationJob.get(1)) ||
@@ -512,15 +511,25 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 Employee.setLocation(CompanyLocationJob.get(2));
                 Employee.setJob(CompanyLocationJob.get(3));
 
-                if (requestCode == PICK_JOB_REQUEST) {
+                if (requestCode == PICK_JOB_REQUEST && valid_employeeID.size() < unique_employeeID.size()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                     builder.setMessage(getText(R.string.employee_are_not_changed_message).toString()).setTitle(R.string.employee_punch_title);
-                } else {
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+                } else if (requestCode == MOVE_JOB_REQUEST && valid_employeeID.size() > 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                     builder.setMessage(getText(R.string.employee_out_punch_in_message).toString()).setTitle(R.string.employee_punch_title);
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
                 }
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
 
                 if (requestCode == MOVE_JOB_REQUEST) {
                     // update all that are selected
@@ -566,15 +575,16 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                     adapter_employee.notifyDataSetChanged();
                 }
             } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
                 builder.setMessage(getText(R.string.employee_same_job).toString()).setTitle(R.string.employee_menu_title);
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
-             }
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
-        }
+                AlertDialog dialog = builder.create();
+                General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+            }
+         }
     }
 
     private void HighlightListItem(int position) {
