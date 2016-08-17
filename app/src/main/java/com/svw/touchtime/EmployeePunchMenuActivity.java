@@ -612,12 +612,12 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         if (feedEmployeeList.size() == 0) return;
         String [] Items = new String [7];
         Items[0] = getText(R.string.column_key_status).toString();
-        Items[1] = getText(R.string.column_key_company).toString();
-        Items[2] = getText(R.string.column_key_location).toString();
-        Items[3] = getText(R.string.column_key_job).toString();
-        Items[4] = getText(R.string.column_key_group_id).toString();
-        Items[5] = getText(R.string.column_key_last_name).toString();
-        Items[6] = getText(R.string.column_key_first_name).toString();
+        Items[1] = getText(R.string.column_key_group_id).toString();
+        Items[2] = getText(R.string.column_key_last_name).toString();
+        Items[3] = getText(R.string.column_key_first_name).toString();
+        Items[4] = getText(R.string.column_key_company).toString();
+        Items[5] = getText(R.string.column_key_location).toString();
+        Items[6] = getText(R.string.column_key_job).toString();
         int lastSelectedID = 0;
 
         if (itemEmployee >= 0) lastSelectedID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_employee_id).toString()));
@@ -634,12 +634,12 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         if (feedEmployeeList.size() == 0) return;
         String [] Items = new String [7];
         Items[0] = getText(R.string.column_key_group_id).toString();
-        Items[1] = getText(R.string.column_key_company).toString();
-        Items[2] = getText(R.string.column_key_location).toString();
-        Items[3] = getText(R.string.column_key_job).toString();
-        Items[4] = getText(R.string.column_key_status).toString();
-        Items[5] = getText(R.string.column_key_last_name).toString();
-        Items[6] = getText(R.string.column_key_first_name).toString();
+        Items[1] = getText(R.string.column_key_last_name).toString();
+        Items[2] = getText(R.string.column_key_first_name).toString();
+        Items[3] = getText(R.string.column_key_status).toString();
+        Items[4] = getText(R.string.column_key_company).toString();
+        Items[5] = getText(R.string.column_key_location).toString();
+        Items[6] = getText(R.string.column_key_job).toString();
         int lastSelectedID = 0;
 
         if (itemEmployee >= 0) lastSelectedID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_employee_id).toString()));
@@ -658,9 +658,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         Items[0] = getText(R.string.column_key_company).toString();
         Items[1] = getText(R.string.column_key_location).toString();
         Items[2] = getText(R.string.column_key_job).toString();
-        Items[3] = getText(R.string.column_key_status).toString();
-        Items[4] = getText(R.string.column_key_last_name).toString();
-        Items[5] = getText(R.string.column_key_first_name).toString();
+        Items[3] = getText(R.string.column_key_last_name).toString();
+        Items[4] = getText(R.string.column_key_first_name).toString();
+        Items[5] = getText(R.string.column_key_status).toString();
         int lastSelectedID = 0;
 
         if (itemEmployee >= 0) lastSelectedID = Integer.parseInt(feedEmployeeList.get(itemEmployee).get(getText(R.string.column_key_employee_id).toString()));

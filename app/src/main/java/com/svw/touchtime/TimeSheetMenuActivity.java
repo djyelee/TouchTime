@@ -39,16 +39,18 @@ import static com.svw.touchtime.R.layout.general_edit_text_view;
 
 public class TimeSheetMenuActivity extends ActionBarActivity {
     private static final int NUMBER_ITEMS = 2;
-    private static final int NUMBER_COLUMNS = 12;
+    private static final int NUMBER_COLUMNS = 13;
+    private static final int SELECT[] = {R.string.button_list, R.string.button_subtotal, R.string.button_summary};
     public ListView time_sheet_list_view;
     Context context;
     Spinner NameSpinner;
-    Button WeekButton, ExportButton, PrintButton, SortNameButton;
+    Button WeekButton, ExportButton, PrintButton, SortNameButton, SubtotalButton;
     private TextView header_view;
     private TextView sunday_view, monday_view, tuesday_view, wednesday_view;
     private TextView thursday_view, friday_view, saturday_view;
     private TouchTimeGeneralAdapter adapter_time_sheet;
     ArrayList<HashMap<String, String>> newTimeSheetList;
+    ArrayList<HashMap<String, String>> filterTimeSheetList;
     ArrayList<HashMap<String, String>> feedTimeSheetList;
     private DatePickerDialog mDatePicker;
     ArrayList<String> list_name;
@@ -61,6 +63,10 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     File NewTimeSheetFile;
     boolean sort_company_ascend = true;
     boolean sort_name_ascend = true;
+    boolean sort_supervisor_ascend = true;
+    int display_flag = 1;       // set to subtotal as default
+    int sort_select = 0;
+    double[] WeekTotal = new double[8];
 
     String CurrentDate;
     String StartDate, EndDate;
@@ -72,7 +78,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     ArrayList<String> itemsSelected;
 
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
-    HashMap<String, String> map;
     private DailyActivityDBWrapper dbActivity;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -93,12 +98,14 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
         time_sheet_list_view = (ListView) findViewById(R.id.time_sheet_list_view);
         newTimeSheetList = new ArrayList<HashMap<String, String>>();
+        filterTimeSheetList = new ArrayList<HashMap<String, String>>();
         feedTimeSheetList = new ArrayList<HashMap<String, String>>();
         NameSpinner = (Spinner) findViewById(R.id.time_sheet_name_spinner);
         WeekButton = (Button) findViewById(R.id.time_sheet_week_button);
         ExportButton = (Button) findViewById(R.id.time_sheet_export_button);
         PrintButton = (Button) findViewById(R.id.time_sheet_print_button);
         SortNameButton = (Button) findViewById(R.id.sort_name);
+        SubtotalButton = (Button) findViewById(R.id.time_sheet_subtotal);
         header_view = (TextView) findViewById(R.id.time_sheet_view);
         sunday_view = (TextView) findViewById(R.id.textViewSunday);
         monday_view = (TextView) findViewById(R.id.textViewMonday);
@@ -117,27 +124,29 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         activity_item[1] = getText(R.string.column_key_company).toString();
         activity_item[2] = getText(R.string.column_key_location).toString();
         activity_item[3] = getText(R.string.column_key_job).toString();
-        activity_item[4] = getText(R.string.column_key_sunday).toString();
-        activity_item[5] = getText(R.string.column_key_monday).toString();
-        activity_item[6] = getText(R.string.column_key_tuesday).toString();
-        activity_item[7] = getText(R.string.column_key_wednesday).toString();
-        activity_item[8] = getText(R.string.column_key_thursday).toString();
-        activity_item[9] = getText(R.string.column_key_friday).toString();
-        activity_item[10] = getText(R.string.column_key_saturday).toString();
-        activity_item[11] = getText(R.string.column_key_hours).toString();
+        activity_item[4] = getText(R.string.column_key_supervisor).toString();
+        activity_item[5] = getText(R.string.column_key_sunday).toString();
+        activity_item[6] = getText(R.string.column_key_monday).toString();
+        activity_item[7] = getText(R.string.column_key_tuesday).toString();
+        activity_item[8] = getText(R.string.column_key_wednesday).toString();
+        activity_item[9] = getText(R.string.column_key_thursday).toString();
+        activity_item[10] = getText(R.string.column_key_friday).toString();
+        activity_item[11] = getText(R.string.column_key_saturday).toString();
+        activity_item[12] = getText(R.string.column_key_hours).toString();
 
         activity_id[0] = R.id.textViewName;
         activity_id[1] = R.id.textViewCompany;
         activity_id[2] = R.id.textViewLocation;
         activity_id[3] = R.id.textViewJob;
-        activity_id[4] = R.id.textViewSunday;
-        activity_id[5] = R.id.textViewMonday;
-        activity_id[6] = R.id.textViewTuesday;
-        activity_id[7] = R.id.textViewWednesday;
-        activity_id[8] = R.id.textViewThursday;
-        activity_id[9] = R.id.textViewFriday;
-        activity_id[10] = R.id.textViewSaturday;
-        activity_id[11] = R.id.textViewHours;
+        activity_id[4] = R.id.textViewSupervisor;
+        activity_id[5] = R.id.textViewSunday;
+        activity_id[6] = R.id.textViewMonday;
+        activity_id[7] = R.id.textViewTuesday;
+        activity_id[8] = R.id.textViewWednesday;
+        activity_id[9] = R.id.textViewThursday;
+        activity_id[10] = R.id.textViewFriday;
+        activity_id[11] = R.id.textViewSaturday;
+        activity_id[12] = R.id.textViewHours;
 
         time_sheet_list_view.setItemsCanFocus(true);
         adapter_time_sheet = new TouchTimeGeneralAdapter(this, feedTimeSheetList, R.layout.time_sheet_view, activity_item, activity_id, 60);
@@ -160,6 +169,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         ObjectKeys = new ArrayList<String>();
         deleteCSVFiles();
         selectedName = noSelection;
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -177,8 +187,8 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 } else {
                     selectedName = list_name.get(pos);
                     filterTimeSheetActivities(view);
-                    sort_company_ascend = true;
-                    onSortCompanyButtonClicked(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
                 }
             }
         }
@@ -228,7 +238,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 keyDate = getText(R.string.time_sheet_saturday).toString() + ' ' + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
                 saturday_view.setText(keyDate);
                 EndDate = String.format("%4s/%2s/%2s", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)).replace(' ', '0');   // monthOfYear starts from 0
-                selectTimeSheetActivities(view);
+                selectTimeSheetActivities(view);  // read new records after filtering, sort by name after
             }
         }
     };
@@ -242,10 +252,11 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         if (dbActivity.getActivityListCount() == 0) {
             context.deleteDatabase(dbActivity.getDatabaseName());       // it is empty, might as well delete it
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
-            builder.setMessage(getText(R.string.daily_activity_no_message).toString() + " " + String.valueOf(StartYear)).setTitle(R.string.time_sheet_title);
+            builder.setMessage(getText(R.string.daily_activity_no_message).toString() + " " + String.valueOf(StartDate)).setTitle(R.string.time_sheet_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     newTimeSheetList.clear();
+                    filterTimeSheetList.clear();
                     feedTimeSheetList.clear();
                     adapter_time_sheet.notifyDataSetChanged();
                 }
@@ -254,6 +265,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             General.TouchTimeDialog(dialog, view);
         } else {
             newTimeSheetList.clear();
+            filterTimeSheetList.clear();
             feedTimeSheetList.clear();
             itemsSelected.clear();
             ObjectKeys.clear();
@@ -262,6 +274,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             itemsSelected.add(StartDate);
             itemsSelected.add(EndDate);
             readTimeSheetActivities(view);
+            sort_name_ascend = true;
             onSortNameButtonClicked(view);
         }
     }
@@ -272,9 +285,9 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         String[] Values = new String[NUMBER_ITEMS];
         int i = 0, j = 0, k, count = 0;
         int DayOfWeek;
-        double ActivityTotal, TimeSheetTotal;
+        double ActivityTotal;
         double Hours, Sum;
-        double[] DayTotal = new double[7];
+        HashMap<String, String> map;
         for (String s : itemsSelected) {
             if (!s.equals(noSelection)) {
                 Column[count] = ObjectKeys.get(i);
@@ -316,6 +329,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     map.put(getText(R.string.column_key_company).toString(), Activity.getCompany());
                     map.put(getText(R.string.column_key_location).toString(), Activity.getLocation());
                     map.put(getText(R.string.column_key_job).toString(), Activity.getJob());
+                    map.put(getText(R.string.column_key_supervisor).toString(), Activity.getSupervisor());
                     Date date = new Date();
                     try {
                         date = df.parse(Activity.getDate());
@@ -327,9 +341,9 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     Hours = (double) Activity.getHours() / 60;
                     for (j = 1; j <= 7; j++) {
                         if (j == DayOfWeek) {
-                            map.put(activity_item[j + 3], String.format("%1$.2f", Hours)); // activity_items 4: Sunday.  Divided by 60 to get fraction of an hour
+                            map.put(activity_item[j + 4], String.format("%1$.2f", Hours)); // activity_items 5: Sunday.  Divided by 60 to get fraction of an hour
                         } else {
-                            map.put(activity_item[j + 3], "");                              // blank
+                            map.put(activity_item[j + 4], "");                              // blank
                         }
                     }
                     newTimeSheetList.add(map);
@@ -338,14 +352,14 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 ;
             }
         }
-        if (time_sheet_activities.size() > 0) {
+        if (time_sheet_activities.size() > 0) {  // combine records of the same name and job
             for (i = 0; i < newTimeSheetList.size(); i++) {
                 for (j = i + 1; j < newTimeSheetList.size(); j++) {
                     if (newTimeSheetList.get(i).get(getText(R.string.column_key_name).toString()).equals(newTimeSheetList.get(j).get(getText(R.string.column_key_name).toString()))
                             && newTimeSheetList.get(i).get(getText(R.string.column_key_company).toString()).equals(newTimeSheetList.get(j).get(getText(R.string.column_key_company).toString()))
                             && newTimeSheetList.get(i).get(getText(R.string.column_key_location).toString()).equals(newTimeSheetList.get(j).get(getText(R.string.column_key_location).toString()))
                             && newTimeSheetList.get(i).get(getText(R.string.column_key_job).toString()).equals(newTimeSheetList.get(j).get(getText(R.string.column_key_job).toString()))) {
-                        for (k = 4; k <= 10; k++) {     // K is the index of the activity_item
+                        for (k = 5; k <= 11; k++) {     // K is the index of the activity_item
                             if (!newTimeSheetList.get(j).get(activity_item[k]).isEmpty()) {
                                 if (!newTimeSheetList.get(i).get(activity_item[k]).isEmpty()) {
                                     Sum = Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k])) + Double.parseDouble(newTimeSheetList.get(j).get(activity_item[k]));
@@ -361,32 +375,35 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     }
                 }
             }
-            TimeSheetTotal = 0.0;
-            for (k = 0; k < 7; k++) DayTotal[k] = 0.0;
+            WeekTotal[7] = 0.0;
+            for (k = 0; k < 7; k++) WeekTotal[k] = 0.0;
             for (i = 0; i < newTimeSheetList.size(); i++) {
                 ActivityTotal = 0.0;
-                for (k = 4, j = 0; k <= 10; k++, j++) {     // K is the index of the activity_item
+                for (k = 5, j = 0; k <= 11; k++, j++) {     // K is the index of the activity_item
                     if (!newTimeSheetList.get(i).get(activity_item[k]).isEmpty()) {
-                        DayTotal[j] += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
+                        WeekTotal[j] += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
                         ActivityTotal += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
                     }
                 }
                 newTimeSheetList.get(i).put(getText(R.string.column_key_hours).toString(), String.format("%1$.2f", ActivityTotal));
-                TimeSheetTotal += ActivityTotal;
+                WeekTotal[7] += ActivityTotal;
+                filterTimeSheetList.add(i, newTimeSheetList.get(i));
                 feedTimeSheetList.add(i, newTimeSheetList.get(i));
             }
+            // add extra line at the end for total hours
             map = new HashMap<String, String>();
             map.put(getText(R.string.column_key_name).toString(), "");
             map.put(getText(R.string.column_key_company).toString(), "");
             map.put(getText(R.string.column_key_location).toString(), "");
             map.put(getText(R.string.column_key_job).toString(), "");
-            for (k = 4, j = 0; k <= 10; k++, j++) {     // K is the index of the activity_item
-                map.put(activity_item[k], String.format("%1$.2f", DayTotal[j]));
+            map.put(getText(R.string.column_key_supervisor).toString(), "");    // don't show "Total Hours" here because it will messes up sort supervisor
+            for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
+                map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
             }
-            map.put(getText(R.string.column_key_hours).toString(), String.format("%1$.2f", TimeSheetTotal));
+            filterTimeSheetList.add(map);
             feedTimeSheetList.add(map);
+            // adapter_time_sheet.notifyDataSetChanged();
 
-            adapter_time_sheet.notifyDataSetChanged();
             General.sortString(list_name);
             list_name = General.removeDuplicates(list_name);
             list_name.add(0, noSelection);
@@ -397,58 +414,175 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
 
     public void filterTimeSheetActivities(View view) {
         int i, j, k;
-        double[] DayTotal = new double[8];
 
-        for (k = 0; k < 8; k++) DayTotal[k] = 0.0;
-        feedTimeSheetList.clear();
+        for (k = 0; k < 8; k++) WeekTotal[k] = 0.0;
+        filterTimeSheetList.clear();
         for (i = 0; i < newTimeSheetList.size(); i++) {
             if (selectedName.equals(newTimeSheetList.get(i).get(getText(R.string.column_key_name).toString())) ||
                     selectedName.equals(noSelection)) {
-                for (k = 4, j = 0; k <= 11; k++, j++) {     // K is the index of the activity_item, include the activity total
+                for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item, include the activity total
                     if (!newTimeSheetList.get(i).get(activity_item[k]).isEmpty()) {
-                        DayTotal[j] += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
+                        WeekTotal[j] += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
                     }
                 }
-                feedTimeSheetList.add(newTimeSheetList.get(i));
+                filterTimeSheetList.add(newTimeSheetList.get(i));
             }
         }
+        HashMap<String, String> map;
         map = new HashMap<String, String>();
         map.put(getText(R.string.column_key_name).toString(), "");
         map.put(getText(R.string.column_key_company).toString(), "");
         map.put(getText(R.string.column_key_location).toString(), "");
         map.put(getText(R.string.column_key_job).toString(), "");
-        for (k = 4, j = 0; k <= 11; k++, j++) {     // K is the index of the activity_item
-            map.put(activity_item[k], String.format("%1$.2f", DayTotal[j]));
+        map.put(getText(R.string.column_key_supervisor).toString(), "");        // don't show "Total Hours" here because it will messes up sort supervisor
+        for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
+            map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
+        }
+        filterTimeSheetList.add(map);
+    }
+
+    public void subtotalTimeSheetActivities(View view) {
+        // take filtered list and add a subtotal line if subtotal_flag is true;
+        double[] Subtotal = new double[8];
+        int i, j, k, l;
+        String First;
+        HashMap<String, String> map;
+        feedTimeSheetList.clear();
+        adapter_time_sheet.MyListColors.clear();
+        if (SELECT[display_flag] != R.string.button_list) {
+            // generate feedTimeSheetList with a subtotal depending on sort_select
+            for (i = 0; i < filterTimeSheetList.size(); i++) {      // filtered list is already sorted
+                for (k = 0; k < 8; k++) {
+                    Subtotal[k] = filterTimeSheetList.get(i).get(activity_item[k+5]).equals("") ?
+                            0.0 : Double.parseDouble(filterTimeSheetList.get(i).get(activity_item[k+5]));
+                }
+                First = filterTimeSheetList.get(i).get(activity_item[sort_select]);
+                if (First.isEmpty() || SELECT[display_flag] != R.string.button_summary) {          // only show the individual activity if not in the summary mode
+                    feedTimeSheetList.add(filterTimeSheetList.get(i));
+                    adapter_time_sheet.MyListColors.add(0);
+                }
+                if (First.isEmpty()) continue;  // stop accumulating if empty
+                for (j = i+1; j < filterTimeSheetList.size(); j++) {
+                    if (First.equals(filterTimeSheetList.get(j).get(activity_item[sort_select]))) {
+                        for (k = 0; k < 8; k++) {
+                            Subtotal[k] += filterTimeSheetList.get(j).get(activity_item[k+5]).equals("") ?
+                                    0.0 : Double.parseDouble(filterTimeSheetList.get(j).get(activity_item[k+5]));
+                        }
+                        if (SELECT[display_flag] != R.string.button_summary) {     // only show the individual activity if not in the summary mode
+                            feedTimeSheetList.add(filterTimeSheetList.get(j));
+                            adapter_time_sheet.MyListColors.add(0);
+                        }
+                    } else {
+                        i =  j - 1;     // move back one to be incremented later
+                        // add extra line at the end for total hours
+                        map = new HashMap<String, String>();
+                        map.put(getText(R.string.column_key_name).toString(), "");
+                        map.put(getText(R.string.column_key_company).toString(), "");
+                        map.put(getText(R.string.column_key_location).toString(), "");
+                        map.put(getText(R.string.column_key_job).toString(), "");
+                        map.put(getText(R.string.column_key_supervisor).toString(), First);
+                        for (k = 5, l = 0; k <= 12; k++, l++) {     // K is the index of the activity_item
+                            map.put(activity_item[k], String.format("%1$.2f", Subtotal[l]));
+                        }
+                        feedTimeSheetList.add(map);
+                        adapter_time_sheet.MyListColors.add(1);
+                        break;
+                    }
+                }
+            }
+        } else {
+            /*      // do not need the complete list anymore
+            for (i=0; i<filterTimeSheetList.size(); i++) {
+                feedTimeSheetList.add(i, filterTimeSheetList.get(i));        //
+                adapter_time_sheet.MyListColors.add(0);
+            }
+            */
+        }
+        feedTimeSheetList.remove(feedTimeSheetList.size() - 1);      // remove the last line and create a new line so changing one does not affect the other
+        adapter_time_sheet.MyListColors.remove(adapter_time_sheet.MyListColors.size() - 1);
+        map = new HashMap<String, String>();
+        map.put(getText(R.string.column_key_name).toString(), "");
+        map.put(getText(R.string.column_key_company).toString(), "");
+        map.put(getText(R.string.column_key_location).toString(), "");
+        map.put(getText(R.string.column_key_job).toString(), "");
+        map.put(getText(R.string.column_key_supervisor).toString(), getText(R.string.report_total_hours).toString());
+        for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
+            map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
         }
         feedTimeSheetList.add(map);
-        adapter_time_sheet.notifyDataSetChanged();
+        adapter_time_sheet.MyListColors.add(2);
     }
 
     public void onSortNameButtonClicked(View view) {
-        if (feedTimeSheetList.size() == 0) return;
-        String [] Items = new String [4];
+        if (filterTimeSheetList.size() == 0) return;
+        String [] Items = new String [5];
         Items [0] = getText(R.string.column_key_name).toString();
         Items [1] = getText(R.string.column_key_company).toString();
         Items [2] = getText(R.string.column_key_location).toString();
         Items [3] = getText(R.string.column_key_job).toString();
-        General.SortStringList(feedTimeSheetList, Items, sort_name_ascend);
-        sort_company_ascend = false;
+        Items [4] = getText(R.string.column_key_supervisor).toString();
+        General.SortStringList(filterTimeSheetList, Items, sort_name_ascend);
+        sort_select = 0;   // index for name
+        subtotalTimeSheetActivities(view);
+        sort_company_ascend = sort_supervisor_ascend = false;
         sort_name_ascend = !sort_name_ascend;
         SortNameButton.setText(sort_name_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         adapter_time_sheet.notifyDataSetChanged();
     }
 
     public void onSortCompanyButtonClicked(View view) {
-        if (feedTimeSheetList.size() == 0) return;
-        String [] Items = new String [4];
+        if (filterTimeSheetList.size() == 0) return;
+        String [] Items = new String [5];
         Items [0] = getText(R.string.column_key_company).toString();
         Items [1] = getText(R.string.column_key_name).toString();
         Items [2] = getText(R.string.column_key_location).toString();
         Items [3] = getText(R.string.column_key_job).toString();
-        General.SortStringList(feedTimeSheetList, Items, sort_company_ascend);
-        sort_name_ascend = false;
+        Items [4] = getText(R.string.column_key_supervisor).toString();
+        General.SortStringList(filterTimeSheetList, Items, sort_company_ascend);
+        sort_select = 1;        // index for company
+        subtotalTimeSheetActivities(view);
+        sort_name_ascend = sort_supervisor_ascend = false;
         sort_company_ascend = !sort_company_ascend;
         adapter_time_sheet.notifyDataSetChanged();
+    }
+
+    public void onSortSupervisorButtonClicked(View view) {
+        if (filterTimeSheetList.size() == 0) return;
+        String [] Items = new String [5];
+        Items [0] = getText(R.string.column_key_supervisor).toString();
+        Items [1] = getText(R.string.column_key_name).toString();
+        Items [2] = getText(R.string.column_key_company).toString();
+        Items [3] = getText(R.string.column_key_location).toString();
+        Items [4] = getText(R.string.column_key_job).toString();
+        General.SortStringList(filterTimeSheetList, Items, sort_supervisor_ascend);
+        sort_select = 4;        // index for supervisor
+        subtotalTimeSheetActivities(view);
+        sort_name_ascend = sort_company_ascend = false;
+        sort_supervisor_ascend = !sort_supervisor_ascend;
+        adapter_time_sheet.notifyDataSetChanged();
+    }
+
+    public void onSubtotalButtonClicked(View view) {
+        if (newTimeSheetList.size() <= 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+            builder.setMessage(getText(R.string.no_daily_activity_message).toString());
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    newTimeSheetList.clear();
+                    filterTimeSheetList.clear();
+                    feedTimeSheetList.clear();
+                    adapter_time_sheet.notifyDataSetChanged();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        } else {
+            // display_flag = (display_flag + 1) % SELECT.length;
+            display_flag = display_flag == 1 ? 2 : 1;
+            SubtotalButton.setText(getText(SELECT[display_flag == 1 ? 2 : 1]).toString());
+            subtotalTimeSheetActivities(view);
+            adapter_time_sheet.notifyDataSetChanged();
+        }
     }
 
     public void onExportButtonClicked(View view) {
@@ -485,7 +619,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         String ColumnNames = "";
         String Entries;
 
-        Header = getText(R.string.time_sheet_header).toString() + " " + StartDate + " " + ((selectedName.equals(noSelection)) ? "" : selectedName);
+        Header = getText(R.string.time_sheet_header).toString() + " " + General.convertYMDtoMDY(StartDate) + " " + ((selectedName.equals(noSelection)) ? "" : selectedName);
         Header = "\"" + Header + "\"" + "\n";
         for (i = 0; i < NUMBER_COLUMNS; i++) ColumnNames += activity_item[i] + ',';
         ColumnNames += "\n";

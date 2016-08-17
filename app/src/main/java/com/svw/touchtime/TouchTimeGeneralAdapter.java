@@ -15,6 +15,7 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
         ArrayList<HashMap<String, String>> MyFeedList;
         String[] MyListItems;
         int[] MyListIDs;
+        ArrayList<Integer> MyListColors;
         int resLayout;
         Context context;
         int SelectedItem;
@@ -26,8 +27,10 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
             resLayout = textViewResourceId;
             this.MyFeedList = feedList;
             this.MyListItems = list_Items;
+            this.MyListColors = new ArrayList<>();
             this.MyListIDs = list_IDs;
             this.Height = Height;
+            this.MyListColors.clear();
         }
 
         @Override
@@ -47,6 +50,19 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
                     TextView myItemView = (TextView) row.findViewById(MyListIDs[i]);
                     if(myItemView != null) {
                         myItemView.setMinimumHeight(Height);
+                        // if (MyListColors.size() >= position && MyListColors.get(position) == 1) myItemView.setTextColor(row.getResources().getColor(R.color.svw_red));
+                        if (MyListColors.size() > position) {
+                            switch (MyListColors.get(position)) {
+                                case 1:
+                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_dark_green));
+                                    break;
+                                case 2:
+                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_red));
+                                    break;
+                                default:
+                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_black));
+                            }
+                        }
                         myItemView.setText(String.valueOf(item.get(MyListItems[i])));
                     }
                 }

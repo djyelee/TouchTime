@@ -1,6 +1,7 @@
 package com.svw.touchtime;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -25,30 +25,34 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import static com.svw.touchtime.R.layout.company_job_location_listview;
-
 public class CompanyJobLocationMenuActivity extends ActionBarActivity {
     private EditText JobLocationEdit;
     private ListView job_location_list_view;
     private ListView company_list_view;
-    private ArrayAdapter<String> adapter_job;
-    private ArrayAdapter<String> adapter_loc;
+    private TouchTimeGeneralAdapter adapter_job;
+    private TouchTimeGeneralAdapter adapter_loc;
     private ArrayList<String> unique_job;
     private ArrayList<String> unique_loc;
     private RadioGroup radioGroup;
     private RadioButton jobButton, locationButton;
     private String item_job_location;
+    ArrayList<HashMap<String, String>> feedJobList;
+    ArrayList<HashMap<String, String>> feedLocationList;
     ArrayList<HashMap<String, String>> feedCompanyList;
     HashMap<String, String> map;
     String[] list_items = new String[5];
     int[] list_id = new int[5];
+    String[] loc_items = new String[1];
+    int[] loc_id = new int[1];
+    String[] job_items = new String[1];
+    int[] job_id = new int[1];
     private int item = -1, olditem = -1;
     private boolean copy_flag = false;
     CompanyJobLocationList Company;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     // Database Wrapper
     private EmployeeGroupCompanyDBWrapper db;
-
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +77,10 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
         radioGroup = (RadioGroup) findViewById(R.id.selection);
         jobButton = (RadioButton) findViewById(R.id.radio_job);
         locationButton = (RadioButton) findViewById(R.id.radio_loc);
+        feedJobList= new ArrayList<HashMap<String, String>>();
+        feedLocationList= new ArrayList<HashMap<String, String>>();
         feedCompanyList= new ArrayList<HashMap<String, String>>();
-
+        context = this;
         // get record from database
         db = new EmployeeGroupCompanyDBWrapper(this);
         all_lists = db.getAllCompanyLists();
@@ -122,19 +128,35 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                 return o1.compareToIgnoreCase(o2);
                     }
                 });
-            i=0;
-            do {
+            for (i=0; i<unique_com.size(); i++) {
                 map = new HashMap<String, String>();
                 map.put(getText(R.string.column_key_company).toString(), unique_com.get(i));
                 feedCompanyList.add(map);
-            } while (++i < unique_com.size());
-            adapter_job = new ArrayAdapter<String>(this, R.layout.company_job_location_listview, unique_job);
-            adapter_loc = new ArrayAdapter<String>(this, R.layout.company_job_location_listview, unique_loc);
+            }
+            for (i=0; i<unique_loc.size(); i++) {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_location).toString(), unique_loc.get(i));
+                feedLocationList.add(map);
+            }
+            for (i=0; i<unique_job.size(); i++) {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_job).toString(), unique_job.get(i));
+                feedJobList.add(map);
+            }
+
+            job_items[0] = getText(R.string.column_key_job).toString();
+            job_id[0] = R.id.singleItemDisplayID;
+            adapter_job = new TouchTimeGeneralAdapter(this, feedJobList, R.layout.general_single_item_view, job_items, job_id, 40);
+            loc_items[0] = getText(R.string.column_key_location).toString();
+            loc_id[0] = R.id.singleItemDisplayID;
+            adapter_loc = new TouchTimeGeneralAdapter(this, feedLocationList, R.layout.general_single_item_view, loc_items, loc_id, 40);
             // use adaptor to display
             radioGroup.check(locationButton.getId());       // default to check location
             if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                item_job_location = (unique_job.size() > 0) ? unique_job.get(0) : "";
                 job_location_list_view.setAdapter(adapter_job);
             } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                item_job_location = (unique_loc.size() > 0) ? unique_loc.get(0) : "";
                 job_location_list_view.setAdapter(adapter_loc);
             }
         } else {
@@ -194,6 +216,13 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                                         return o1.compareToIgnoreCase(o2);
                                     }
                                 });
+                                int i=0;
+                                feedJobList.clear();
+                                for (i=0; i<unique_job.size(); i++) {
+                                    map = new HashMap<String, String>();
+                                    map.put(getText(R.string.column_key_job).toString(), unique_job.get(i));
+                                    feedJobList.add(map);
+                                }
                                 array = Company.Location.split(",");
                                 unique_loc.clear();
                                 for (String s: array) {
@@ -206,9 +235,18 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                                         return o1.compareToIgnoreCase(o2);
                                     }
                                 });
+                                i=0;
+                                feedLocationList.clear();
+                                for (i=0; i<unique_loc.size(); i++) {
+                                    map = new HashMap<String, String>();
+                                    map.put(getText(R.string.column_key_location).toString(), unique_loc.get(i));
+                                    feedLocationList.add(map);
+                                }
                                 if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                                    adapter_job = new TouchTimeGeneralAdapter(context, feedJobList, R.layout.general_single_item_view, job_items, job_id, 40);
                                     job_location_list_view.setAdapter(adapter_job);
                                 } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                                    adapter_loc = new TouchTimeGeneralAdapter(context, feedLocationList, R.layout.general_single_item_view, loc_items, loc_id, 40);
                                     job_location_list_view.setAdapter(adapter_loc);
                                 }
                                 view.setAlpha(1);
@@ -221,7 +259,12 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                item_job_location = (String) parent.getItemAtPosition(position);
+                if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                    item_job_location = feedJobList.get(position).get(getText(R.string.column_key_job).toString());
+                } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                    item_job_location = feedLocationList.get(position).get(getText(R.string.column_key_location).toString());
+                }
+                HighlightListItem(position);
                 view.animate().setDuration(100).alpha(0)   // dim the selection
                         .withEndAction(new Runnable() {
                             @Override
@@ -251,8 +294,14 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                                 return o1.compareToIgnoreCase(o2);
                             }
                         });
-                        // get a new adapter
-                        adapter_job = new ArrayAdapter<String>(getApplicationContext(), company_job_location_listview, unique_job);
+                        int i = 0;
+                        feedJobList.clear();
+                        for (i=0; i<unique_job.size(); i++) {
+                            map = new HashMap<String, String>();
+                            map.put(getText(R.string.column_key_job).toString(), unique_job.get(i));
+                            feedJobList.add(map);
+                        }
+                        adapter_job = new TouchTimeGeneralAdapter(context, feedJobList, R.layout.general_single_item_view, job_items, job_id, 40);
                         job_location_list_view.setAdapter(adapter_job);
                         JSONArray JobArray = new JSONArray(unique_job);
                         Company.setJob(JobArray.toString());
@@ -268,8 +317,14 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
                                 return o1.compareToIgnoreCase(o2);
                             }
                         });
-                        // get a new adapter
-                        adapter_loc = new ArrayAdapter<String>(getApplicationContext(), company_job_location_listview, unique_loc);
+                        int i = 0;
+                        feedLocationList.clear();
+                        for (i=0; i<unique_loc.size(); i++) {
+                            map = new HashMap<String, String>();
+                            map.put(getText(R.string.column_key_location).toString(), unique_loc.get(i));
+                            feedLocationList.add(map);
+                        }
+                        adapter_loc = new TouchTimeGeneralAdapter(context, feedLocationList, R.layout.general_single_item_view, loc_items, loc_id, 40);
                         job_location_list_view.setAdapter(adapter_loc);
                         JSONArray LocationArray = new JSONArray(unique_loc);
                         Company.setLocation(LocationArray.toString());
@@ -284,17 +339,27 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
     }
 
     public void onDeleteButtonClicked(View view) {
-        if (item >= 0) {
+        if (item >= 0 && !item_job_location.isEmpty()) {
             if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                int index = unique_job.indexOf(item_job_location);
                 unique_job.remove(item_job_location);
-                // if (unique_job.isEmpty()) unique_job.add("Empty");
-                adapter_job.notifyDataSetChanged();
+                if(unique_job.size() > 0) {
+                    item_job_location = unique_job.get((index > 0) ? index-1 : 0);
+                } else item_job_location = "";
+                if (index >= 0) feedJobList.remove(index);
+                job_location_list_view.setAdapter(adapter_job);     // cannot use notifyDataSetChanged() here because item has been removed
+                if (index > 0) HighlightListItem(index -1);         // reset highlight
                 JSONArray JobArray = new JSONArray(unique_job);
                 Company.setJob(JobArray.toString());
             } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                int index = unique_loc.indexOf(item_job_location);
                 unique_loc.remove(item_job_location);
-                // if (unique_loc.isEmpty()) unique_loc.add("Empty");
-                adapter_loc.notifyDataSetChanged();
+                if(unique_loc.size() > 0) {
+                    item_job_location = unique_loc.get((index > 0) ? index-1 : 0);
+                } else item_job_location = "";
+                if (index >= 0) feedLocationList.remove(index);
+                job_location_list_view.setAdapter(adapter_loc);     // cannot use notifyDataSetChanged() here because item has been removed
+                if (index > 0) HighlightListItem(index -1);
                 JSONArray LocationArray = new JSONArray(unique_loc);
                 Company.setLocation(LocationArray.toString());
             }
@@ -307,16 +372,31 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
             unique_job.clear();
             JSONArray JobArray = new JSONArray(unique_job);
             Company.setJob(JobArray.toString());
-
+            int i = 0;
+            feedJobList.clear();
+            for (i=0; i<unique_job.size(); i++) {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_job).toString(), unique_job.get(i));
+                feedJobList.add(map);
+            }
             unique_loc.clear();
             JSONArray LocationArray = new JSONArray(unique_loc);
             Company.setLocation(LocationArray.toString());
-
+            feedLocationList.clear();
+            for (i=0; i<unique_loc.size(); i++) {
+                map = new HashMap<String, String>();
+                map.put(getText(R.string.column_key_location).toString(), unique_loc.get(i));
+                feedLocationList.add(map);
+            }
             db.updateCompanyList(Company);
 
             if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+                adapter_job = new TouchTimeGeneralAdapter(context, feedJobList, R.layout.general_single_item_view, job_items, job_id, 40);
+                job_location_list_view.setAdapter(adapter_job);
                 adapter_job.notifyDataSetChanged();
             } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+                adapter_loc = new TouchTimeGeneralAdapter(context, feedLocationList, R.layout.general_single_item_view, loc_items, loc_id, 40);
+                job_location_list_view.setAdapter(adapter_loc);
                 adapter_loc.notifyDataSetChanged();
             }
         }
@@ -331,12 +411,24 @@ public class CompanyJobLocationMenuActivity extends ActionBarActivity {
     public void onRadioButtonClicked(View view) {
         if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
             JobLocationEdit.setHint(R.string.hint_add_job_item);
-            adapter_job = new ArrayAdapter<String>(this, company_job_location_listview, unique_job);
+            adapter_job = new TouchTimeGeneralAdapter(context, feedJobList, R.layout.general_single_item_view, job_items, job_id, 40);
+            item_job_location = (unique_job.size() > 0) ? unique_job.get(0) : "";
             job_location_list_view.setAdapter(adapter_job);
         } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
             JobLocationEdit.setHint(R.string.hint_add_location_item);
-            adapter_loc = new ArrayAdapter<String>(this, company_job_location_listview, unique_loc);
+            adapter_loc = new TouchTimeGeneralAdapter(context, feedLocationList, R.layout.general_single_item_view, loc_items, loc_id, 40);
+            item_job_location = (unique_loc.size() > 0) ? unique_loc.get(0) : "";
             job_location_list_view.setAdapter(adapter_loc);
+        }
+    }
+
+    private void HighlightListItem(int position) {
+        if (radioGroup.getCheckedRadioButtonId() == jobButton.getId()) {
+            adapter_job.setSelectedItem(position);
+            adapter_job.notifyDataSetChanged();
+        } else if (radioGroup.getCheckedRadioButtonId() == locationButton.getId()) {
+            adapter_loc.setSelectedItem(position);
+            adapter_loc.notifyDataSetChanged();
         }
     }
 

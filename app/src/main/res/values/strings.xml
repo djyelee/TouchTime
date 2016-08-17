@@ -13,6 +13,8 @@
     <color name="svw_orange">#ffffa441</color>
     <color name="svw_dark_gray">#ffd0d0d0</color>
     <color name="svw_black">#000000</color>
+    <color name="svw_green">#ff00ff00</color>
+    <color name="svw_dark_green">#ff008800</color>
     <color name="svw_red">#ffff0000</color>
     <color name="svw_view_background">#ffc7e3ff</color>
     <color name="svw_view_selector">#ffa0a0a0</color>
@@ -63,7 +65,7 @@
     <string name="column_view_active">Active</string>
     <string name="column_view_current">Current</string>
     <string name="column_view_status">Status</string>
-    <string name="column_view_s">S</string>
+    <string name="column_view_inout">In/Out</string>
     <string name="column_view_company">Company</string>
     <string name="column_view_location">Location</string>
     <string name="column_view_job">Job</string>
@@ -78,7 +80,6 @@
     <string name="column_view_comments">Comments</string>
     <string name="column_view_group_number">Group #</string>
     <string name="column_view_group">Group</string>
-    <string name="column_view_g">G</string>
     <string name="column_view_start_date">Start Date</string>
     <string name="column_view_end_date">End Date</string>
     <string name="column_view_name">Name</string>
@@ -321,6 +322,9 @@
     <string name="button_daily_view">Daily</string>
     <string name="button_weekly_view">Weekly</string>
     <string name="button_yearly_view">Yearly</string>
+    <string name="button_list">List</string>
+    <string name="button_subtotal">Subtotal</string>
+    <string name="button_summary">Summary</string>
     <string name="button_export">Export</string>
     <string name="button_import">Import</string>
     <string name="button_print">Print</string>
