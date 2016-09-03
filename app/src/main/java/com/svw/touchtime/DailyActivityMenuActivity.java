@@ -176,8 +176,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
                 String newDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
+                ActivityDateString = newDate;
                 if (select_date) {
-                    ActivityDateString = newDate;
                     retrieveActivityRecord(view);
                     select_date = false;
                 } else if (timeClickedID == R.id.set_time_in) {
@@ -281,6 +281,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 case R.id.textViewTimeIn:
                     if (!SetTimeIn.getText().toString().equals(getText(R.string.column_view_timein)) && !TimeInString.isEmpty()) {
                         Activity.setTimeIn(TimeInString);
+                        Activity.setDate(ActivityDateString);                     // store time in date for indexing purpose
                         update = true;
                     }
                     break;
@@ -419,13 +420,13 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                 CompanyLocationJob = data.getStringArrayListExtra("CompanyLocationJob");
                 Activity = getUniqueActivity(itemPosition);
                 if (Activity == null) return;
-                feedActivityList.get(itemPosition).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));              // company
-                feedActivityList.get(itemPosition).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));             // location
-                feedActivityList.get(itemPosition).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));                  // job
                 Activity.setCompany(CompanyLocationJob.get(1));              // company
                 Activity.setLocation(CompanyLocationJob.get(2));             // location
                 Activity.setJob(CompanyLocationJob.get(3));                  // job
                 setUniqueActivity(Activity, itemPosition);
+                feedActivityList.get(itemPosition).put(getText(R.string.column_key_company).toString(), CompanyLocationJob.get(1));              // company
+                feedActivityList.get(itemPosition).put(getText(R.string.column_key_location).toString(), CompanyLocationJob.get(2));             // location
+                feedActivityList.get(itemPosition).put(getText(R.string.column_key_job).toString(), CompanyLocationJob.get(3));                  // job
                 adapter_activity.setSelectedItem(itemPosition);
                 adapter_activity.notifyDataSetChanged();
             }

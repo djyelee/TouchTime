@@ -54,12 +54,14 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginBottom="5dp">
+
             <TextView
                 android:id="@+id/current_date"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:textColor="@color/svw_blue"
                 android:text="Date"
                 android:textStyle="bold|italic"
@@ -71,6 +73,7 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:textColor="@color/svw_red"
                 android:text=""
                 android:textStyle="bold|italic"
@@ -82,10 +85,24 @@
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:textColor="@color/svw_blue"
                 android:text="Time"
                 android:textStyle="bold|italic"
                 android:gravity="center" />
+
+            <Button
+                android:id="@+id/new_time"
+                android:text="@string/button_select_time"
+                android:textSize="@dimen/medium_text_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onNewTimeButtonClicked"
+                android:gravity="center" />
+
     </TableRow>
     <TableRow
             android:layout_width="match_parent"

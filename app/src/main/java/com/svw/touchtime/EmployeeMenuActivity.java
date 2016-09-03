@@ -1,6 +1,8 @@
 package com.svw.touchtime;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +17,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,12 +39,20 @@ public class EmployeeMenuActivity extends ActionBarActivity {
     public TextView Status_View, Company_View, Location_View, Job_View;
     public TextView Active_View,Current_View;
     public TextView DOH_View, DOE_View;
+    public Button Select_time;
     private ImageView photoView;
     EmployeeProfileList Employee;
     DailyActivityList Activity;
     TouchTimeGeneralFunctions General;
     DateFormat dtFormat;
     public int employeeID;
+    private TimePickerDialog mTimePicker;
+    private DatePickerDialog mDatePicker;
+    String currentDateString;
+    String currentTimeString;
+    String selectedDateString;
+    String selectedTimeString;
+    boolean select_current = true;
     private EmployeeGroupCompanyDBWrapper dbGroup;
     private DailyActivityDBWrapper dbActivity;
     static final int PICK_JOB_REQUEST = 123;
@@ -95,19 +108,49 @@ public class EmployeeMenuActivity extends ActionBarActivity {
 
         Current_date = (TextView) findViewById(R.id.current_date);
         Current_time = (TextView) findViewById(R.id.current_time);
-        DateFormat df = new SimpleDateFormat(getText(R.string.date_MDY_format).toString());       // Current_date.setText(df.getDateInstance().format(new Date()));
-        Current_date.setText(df.format(Calendar.getInstance().getTime()));
+        Select_time = (Button) findViewById(R.id.new_time);
+        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());       // Current_date.setText(df.getDateInstance().format(new Date()));
+        currentDateString = df.format(Calendar.getInstance().getTime());
+        Current_date.setText(General.convertYMDtoMDY(currentDateString));
         CountDownTimer uy = new CountDownTimer(2000000000, 1000) {
             public void onFinish() {
                 Current_time.setText("Finish");
             }
             @Override
             public void onTick(long l) {
-                String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                Current_time.setText(currentDateTimeString);
+                currentTimeString = DateFormat.getTimeInstance().format(new Date());
+                Current_time.setText(select_current ? currentTimeString : selectedTimeString);
             }
         }.start();
+
+        Calendar calendar = Calendar.getInstance();
+        mTimePicker = new TimePickerDialog(new ContextThemeWrapper(context, R.style.TouchTimeCalendar),
+                myTimeListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+        mDatePicker = new DatePickerDialog(new ContextThemeWrapper(this, R.style.TouchTimeCalendar),
+                myDateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
     }
+
+    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
+                selectedDateString = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');    // monthOfYear starts from 0
+                Current_date.setText(General.convertYMDtoMDY(selectedDateString));
+            }
+        }
+    };
+
+    private TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+            Calendar calendar = Calendar.getInstance();     // current date and time
+            calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
+            calendar.set(Calendar.MINUTE, selectedMinute);
+            DateFormat tf = new SimpleDateFormat(getText(R.string.time_format).toString());
+            selectedTimeString = tf.format(calendar.getTime());
+        }
+    };
 
     public void addListenerOnButton() {
         Employee_ID = (EditText) findViewById(R.id.EmployeeID);
@@ -285,10 +328,12 @@ public class EmployeeMenuActivity extends ActionBarActivity {
     }
 
     public void employeePunchIn(View view) {
-        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
-        DateFormat tf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
-        String currentDateString = df.format(new Date());
-        String currentDateTimeString = tf.format(new Date());
+        String DateTimeString;
+        if (select_current) {
+            DateTimeString = currentDateString + " " + currentTimeString;
+        } else {
+            DateTimeString = selectedDateString + " " + selectedTimeString;
+        }
         dbGroup.updateEmployeeListStatus(employeeID, 1);
         Activity = new DailyActivityList();
         Activity.setEmployeeID(Employee.getEmployeeID());
@@ -298,26 +343,42 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         if (!Employee.getCompany().isEmpty()) Activity.setCompany(Employee.getCompany());
         if (!Employee.getLocation().isEmpty()) Activity.setLocation(Employee.getLocation());
         if (!Employee.getJob().isEmpty()) Activity.setJob(Employee.getJob());
-        Activity.setDate(currentDateString);        // store time in date for indexing purpose
-        Activity.setTimeIn(currentDateTimeString);
+        Activity.setDate(select_current ? currentDateString : selectedDateString);        // store time in date for indexing purpose
+        Activity.setTimeIn(DateTimeString);
         dbActivity.createActivityList(Activity);
         Status_View.setText(getText(R.string.in).toString());
     }
 
     public void employeePunchOut(View view) {
-        DateFormat tf = new SimpleDateFormat(getText(R.string.date_time_format).toString());
-        String currentDateTimeString = tf.format(new Date());
+        String DateTimeString;
+        if (select_current) {
+            DateTimeString = currentDateString + " " + currentTimeString;
+        } else {
+            DateTimeString = selectedDateString + " " + selectedTimeString;
+        }
         dbGroup.updateEmployeeListStatus(employeeID, 0);
         Activity = dbActivity.getPunchedInActivityList(employeeID);
         if (Activity != null && Activity.getEmployeeID() > 0) {
-            long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), currentDateTimeString);
+            long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), DateTimeString);
+            Activity.setLunch(diff > 300 ? 30 : 0);
             diff = diff > 0 && diff > Activity.Lunch ? diff-Activity.Lunch : 0;
             Activity.setHours(diff);
-            Activity.setTimeOut(currentDateTimeString);
+            Activity.setTimeOut(DateTimeString);
             dbActivity.updatePunchedInActivityList(Activity);
         }
         Status_View.setText(getText(R.string.out).toString());
     }
+
+    public void onNewTimeButtonClicked(View view) {
+        select_current = !select_current;
+        Select_time.setText(select_current ? getText(R.string.button_select_time) : getText(R.string.button_current_time));
+        if (select_current) {          // if current
+            Current_date.setText(General.convertYMDtoMDY(selectedDateString));
+        } else {
+            mTimePicker.show();         // show first but picked last
+            mDatePicker.show();
+        }
+      }
 
     public void onSelectJobButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));

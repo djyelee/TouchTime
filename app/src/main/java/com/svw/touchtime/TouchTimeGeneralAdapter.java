@@ -54,9 +54,12 @@ public class TouchTimeGeneralAdapter extends ArrayAdapter<HashMap<String, String
                         if (MyListColors.size() > position) {
                             switch (MyListColors.get(position)) {
                                 case 1:
-                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_dark_green));
+                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_dark_blue));
                                     break;
                                 case 2:
+                                    myItemView.setTextColor(row.getResources().getColor(R.color.svw_dark_green));
+                                    break;
+                                case 3:
                                     myItemView.setTextColor(row.getResources().getColor(R.color.svw_red));
                                     break;
                                 default:

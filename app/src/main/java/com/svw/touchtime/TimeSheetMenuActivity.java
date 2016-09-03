@@ -40,7 +40,7 @@ import static com.svw.touchtime.R.layout.general_edit_text_view;
 public class TimeSheetMenuActivity extends ActionBarActivity {
     private static final int NUMBER_ITEMS = 2;
     private static final int NUMBER_COLUMNS = 13;
-    private static final int SELECT[] = {R.string.button_list, R.string.button_subtotal, R.string.button_summary};
+    private static final int SELECT[] = {R.string.button_detail, R.string.button_summary};
     public ListView time_sheet_list_view;
     Context context;
     Spinner NameSpinner;
@@ -64,7 +64,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     boolean sort_company_ascend = true;
     boolean sort_name_ascend = true;
     boolean sort_supervisor_ascend = true;
-    int display_flag = 1;       // set to subtotal as default
+    int display_flag = 0;       // set to detail as default
     int sort_select = 0;
     double[] WeekTotal = new double[8];
 
@@ -390,20 +390,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 filterTimeSheetList.add(i, newTimeSheetList.get(i));
                 feedTimeSheetList.add(i, newTimeSheetList.get(i));
             }
-            // add extra line at the end for total hours
-            map = new HashMap<String, String>();
-            map.put(getText(R.string.column_key_name).toString(), "");
-            map.put(getText(R.string.column_key_company).toString(), "");
-            map.put(getText(R.string.column_key_location).toString(), "");
-            map.put(getText(R.string.column_key_job).toString(), "");
-            map.put(getText(R.string.column_key_supervisor).toString(), "");    // don't show "Total Hours" here because it will messes up sort supervisor
-            for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
-                map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
-            }
-            filterTimeSheetList.add(map);
-            feedTimeSheetList.add(map);
-            // adapter_time_sheet.notifyDataSetChanged();
-
             General.sortString(list_name);
             list_name = General.removeDuplicates(list_name);
             list_name.add(0, noSelection);
@@ -414,7 +400,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
 
     public void filterTimeSheetActivities(View view) {
         int i, j, k;
-
         for (k = 0; k < 8; k++) WeekTotal[k] = 0.0;
         filterTimeSheetList.clear();
         for (i = 0; i < newTimeSheetList.size(); i++) {
@@ -428,78 +413,84 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                 filterTimeSheetList.add(newTimeSheetList.get(i));
             }
         }
-        HashMap<String, String> map;
-        map = new HashMap<String, String>();
-        map.put(getText(R.string.column_key_name).toString(), "");
-        map.put(getText(R.string.column_key_company).toString(), "");
-        map.put(getText(R.string.column_key_location).toString(), "");
-        map.put(getText(R.string.column_key_job).toString(), "");
-        map.put(getText(R.string.column_key_supervisor).toString(), "");        // don't show "Total Hours" here because it will messes up sort supervisor
-        for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
-            map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
-        }
-        filterTimeSheetList.add(map);
     }
 
     public void subtotalTimeSheetActivities(View view) {
         // take filtered list and add a subtotal line if subtotal_flag is true;
-        double[] Subtotal = new double[8];
-        int i, j, k, l;
-        String First;
+        double[] ESubtotal = new double[8];     // employee subtotal
+        double[] ISubtotal = new double[8];     // item subtotal
+        int i, j, k, l, m;
+        String First, Second;
         HashMap<String, String> map;
         feedTimeSheetList.clear();
         adapter_time_sheet.MyListColors.clear();
-        if (SELECT[display_flag] != R.string.button_list) {
-            // generate feedTimeSheetList with a subtotal depending on sort_select
-            for (i = 0; i < filterTimeSheetList.size(); i++) {      // filtered list is already sorted
-                for (k = 0; k < 8; k++) {
-                    Subtotal[k] = filterTimeSheetList.get(i).get(activity_item[k+5]).equals("") ?
-                            0.0 : Double.parseDouble(filterTimeSheetList.get(i).get(activity_item[k+5]));
-                }
-                First = filterTimeSheetList.get(i).get(activity_item[sort_select]);
-                if (First.isEmpty() || SELECT[display_flag] != R.string.button_summary) {          // only show the individual activity if not in the summary mode
-                    feedTimeSheetList.add(filterTimeSheetList.get(i));
-                    adapter_time_sheet.MyListColors.add(0);
-                }
-                if (First.isEmpty()) continue;  // stop accumulating if empty
-                for (j = i+1; j < filterTimeSheetList.size(); j++) {
-                    if (First.equals(filterTimeSheetList.get(j).get(activity_item[sort_select]))) {
-                        for (k = 0; k < 8; k++) {
-                            Subtotal[k] += filterTimeSheetList.get(j).get(activity_item[k+5]).equals("") ?
-                                    0.0 : Double.parseDouble(filterTimeSheetList.get(j).get(activity_item[k+5]));
-                        }
-                        if (SELECT[display_flag] != R.string.button_summary) {     // only show the individual activity if not in the summary mode
-                            feedTimeSheetList.add(filterTimeSheetList.get(j));
-                            adapter_time_sheet.MyListColors.add(0);
-                        }
-                    } else {
-                        i =  j - 1;     // move back one to be incremented later
-                        // add extra line at the end for total hours
-                        map = new HashMap<String, String>();
-                        map.put(getText(R.string.column_key_name).toString(), "");
-                        map.put(getText(R.string.column_key_company).toString(), "");
-                        map.put(getText(R.string.column_key_location).toString(), "");
-                        map.put(getText(R.string.column_key_job).toString(), "");
-                        map.put(getText(R.string.column_key_supervisor).toString(), First);
-                        for (k = 5, l = 0; k <= 12; k++, l++) {     // K is the index of the activity_item
-                            map.put(activity_item[k], String.format("%1$.2f", Subtotal[l]));
-                        }
-                        feedTimeSheetList.add(map);
-                        adapter_time_sheet.MyListColors.add(1);
-                        break;
-                    }
-                }
-            }
-        } else {
-            /*      // do not need the complete list anymore
-            for (i=0; i<filterTimeSheetList.size(); i++) {
-                feedTimeSheetList.add(i, filterTimeSheetList.get(i));        //
+        // generate feedTimeSheetList with a subtotal depending on sort_select
+        for (i = 0; i < filterTimeSheetList.size(); i++) {      // filtered list is already sorted
+            First = filterTimeSheetList.get(i).get(activity_item[sort_select]);
+            if (First.isEmpty()) {
+                feedTimeSheetList.add(filterTimeSheetList.get(i));
                 adapter_time_sheet.MyListColors.add(0);
+                continue;  // stop accumulating if empty
             }
-            */
+            // determine the range for the sorted item
+            int begin = i, end = i;
+            for (k = 0; k < 8; k++) ISubtotal[k] = 0.0;
+            for (j = i; j < filterTimeSheetList.size(); j++) {
+                if (First.equals(filterTimeSheetList.get(j).get(activity_item[sort_select]))) {
+                    for (k = 0; k < 8; k++) {       // accumulate all with the same sort item
+                        ISubtotal[k] += filterTimeSheetList.get(j).get(activity_item[k + 5]).equals("") ?
+                                0.0 : Double.parseDouble(filterTimeSheetList.get(j).get(activity_item[k + 5]));
+                    }
+                    end = j+1;
+                    i = j;      // skip to the next one after incremented by 1 at the top
+                } else {
+                    break;
+                }
+            }
+            for (j = begin; j < end; j++) {
+                Second = filterTimeSheetList.get(j).get(getText(R.string.column_key_name).toString());  // Name will not be empty
+                if (SELECT[display_flag] == R.string.button_detail) {
+                    feedTimeSheetList.add(filterTimeSheetList.get(j));      // show individual name if sort by name and showing detail
+                    adapter_time_sheet.MyListColors.add(0);
+                } else if (!activity_item[sort_select].equals(getText(R.string.column_key_name).toString()) && SELECT[display_flag] == R.string.button_summary) {
+                    for (k = 0; k < 8; k++) ESubtotal[k] = 0.0;
+                    for (l = j; l < end; l++) {
+                        if (Second.equals(filterTimeSheetList.get(l).get(getText(R.string.column_key_name).toString()))) {
+                            for (k = 0; k < 8; k++) {
+                                ESubtotal[k] += filterTimeSheetList.get(l).get(activity_item[k + 5]).equals("") ?
+                                        0.0 : Double.parseDouble(filterTimeSheetList.get(l).get(activity_item[k + 5]));
+                            }
+                            j = l;
+                        } else {
+                            break;
+                        }
+                    }
+                    map = new HashMap<String, String>();
+                    map.put(getText(R.string.column_key_name).toString(), Second);
+                    map.put(getText(R.string.column_key_company).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_company).toString())) ? First : "");
+                    map.put(getText(R.string.column_key_location).toString(), "");
+                    map.put(getText(R.string.column_key_job).toString(), "");
+                    map.put(getText(R.string.column_key_supervisor).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_supervisor).toString())) ? First : "");
+                    for (k = 5, m = 0; k <= 12; k++, m++) {     // K is the index of the activity_item
+                                map.put(activity_item[k], String.format("%1$.2f", ESubtotal[m]));
+                    }
+                    feedTimeSheetList.add(map);
+                    adapter_time_sheet.MyListColors.add(1);
+                }
+            }
+            // add extra line at the end for total hours
+            map = new HashMap<String, String>();
+            map.put(getText(R.string.column_key_name).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_name).toString())) ? First : "");
+            map.put(getText(R.string.column_key_company).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_company).toString())) ? First : "");
+            map.put(getText(R.string.column_key_location).toString(), "");
+            map.put(getText(R.string.column_key_job).toString(), "");
+            map.put(getText(R.string.column_key_supervisor).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_supervisor).toString())) ? First : "");
+            for (k = 5, l = 0; k <= 12; k++, l++) {     // K is the index of the activity_item
+                map.put(activity_item[k], String.format("%1$.2f", ISubtotal[l]));
+            }
+            feedTimeSheetList.add(map);
+            adapter_time_sheet.MyListColors.add(2);
         }
-        feedTimeSheetList.remove(feedTimeSheetList.size() - 1);      // remove the last line and create a new line so changing one does not affect the other
-        adapter_time_sheet.MyListColors.remove(adapter_time_sheet.MyListColors.size() - 1);
         map = new HashMap<String, String>();
         map.put(getText(R.string.column_key_name).toString(), "");
         map.put(getText(R.string.column_key_company).toString(), "");
@@ -510,7 +501,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
         }
         feedTimeSheetList.add(map);
-        adapter_time_sheet.MyListColors.add(2);
+        adapter_time_sheet.MyListColors.add(3);
     }
 
     public void onSortNameButtonClicked(View view) {
@@ -524,7 +515,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         General.SortStringList(filterTimeSheetList, Items, sort_name_ascend);
         sort_select = 0;   // index for name
         subtotalTimeSheetActivities(view);
-        sort_company_ascend = sort_supervisor_ascend = false;
         sort_name_ascend = !sort_name_ascend;
         SortNameButton.setText(sort_name_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         adapter_time_sheet.notifyDataSetChanged();
@@ -541,7 +531,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         General.SortStringList(filterTimeSheetList, Items, sort_company_ascend);
         sort_select = 1;        // index for company
         subtotalTimeSheetActivities(view);
-        sort_name_ascend = sort_supervisor_ascend = false;
         sort_company_ascend = !sort_company_ascend;
         adapter_time_sheet.notifyDataSetChanged();
     }
@@ -557,7 +546,6 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         General.SortStringList(filterTimeSheetList, Items, sort_supervisor_ascend);
         sort_select = 4;        // index for supervisor
         subtotalTimeSheetActivities(view);
-        sort_name_ascend = sort_company_ascend = false;
         sort_supervisor_ascend = !sort_supervisor_ascend;
         adapter_time_sheet.notifyDataSetChanged();
     }
@@ -577,9 +565,8 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             General.TouchTimeDialog(dialog, view);
         } else {
-            // display_flag = (display_flag + 1) % SELECT.length;
-            display_flag = display_flag == 1 ? 2 : 1;
-            SubtotalButton.setText(getText(SELECT[display_flag == 1 ? 2 : 1]).toString());
+            display_flag = 1 - display_flag;
+            SubtotalButton.setText(getText(SELECT[1 - display_flag]).toString());
             subtotalTimeSheetActivities(view);
             adapter_time_sheet.notifyDataSetChanged();
         }

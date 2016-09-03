@@ -13,6 +13,8 @@
     <color name="svw_orange">#ffffa441</color>
     <color name="svw_dark_gray">#ffd0d0d0</color>
     <color name="svw_black">#000000</color>
+    <color name="svw_green">#ff00ff00</color>
+    <color name="svw_dark_green">#ff008800</color>
     <color name="svw_red">#ffff0000</color>
     <color name="svw_view_background">#ffc7e3ff</color>
     <color name="svw_view_selector">#ffa0a0a0</color>
@@ -315,13 +317,14 @@
     <string name="button_select_all">Select All</string>
     <string name="button_deselect_all">Clear All</string>
     <string name="button_select_date">Select Date</string>
+    <string name="button_select_time">Select Time</string>
+    <string name="button_current_time">Current Time</string>
     <string name="button_select_week">Select Week</string>
     <string name="button_select_year">Select Year</string>
     <string name="button_daily_view">Daily</string>
     <string name="button_weekly_view">Weekly</string>
     <string name="button_yearly_view">Yearly</string>
-    <string name="button_list">List</string>
-    <string name="button_subtotal">Subtotal</string>
+    <string name="button_detail">Detail</string>
     <string name="button_summary">Summary</string>
     <string name="button_export">Export</string>
     <string name="button_import">Import</string>

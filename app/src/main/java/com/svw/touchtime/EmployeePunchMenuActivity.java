@@ -402,6 +402,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         Activity = dbActivity.getPunchedInActivityList(unique_employeeID.get(index));
         if (Activity != null && Activity.getEmployeeID() > 0) {
             long diff = General.MinuteDifference(tf, Activity.getTimeIn(), currentDateTimeString);
+            Activity.setLunch(diff > 300 ? 30 : 0);
             diff = diff > 0 && diff > Activity.Lunch ? diff-Activity.Lunch : 0;
             Activity.setHours(diff);
             Activity.setTimeOut(currentDateTimeString);
