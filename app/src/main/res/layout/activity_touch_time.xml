@@ -8,7 +8,7 @@
     android:paddingBottom="20dp">
 
     <TextView
-        android:textSize="@dimen/large_text_size"
+        android:textSize="@dimen/main_title_size"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="@string/screen_name"
@@ -30,7 +30,7 @@
             <Button
                 android:id="@+id/caller_administrator"
                 android:text="@string/administrator"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/main_button_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -40,7 +40,7 @@
             <Button
                 android:id="@+id/caller_supervisor"
                 android:text="@string/supervisor"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/main_button_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -70,7 +70,7 @@
             <Button
                     android:id="@+id/caller_employee"
                     android:text="@string/employee"
-                    android:textSize="@dimen/medium_text_size"
+                    android:textSize="@dimen/main_button_size"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"

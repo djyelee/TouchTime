@@ -21,7 +21,7 @@
             android:layout_marginRight="5dp">
             <TextView
                 android:id="@+id/report_view"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_title_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="@string/daily_activity_view_message"
@@ -32,18 +32,18 @@
 
             <TextView
                 android:id="@+id/report_hours"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="@string/report_total_hours"
                 android:textColor="@color/svw_black"
                 android:layout_weight="3.2"
-                android:gravity="start" />
+                android:gravity="center" />
 
             <Button
                 android:id="@+id/report_review_select_year"
                 android:text="@string/button_select_year"
-                android:textSize="@dimen/medium_small_text_size"
+                android:textSize="@dimen/screen_button_small_size"
                 android:layout_weight="1.2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -55,7 +55,7 @@
             <Button
                 android:id="@+id/report_review_import"
                 android:text="@string/button_import"
-                android:textSize="@dimen/medium_small_text_size"
+                android:textSize="@dimen/screen_button_small_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -67,7 +67,7 @@
             <Button
                 android:id="@+id/report_review_export"
                 android:text="@string/button_export"
-                android:textSize="@dimen/medium_small_text_size"
+                android:textSize="@dimen/screen_button_small_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -107,11 +107,11 @@
                         android:id="@+id/name_spinner"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1.6"
+                        android:layout_weight="1.2"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@color/svw_dark_gray"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Button
@@ -123,7 +123,7 @@
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/up"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:clickable="true"
                         android:onClick="onSortNameButtonClicked"
                         android:gravity="center" />
@@ -132,12 +132,12 @@
                         android:id="@+id/report_start_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="0.9"
+                        android:layout_weight="1.1"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/column_view_start_date"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:textColor="@color/svw_blue"
                         android:clickable="true"
                         android:onClick="onSelectDateButtonClicked"
@@ -147,12 +147,12 @@
                         android:id="@+id/report_end_date_button"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="0.9"
+                        android:layout_weight="1.1"
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/column_view_end_date"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:textColor="@color/svw_blue"
                         android:clickable="true"
                         android:onClick="onSelectDateButtonClicked"
@@ -168,7 +168,7 @@
                         android:layout_marginRight="3dp"
                         android:hint="@string/enter_lunch_hint"
                         android:inputType="number"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>
 
@@ -180,7 +180,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:text="@string/column_view_hours"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:background="@color/svw_orange"
                         android:textColor="@color/svw_black"
                         android:gravity="center" />
@@ -193,7 +193,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Button
@@ -205,7 +205,7 @@
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/up"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:clickable="true"
                         android:onClick="onSortCompanyButtonClicked"
                         android:gravity="center" />
@@ -218,7 +218,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Spinner
@@ -229,7 +229,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Spinner
@@ -240,7 +240,7 @@
                         android:layout_marginEnd="3dp"
                         android:layout_marginRight="3dp"
                         android:background="@drawable/list_view_border"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_large_size"
                         android:touchscreenBlocksFocus="false"/>
 
                     <Button
@@ -252,7 +252,7 @@
                         android:layout_marginRight="3dp"
                         android:background="@drawable/roundshapebtn"
                         android:text="@string/up"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:clickable="true"
                         android:onClick="onSortGroupButtonClicked"
                         android:gravity="center" />
@@ -267,7 +267,7 @@
                         android:layout_marginRight="3dp"
                         android:hint="@string/enter_supervisor_hint"
                         android:inputType="textCapWords"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>
@@ -282,7 +282,7 @@
                         android:layout_marginRight="3dp"
                         android:hint="@string/enter_comment_hint"
                         android:inputType="textCapWords"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_button_small_size"
                         android:textStyle="bold|italic"
                         android:background="@color/svw_dark_gray"
                         android:textColor="@color/svw_black"/>

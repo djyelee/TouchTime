@@ -18,7 +18,7 @@
         android:layout_marginRight="5dp">
         <Button
             android:text="@string/button_import"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1.5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -30,7 +30,7 @@
 
         <Button
             android:text="@string/button_export"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1.5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -45,9 +45,9 @@
             android:layout_weight="1.5"
             android:layout_marginBottom="5dp"
             android:text="@string/column_view_group_number"
-            android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold|italic"
+            android:textSize="@dimen/screen_button_large_size"
             android:focusable="false"
+            android:textStyle="bold|italic"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
             android:gravity="center_horizontal|center_vertical"/>
@@ -76,29 +76,31 @@
             android:layout_weight="1.5"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp">
-            <TextView
+            <Button
+                android:id="@+id/sort_id"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
                 android:layout_marginRight="5dp"
+                android:background="@drawable/roundshapebtn"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/column_view_employee_id"
-                android:textSize="@dimen/medium_text_size"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_black"
-                android:background="@color/svw_orange"/>
+                android:textSize="@dimen/screen_button_large_size"
+                android:clickable="true"
+                android:onClick="onSortIDButtonClicked"/>
 
-            <TextView
+            <Button
+                android:id="@+id/sort_last_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:layout_marginRight="5dp"
+                android:background="@drawable/roundshapebtn"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/column_view_last_name"
-                android:textSize="@dimen/medium_text_size"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_black"
-                android:background="@color/svw_orange"/>
+                android:textSize="@dimen/screen_button_large_size"
+                android:clickable="true"
+                android:onClick="onSortLastNameButtonClicked" />
 
             <TextView
                 android:layout_width="0dp"
@@ -106,8 +108,7 @@
                 android:layout_weight="3"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="@string/column_view_first_name"
-                android:textSize="@dimen/medium_text_size"
-                android:textStyle="bold|italic"
+                android:textSize="@dimen/screen_button_large_size"
                 android:textColor="@color/svw_black"
                 android:background="@color/svw_orange"/>
         </TableRow>
@@ -135,7 +136,7 @@
         >
 
         <TextView
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="3dp"
@@ -149,7 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:inputType="textCapWords"
             android:textColor="@color/svw_black"
             android:layout_weight="0.9"
@@ -157,7 +158,7 @@
             android:paddingLeft="10dp"
             android:background="@color/svw_dark_gray"/>
         <TextView
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="3dp"
@@ -171,7 +172,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:inputType="textCapWords"
             android:textColor="@color/svw_black"
             android:layout_weight="0.9"
@@ -179,7 +180,7 @@
             android:paddingLeft="10dp"
             android:background="@color/svw_dark_gray"/>
         <TextView
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="3dp"
@@ -193,7 +194,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:inputType="textCapWords"
             android:textColor="@color/svw_black"
             android:layout_weight="0.9"
@@ -203,7 +204,7 @@
         <Button
             android:id="@+id/add_work_group"
             android:text="@string/button_new"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_weight="1.1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -215,7 +216,7 @@
         <Button
             android:id="@+id/update_work_group"
             android:text="@string/button_upd"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_weight="1.1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -226,7 +227,7 @@
             android:layout_gravity="center_vertical" />
         <Button
             android:text="@string/button_del"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_weight="1.1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -237,7 +238,7 @@
             android:layout_gravity="center_vertical" />
         <Button
             android:text="@string/button_employee"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_text_large_size"
             android:layout_weight="1.1"
             android:layout_width="match_parent"
             android:layout_height="0dp"

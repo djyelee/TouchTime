@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,6 +33,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
     int selectedGroup, employeeGroup, displayGroup;
     Context context;
     WorkGroupList WorkGroup;
+    ArrayList<EmployeeProfileList> all_employee_lists;
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeGroupCompanyDBWrapper db;
     @Override
@@ -43,21 +46,21 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         Title = (TextView) findViewById(R.id.employee_selection_group);
         feedList= new ArrayList<HashMap<String, String>>();
 
-        ArrayList<EmployeeProfileList> all_lists;
         db = new EmployeeGroupCompanyDBWrapper(this);
         employeeIDList = new ArrayList<String>();
-        all_lists = db.getAllEmployeeLists();
+        all_employee_lists = db.getAllEmployeeLists();
         int i = 0;
-        if (all_lists.size() > 0) {
+        if (all_employee_lists.size() > 0) {
             do {
-                if (all_lists.get(i).getActive() == 0 || all_lists.get(i).getCurrent() == 0) continue;  // do not list inactive or not current employees
+                if (all_employee_lists.get(i).getActive() == 0 || all_employee_lists.get(i).getCurrent() == 0) continue;  // do not list inactive or not current employees
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_lists.get(i).getEmployeeID()));
-                map.put(getText(R.string.column_key_last_name).toString(), all_lists.get(i).getLastName());
-                map.put(getText(R.string.column_key_first_name).toString(), all_lists.get(i).getFirstName());
-                map.put(getText(R.string.column_key_group_id).toString(), all_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_lists.get(i).getGroup()));
+                map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(all_employee_lists.get(i).getEmployeeID()));
+                map.put(getText(R.string.column_key_last_name).toString(), all_employee_lists.get(i).getLastName());
+                map.put(getText(R.string.column_key_first_name).toString(), all_employee_lists.get(i).getFirstName());
+                map.put(getText(R.string.column_key_group_id).toString(), all_employee_lists.get(i).getGroup() <= 0 ? "" : String.valueOf(all_employee_lists.get(i).getGroup()));
+                map.put(getText(R.string.column_key_status).toString(), String.valueOf(0));  // default no change
                 feedList.add(map);
-            } while (++i < all_lists.size());
+            } while (++i < all_employee_lists.size());
         }
         String [] list_items = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(),
                 getText(R.string.column_key_first_name).toString(), getText(R.string.column_key_group_id).toString()};
@@ -80,8 +83,8 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 itemSelected = position;
                 String G = feedList.get(itemSelected).get(getText(R.string.column_key_group_id).toString());
-                displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);
-                if (selectedGroup != displayGroup) {   // already selected but different or not selected, need to be reset to selected group
+                displayGroup = G.isEmpty() ? -1 : Integer.parseInt(G);         // set to -1 if does not belong to a group
+                if (selectedGroup != displayGroup) {    // already selected but different or not selected, need to be reset to selected group
                     feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), String.valueOf(selectedGroup));
                 } else {        // already selected, need to be reset to 0 or restore to the original group
                     EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(feedList.get(itemSelected).get(getText(R.string.column_key_employee_id).toString())));
@@ -92,6 +95,7 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
                         feedList.get(itemSelected).put(getText(R.string.column_key_group_id).toString(), displayGroup >= 0 ? (employeeGroup >= 0 ? String.valueOf(employeeGroup) : "") : String.valueOf(selectedGroup));
                     }
                 }
+                feedList.get(itemSelected).put(getText(R.string.column_key_status).toString(), String.valueOf(1));   // mark status = changed when ever it is selected
                 markSelectedItems();
             };
         });
@@ -160,70 +164,61 @@ public class EmployeeSelectionActivity extends ActionBarActivity {
         markSelectedItems();
     }
 
-    public void onSubmitButtonClicked(View view) {
-        boolean reassignEmployee = false;
-        employeeIDList.clear();
-        EmployeeProfileList Employee = new EmployeeProfileList();
-        String G;
-        int i=0, newGroup;
-        if (feedList.size() > 0) {
-            do {
-                Employee = db.getEmployeeList(Integer.parseInt(feedList.get(i).get(getText(R.string.column_key_employee_id).toString())));
-                G = feedList.get(i).get(getText(R.string.column_key_group_id).toString());
-                newGroup = G.isEmpty() ? 0 : Integer.parseInt(G);
-                // employee group assignment is either changed or newly assigned
-                if (Employee.getGroup() != newGroup) {
-                    // the employee is reassigned from a different group, group record must be updated
-                    if (Employee.getGroup() != 0) {
-                        ArrayList<String> unique_employee = new ArrayList<String>();
-                        WorkGroup = db.getWorkGroupList(Employee.getGroup());       // update removed employee from group record
-                        String[] array = WorkGroup.Employees.split(",");
-                        for (String s : array) {
-                            String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                            if (!ss.isEmpty() && Integer.parseInt(ss) != Employee.getEmployeeID()) {
-                                if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                                    unique_employee.add(ss);
+    public void onSaveButtonClicked(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+        builder.setMessage(R.string.group_save_selection).setTitle(R.string.group_title);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                employeeIDList.clear();
+                EmployeeProfileList Employee;
+                String G;
+                int i=0, newGroup;
+                for (i=0; i< feedList.size(); i++) {
+                    if (Integer.parseInt(feedList.get(i).get(getText(R.string.column_key_status).toString())) != 0) {       // group is changed
+                        Employee = db.getEmployeeList(Integer.parseInt(feedList.get(i).get(getText(R.string.column_key_employee_id).toString())));
+                        G = feedList.get(i).get(getText(R.string.column_key_group_id).toString());
+                        newGroup = G.isEmpty() ? 0 : Integer.parseInt(G);
+                        // employee group assignment is either changed or newly assigned
+                        if (Employee.Group != newGroup) {
+                            if (Employee.Group != 0) {  // the employee is reassigned from a different group, group record must be updated
+                                ArrayList<String> unique_employee = new ArrayList<String>();
+                                WorkGroup = db.getWorkGroupList(Employee.getGroup());       // update removed employee from group record
+                                String[] array = WorkGroup.Employees.split(",");
+                                for (String s : array) {
+                                    String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                                    if (!ss.isEmpty() && Integer.parseInt(ss) != Employee.EmployeeID) {
+                                        if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
+                                            unique_employee.add(ss);
+                                        }
+                                    }
                                 }
+                                // update employee list in the group
+                                JSONArray JobArray = new JSONArray(unique_employee);
+                                WorkGroup.setEmployees(JobArray.toString());
+                                db.updateWorkGroupList(WorkGroup);
                             }
+                            Employee.setGroup(newGroup);            // update employee group assignment
+                            db.updateEmployeeList(Employee);
                         }
-                        // update employee list in the group
-                        //JSONArray JobArray = new JSONArray(unique_employee);
-                        //WorkGroup.setEmployees(JobArray.toString());
-                        //db.updateWorkGroupList(WorkGroup);
                     }
-                    reassignEmployee = true;             // indicate group is changed
-                    Employee.setGroup(newGroup);         // update employee group assignment
-                    db.updateEmployeeList(Employee);
+                    // create a new list of employees selected in the selectedGroup
+                    if (!feedList.get(i).get(getText(R.string.column_key_group_id).toString()).isEmpty()
+                            && Integer.parseInt(feedList.get(i).get(getText(R.string.column_key_group_id).toString())) == selectedGroup) {
+                        employeeIDList.add(feedList.get(i).get(getText(R.string.column_key_employee_id).toString()));
+                    }
                 }
-                // create a new list of selected employees to be passed back
-                if (newGroup == selectedGroup) {
-                     employeeIDList.add(String.valueOf(Employee.getEmployeeID()));
-                }
-           } while (++i < feedList.size());
-        }
-        if (reassignEmployee) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-            builder.setMessage(R.string.group_reassign_employee_).setTitle(R.string.group_title);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putStringArrayListExtra("SelectedEmployees", employeeIDList);
-                    setResult(RESULT_OK, returnIntent);
-                    finish();
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            });
-            AlertDialog dialog = builder.create();
-            General.TouchTimeDialog(dialog, view);
-        } else {
-            Intent returnIntent = new Intent();
-            returnIntent.putStringArrayListExtra("SelectedEmployees", employeeIDList);
-            setResult(RESULT_OK, returnIntent);
-            finish();
-        }
+                Intent returnIntent = new Intent();
+                returnIntent.putStringArrayListExtra("SelectedEmployees", employeeIDList);
+                setResult(RESULT_OK, returnIntent);
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        General.TouchTimeDialog(dialog, view);
     }
 
     @Override

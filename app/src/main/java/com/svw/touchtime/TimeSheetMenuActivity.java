@@ -641,8 +641,14 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
     }
 
     public void onPrintButtonClicked(View view) {
-
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+        builder.setMessage(getText(R.string.time_sheet_no_printer_message).toString());
+        builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        General.TouchTimeDialog(dialog, view);
     }
 
     public void deleteCSVFiles() {

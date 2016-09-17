@@ -24,7 +24,7 @@
             android:layout_marginBottom="5dp">
             <Button
                 android:text="@string/button_import"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -37,7 +37,7 @@
 
             <Button
                 android:text="@string/button_export"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -56,7 +56,7 @@
             android:gravity="center"
             android:layout_marginBottom="5dp"
             android:text="@string/company_name_header"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:textStyle="bold|italic"
             android:focusable="false"
             android:textColor="@color/svw_black"
@@ -89,7 +89,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/name_title_text"
@@ -101,7 +101,7 @@
                 android:id="@+id/company_name_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="textCapWords"
                 android:textColor="@color/svw_black"
                 android:layout_weight="4.7"
@@ -116,7 +116,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/street_title_text"
@@ -128,7 +128,7 @@
                 android:id="@+id/company_street_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="textCapWords"
                 android:textColor="@color/svw_black"
                 android:layout_weight="4.7"
@@ -142,7 +142,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/city_title_text"
@@ -156,8 +156,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4.7"
+                android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_xlarge_size"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
         </TableRow>
@@ -167,7 +168,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/state_title_text"
@@ -182,29 +183,30 @@
                 android:layout_weight="2.1"
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
+                android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_xlarge_size"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/zip_code_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
                 android:layout_weight="1.4"
-                android:paddingLeft="5dp"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_zip_code_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
                 android:layout_weight="1.2"
-                android:paddingLeft="5dp"
+                android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
                 android:layout_gravity="center_vertical" />
         </TableRow>
@@ -214,7 +216,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/country_title_text"
@@ -230,24 +232,25 @@
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_xlarge_size"
+                android:paddingLeft="10dp"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/phone_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
                 android:layout_weight="0.7"
-                android:paddingLeft="5dp"
+                android:paddingLeft="10dp"
                 android:layout_gravity="center_vertical" />
             <EditText
                 android:id="@+id/company_phone_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="number"
                 android:textColor="@color/svw_black"
                 android:layout_weight="1.9"
@@ -262,7 +265,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/contact_title_text"
@@ -274,7 +277,7 @@
                 android:id="@+id/company_contact_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="textCapWords"
                 android:textColor="@color/svw_black"
                 android:layout_weight="4.7"
@@ -288,7 +291,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="5dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/email_title_text"
@@ -300,7 +303,7 @@
                 android:id="@+id/company_email_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/svw_black"
                 android:layout_weight="4.7"
@@ -320,7 +323,7 @@
             <Button
                 android:id="@+id/btn_new"
                 android:text="@string/button_new"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -334,7 +337,7 @@
             <Button
                 android:id="@+id/btn_upd"
                 android:text="@string/button_upd"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -347,7 +350,7 @@
                 android:layout_gravity="center_vertical" />
             <Button
                 android:text="@string/button_del"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

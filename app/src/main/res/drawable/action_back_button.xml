@@ -4,7 +4,7 @@
     android:shape="rectangle"
     android:padding="3dp"
     android:id ="@+id/action_back"
-    android:textSize="@dimen/medium_small_text_size"
+    android:textSize="@dimen/screen_button_small_size"
     android:text="@string/back_to"
     >
     <solid android:color="@color/svw_gray"/> <!-- this one is ths color of the Rounded Button -->

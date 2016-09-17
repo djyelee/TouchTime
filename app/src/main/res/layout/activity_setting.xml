@@ -16,52 +16,7 @@
         android:layout_weight="1.75"
         android:orientation="vertical"
         android:layout_marginRight="5dp">
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/name_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-            <EditText
-                android:id="@+id/employee_last_name_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
-                android:layout_weight="2.5"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/comma_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="0.2"
-                android:gravity="center" />
-            <EditText
-                android:id="@+id/employee_first_name_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
-                android:layout_weight="2.0"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-        </TableRow>
-        <TableRow
+         <TableRow
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -107,7 +62,7 @@
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_xlarge_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
 
@@ -133,7 +88,7 @@
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_xlarge_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
 
@@ -181,7 +136,7 @@
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
                 android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_xlarge_size"
+                android:textSize="@dimen/screen_text_large_size"
                 android:touchscreenBlocksFocus="false"
                 android:gravity="center" />
 
@@ -444,70 +399,4 @@
         </TableRow>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-        <ImageView
-            android:id="@+id/photo"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:clickable="true"
-            android:onClick="onTakePictureClicked"
-            android:background="@drawable/list_view_border"/>
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-            <EditText
-                android:id="@+id/employee_id_text"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:paddingLeft="5dp"
-                android:layout_weight="1.8"
-                android:layout_marginRight="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-            <Button
-                android:text="@string/button_save"
-                android:textSize="@dimen/screen_button_large_size"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/roundshapebtn"
-                android:clickable="true"
-                android:onClick="onDoneButtonClicked"
-                android:gravity="center_vertical|center_horizontal" />
-        </TableRow>
-
-        <TableRow
-            android:layout_weight="2"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-            <EditText
-                android:id="@+id/employee_comments_text"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="textMultiLine|textCapWords"
-                android:textColor="@color/svw_black"
-                android:hint="@string/hint_employee_comments_text"
-                android:layout_weight="1.8"
-                android:paddingLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/list_view_border"
-                android:gravity="top" />
-        </TableRow>
-    </LinearLayout>
 </LinearLayout>

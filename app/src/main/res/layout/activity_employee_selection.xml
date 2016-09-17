@@ -16,7 +16,7 @@
         android:layout_marginRight="5dp">
         <TextView
             android:id="@+id/employee_selection_group"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_title_size"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="@string/group_select_employee"
@@ -26,14 +26,14 @@
             android:gravity="center" />
 
         <Button
-            android:text="@string/button_sel"
-            android:textSize="@dimen/medium_text_size"
+            android:text="@string/button_save"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/roundshapebtn"
             android:clickable="true"
-            android:onClick="onSubmitButtonClicked"
+            android:onClick="onSaveButtonClicked"
             android:layout_gravity="center_vertical" />
     </TableRow>
     <TableRow
@@ -52,7 +52,7 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_employee_id"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:textStyle="bold|italic"
             android:clickable="true"
             android:onClick="onSortIDButtonClicked"/>
@@ -65,7 +65,7 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_last_name"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:clickable="true"
             android:onClick="onSortLastNameButtonClicked" />
 
@@ -76,10 +76,10 @@
             android:layout_marginRight="5dp"
             android:paddingLeft="10dp"
             android:text="@string/column_view_first_name"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:textColor="@color/svw_black"
             android:background="@color/svw_orange"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal|center_vertical"/>
 
         <Button
             android:id="@+id/sort_group_id"
@@ -89,7 +89,7 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/roundshapebtn"
             android:text="@string/column_view_group"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:clickable="true"
             android:onClick="onSortGroupIDButtonClicked" />
 

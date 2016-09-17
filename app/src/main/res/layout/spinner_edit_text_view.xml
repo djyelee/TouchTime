@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:inputType="textCapWords"
-        android:textSize="@dimen/medium_text_size"
+        android:textSize="@dimen/view_large_size"
         android:textColor="@color/svw_cyan"
         android:paddingLeft="20dp">
     </EditText>

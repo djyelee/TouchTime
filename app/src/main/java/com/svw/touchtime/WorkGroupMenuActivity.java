@@ -35,8 +35,9 @@ import java.util.regex.Pattern;
 public class WorkGroupMenuActivity extends ActionBarActivity {
     private ListView work_group_list_view;
     private EditText GroupNameEdit, SupervisorEdit, ShiftNameEdit;
+    boolean sort_id_ascend = true;
+    boolean sort_last_name_ascend = true;
     private ArrayList<WorkGroupList> all_work_group_lists;
-    private ArrayList<String> unique_employee;
     private SimpleAdapter adapter_group;
     private SimpleAdapter adapter_employee;
     ArrayList<HashMap<String, String>> feedGroupList;
@@ -44,10 +45,6 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     HashMap<String, String> map;
     private int itemWorkGroup = -1;
     WorkGroupList WorkGroup;
-    String[] group_item = new String[5];
-    int[] group_id = new int[5];
-    String[] employee_item = new String[5];
-    int[] employee_id = new int[5];
     static final int PICK_GROUP_REQUEST = 123;          // The request code
     TouchTimeGeneralFunctions General = new TouchTimeGeneralFunctions();
     private EmployeeGroupCompanyDBWrapper db;
@@ -76,24 +73,18 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         // database and other data
         db = new EmployeeGroupCompanyDBWrapper(this);
         WorkGroup = new WorkGroupList();
-        group_item[0] = getText(R.string.column_key_group_id).toString();
-        group_id[0] = R.id.groupDisplayID;
+        String[] group_item = {getText(R.string.column_key_group_id).toString()};
+        int[] group_id = {R.id.groupDisplayID};
         work_group_list_view.setItemsCanFocus(true);
         // work_group_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.group_display_header, null, false), null, false);
         adapter_group = new SimpleAdapter(this, feedGroupList, R.layout.group_display_view, group_item, group_id);
         work_group_list_view.setAdapter(adapter_group);
         itemWorkGroup = 0;
-        readWorkGroup();
+        readWorkGroup(false);
         displayWorkGroup();
-        // retrieve employee lists
-        unique_employee = new ArrayList<String>();
         // display selected employees
-        employee_item[0] = getText(R.string.column_key_employee_id).toString();
-        employee_item[1] = getText(R.string.column_key_last_name).toString();
-        employee_item[2] = getText(R.string.column_key_first_name).toString();
-        employee_id[0] = R.id.textDisplayID;
-        employee_id[1] = R.id.textDisplayLastName;
-        employee_id[2] = R.id.textDisplayFirstName;
+        String[] employee_item = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString()};
+        int[] employee_id = {R.id.textDisplayID, R.id.textDisplayLastName, R.id.textDisplayFirstName};
         employee_list_view.setItemsCanFocus(true);
         // employee_list_view.addHeaderView(getLayoutInflater().inflate(R.layout.employee_display_header, null, false), null, false);
         adapter_employee = new SimpleAdapter(this, feedEmployeeList, R.layout.employee_display_view, employee_item, employee_id);
@@ -119,41 +110,47 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         });
     }
 
-    public void readWorkGroup() {
+    public void readWorkGroup(boolean update) {
         all_work_group_lists = db.getAllWorkGroupLists();
+        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
+        String CurrentDate = df.format(Calendar.getInstance().getTime());
         feedGroupList.clear();
         if (all_work_group_lists.size() > 0) {
             int i = 0;
-            while (i < all_work_group_lists.size()) {
+            WorkGroupList WorkGroup = new WorkGroupList();
+            for (i=0; i < all_work_group_lists.size(); i++) {
+                WorkGroup = all_work_group_lists.get(i);
                 map = new HashMap<String, String>();
-                map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(all_work_group_lists.get(i).getGroupID()));
+                map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(WorkGroup.GroupID));
                 feedGroupList.add(map);
-                // update group for all employees
-                String[] array = all_work_group_lists.get(i).getEmployees().split(",");
-                for (String s : array) {
-                    String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
-                    if (!ss.isEmpty()) {
-                        if (db.checkEmployeeID(Integer.parseInt(ss))) {  // make sure employee is still available
-                            DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
-                            if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
-                                    db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
-                                    db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
-                                db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
-                            } else {
-                                db.updateEmployeeListGroup(Integer.parseInt(ss), all_work_group_lists.get(i).getGroupID());
-                                db.updateEmployeeListCompanyLocationJob(Integer.parseInt(ss), all_work_group_lists.get(i).getCompany(),
-                                        all_work_group_lists.get(i).getLocation(), all_work_group_lists.get(i).getJob());
-                            }
-                        }
-                    }
+                 if (update) {
+                     // update group for all employees
+                     String[] array = WorkGroup.getEmployees().split(",");
+                     for (String s : array) {
+                         String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
+                         if (!ss.isEmpty()) {
+                             if (db.checkEmployeeID(Integer.parseInt(ss))) {  // make sure employee is still available
+                                 EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(ss));
+                                 if (Employee.Active == 0 || Employee.Current == 0 || Employee.DocExp.compareTo(CurrentDate) < 0) {
+                                     Employee.Group = 0;
+                                 } else {
+                                     Employee.Group = WorkGroup.GroupID;
+                                     Employee.Company = WorkGroup.Company;
+                                     Employee.Location = WorkGroup.Location;
+                                     Employee.Job = WorkGroup.Job;
+                                 }
+                                 db.updateEmployeeList(Employee);
+                             }
+                         }
+                     }
                 }
-                i++;
-            };
+            }
             General.SortIntegerList(feedGroupList, getText(R.string.column_key_group_id).toString(), true);     // sort accend
         }
     }
 
     public void displayWorkGroup() {
+        if (all_work_group_lists.size() <= 0) return;
         WorkGroup = db.getWorkGroupList(Integer.parseInt(feedGroupList.get(itemWorkGroup).get(getText(R.string.column_key_group_id).toString())));
         GroupNameEdit.setText(WorkGroup.getGroupName().isEmpty() ? "" : WorkGroup.getGroupName());
         SupervisorEdit.setText(WorkGroup.getSupervisor().isEmpty() ? "" : WorkGroup.getSupervisor());
@@ -163,51 +160,23 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void displayEmployee() {
-        unique_employee.clear();      // c lear the old list
+        if (all_work_group_lists.size() <= 0) return;
+        EmployeeProfileList Employee;
+        feedEmployeeList.clear();     // clear the old list
         if (!WorkGroup.getEmployees().isEmpty()) {
             String[] array = WorkGroup.getEmployees().split(",");
-            boolean invalidEmployee = false;
             for (String s : array) {
                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                 if (!ss.isEmpty()) {
-                    if (db.checkEmployeeID(Integer.parseInt(ss))) {         // make sure employee is still available
-                        DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
-                        if (db.getEmployeeList(Integer.parseInt(ss)).getActive() == 0 ||
-                                db.getEmployeeList(Integer.parseInt(ss)).getCurrent() == 0 ||
-                                db.getEmployeeList(Integer.parseInt(ss)).getDocExp().compareTo(df.format(Calendar.getInstance().getTime()))<0) {
-                                invalidEmployee = true;
-
-                            db.updateEmployeeListGroup(Integer.parseInt(ss), 0);
-                        } else {
-                            unique_employee.add(ss);
-                            db.updateEmployeeListGroup(Integer.parseInt(ss), WorkGroup.getGroupID());
-                        }
-                    }
+                    Employee = db.getEmployeeList(Integer.parseInt(ss));
+                    map = new HashMap<String, String>();
+                    map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(Employee.EmployeeID));
+                    map.put(getText(R.string.column_key_last_name).toString(), Employee.LastName);
+                    map.put(getText(R.string.column_key_first_name).toString(), Employee.FirstName);
+                    feedEmployeeList.add(map);
                 }
             }
-            if (invalidEmployee) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
-                builder.setMessage(R.string.group_inactive_employee_message).setTitle(R.string.group_title);
-                builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                General.TouchTimeDialog(dialog, this.findViewById(android.R.id.content));
-            }
-            // update employee list in the group
-            JSONArray JobArray = new JSONArray(unique_employee);
-            WorkGroup.setEmployees(JobArray.toString());
-            db.updateWorkGroupList(WorkGroup);
-        }
-        feedEmployeeList.clear();     // clear the old list
-        for (String s : unique_employee) {
-            map = new HashMap<String, String>();
-            map.put(getText(R.string.column_key_employee_id).toString(), String.valueOf(db.getEmployeeList(Integer.parseInt(s)).getEmployeeID()));
-            map.put(getText(R.string.column_key_last_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getLastName());
-            map.put(getText(R.string.column_key_first_name).toString(), db.getEmployeeList(Integer.parseInt(s)).getFirstName());
-            feedEmployeeList.add(map);
-        }
+         }
         adapter_employee.notifyDataSetChanged();
     }
 
@@ -239,9 +208,9 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 ArrayList<String> EmployeeIDList = new ArrayList<String>();
                 EmployeeIDList = data.getStringArrayListExtra("SelectedEmployees");
                 JSONArray JobArray = new JSONArray(EmployeeIDList);
-                WorkGroup.setEmployees(JobArray.toString());
+                WorkGroup.setEmployees(JobArray.toString());  // Workgroup is alrerady updated when
                 db.updateWorkGroupList(WorkGroup);
-                readWorkGroup();
+                readWorkGroup(false);
                 displayWorkGroup();
                 displayEmployee();
             }
@@ -274,7 +243,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     WorkGroup.setJob("");                   // no job assigned yet
                     WorkGroup.setStatus(0);
                     db.createWorkGroupList(WorkGroup);
-                    readWorkGroup();
+                    readWorkGroup(false);
                     displayWorkGroup();
                     displayEmployee();
                 }
@@ -304,7 +273,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         db.updateWorkGroupList(WorkGroup);
-                        readWorkGroup();
+                        readWorkGroup(false);
                         displayWorkGroup();                             // name is already there
                         displayEmployee();
                         }
@@ -357,7 +326,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                             itemWorkGroup = -1;
                             WorkGroup = new WorkGroupList();
                         }
-                        readWorkGroup();
+                        readWorkGroup(false);
                         displayWorkGroup();
                         displayEmployee();
                     }
@@ -377,6 +346,22 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         }
         AlertDialog dialog = builder.create();
         General.TouchTimeDialog(dialog, view);
+    }
+
+    public void onSortIDButtonClicked(View view) {
+        if (feedEmployeeList.size() == 0) return;
+        String Items = getText(R.string.column_key_employee_id).toString();
+        General.SortIntegerList(feedEmployeeList, Items, sort_id_ascend);
+        sort_id_ascend = !sort_id_ascend;
+        adapter_employee.notifyDataSetChanged();
+    }
+
+    public void onSortLastNameButtonClicked(View view) {
+        if (feedEmployeeList.size() == 0) return;
+        String [] Items = {getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString()};
+        General.SortStringList(feedEmployeeList, Items, sort_last_name_ascend);
+        sort_last_name_ascend = !sort_last_name_ascend;
+        adapter_employee.notifyDataSetChanged();
     }
 
     public void onImportButtonClicked(View view) {
@@ -474,7 +459,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                 }
                 if (!found) db.deleteWorkGroupList(Integer.parseInt(ID));
             }
-            readWorkGroup();
+            readWorkGroup(false);
             itemWorkGroup = 0;
             displayWorkGroup();
             displayEmployee();

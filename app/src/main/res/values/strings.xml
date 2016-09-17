@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!-- General Purposes -->
-    <dimen name="large_text_size">64sp</dimen>
-    <dimen name="medium_large_text_size">48sp</dimen>
-    <dimen name="medium_text_size">32sp</dimen>
-    <dimen name="medium_small_text_size">24sp</dimen>
-    <dimen name="small_text_size">16sp</dimen>
     <color name="svw_dark_blue">#ff000080</color>
     <color name="svw_blue">#ff0000ff</color>
     <color name="svw_cyan">#ffc7e3ff</color>
@@ -19,7 +14,6 @@
     <color name="svw_red">#ffff0000</color>
     <color name="svw_view_background">#ffc7e3ff</color>
     <color name="svw_view_selector">#ffa0a0a0</color>
-
     <integer name="dialog_message_size">32</integer>
     <integer name="dialog_button_size">32</integer>
     <color name="dialog_message_color">#004F4F</color>
@@ -178,7 +172,7 @@
     <string name="group_select_message">Select a work group !</string>
     <string name="group_name_empty_message">Group name cannot be empty !</string>
     <string name="group_invalid_employee">Assign inactive or not current employees ?</string>
-    <string name="group_reassign_employee_">Reassign group ?</string>
+    <string name="group_save_selection">Save selections ?</string>
     <string name="group_select_employee">Select employees for group </string>
     <string name="group_not_found">Group file is lost! Download again.</string>
     <string name="group_will_be_lost">Replace group file!  Are you sure ?</string>
@@ -270,6 +264,7 @@
     <string name="time_sheet_no_message">No activities for the selected week !</string>
     <string name="time_sheet_header">Time Sheet : Week of </string>
     <string name="time_sheet_week_of">Week of </string>
+    <string name="time_sheet_no_printer_message">No Printer </string>
 
     <!-- Employee Menus -->
     <string name="employee_menu">Employee Punch In/Out</string>
@@ -351,5 +346,6 @@
     <string name="title_activity_employee_detail">Employee Detail</string>
     <string name="title_activity_employee_selection">Employee Selection</string>
     <string name="title_activity_company_job_location_selection">Company Job Location Selection</string>
+    <string name="title_activity_setting">Setting</string>
 
 </resources>

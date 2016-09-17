@@ -9,7 +9,7 @@
     android:paddingRight="10dp">
 
     <TextView
-        android:textSize="@dimen/medium_large_text_size"
+        android:textSize="@dimen/sub_title_size"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
             <TextView
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/sub_text_size"
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -33,7 +33,7 @@
                 android:gravity="center_vertical|end" />
             <EditText
                 android:id="@+id/EmployeeID"
-                android:textSize="@dimen/medium_small_text_size"
+                android:textSize="@dimen/sub_text_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -57,7 +57,7 @@
 
             <TextView
                 android:id="@+id/current_date"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_title_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -69,7 +69,7 @@
 
             <TextView
                 android:id="@+id/current_status"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_title_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -81,7 +81,7 @@
 
             <TextView
                 android:id="@+id/current_time"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_title_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -94,7 +94,7 @@
             <Button
                 android:id="@+id/new_time"
                 android:text="@string/button_select_time"
-                android:textSize="@dimen/medium_text_size"
+                android:textSize="@dimen/screen_button_large_size"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -112,7 +112,7 @@
           <Button
             android:id="@+id/employee_select_job"
             android:text="@string/button_select_job"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -124,7 +124,7 @@
           <Button
             android:id="@+id/employee_move_job"
             android:text="@string/button_move_job"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -136,7 +136,7 @@
           <Button
             android:id="@+id/employee_punch_in"
             android:text="@string/button_punch_in"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1.0"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -148,7 +148,7 @@
           <Button
             android:id="@+id/employee_punch_out"
             android:text="@string/button_punch_out"
-            android:textSize="@dimen/medium_text_size"
+            android:textSize="@dimen/screen_button_large_size"
             android:layout_weight="1.0"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -176,7 +176,7 @@
                     android:layout_height="0dp"
                     android:layout_marginBottom="5dp">
                     <TextView
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/name_title_text"
@@ -187,7 +187,7 @@
                         android:id="@+id/employee_last_name_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:inputType="text"
                         android:textColor="@color/svw_black"
                         android:layout_weight="2.5"
@@ -195,7 +195,7 @@
                         android:background="@color/svw_dark_gray"
                         android:layout_gravity="center_vertical" />
                     <TextView
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/comma_title_text"
@@ -207,7 +207,7 @@
                         android:id="@+id/employee_first_name_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:inputType="text"
                         android:textColor="@color/svw_black"
                         android:layout_weight="2.5"
@@ -221,7 +221,7 @@
                     android:layout_height="0dp"
                     android:layout_marginBottom="5dp">
                     <TextView
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/group_title_text"
@@ -232,7 +232,7 @@
                         android:id="@+id/employee_group_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:inputType="text"
                         android:textColor="@color/svw_black"
                         android:layout_weight="1.8"
@@ -240,7 +240,7 @@
                         android:background="@color/svw_dark_gray"
                         android:layout_gravity="bottom" />
                     <TextView
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/group_name_title_text"
@@ -252,7 +252,7 @@
                         android:id="@+id/employee_group_name_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:inputType="text"
                         android:textColor="@color/svw_black"
                         android:layout_weight="1.8"
@@ -266,7 +266,7 @@
                     android:layout_height="0dp"
                     android:layout_marginBottom="5dp">
                     <TextView
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/company_title_text"
@@ -277,7 +277,7 @@
                         android:id="@+id/employee_company_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="@dimen/medium_small_text_size"
+                        android:textSize="@dimen/screen_text_small_size"
                         android:inputType="text"
                         android:textColor="@color/svw_black"
                         android:layout_weight="4"
@@ -291,7 +291,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="5dp">
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/location_title_text"
@@ -302,7 +302,7 @@
                     android:id="@+id/employee_location_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="4"
@@ -316,7 +316,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="5dp">
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/job_title_text"
@@ -327,7 +327,7 @@
                     android:id="@+id/employee_job_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="4"
@@ -341,7 +341,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="5dp">
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/date_hire_title_text"
@@ -352,7 +352,7 @@
                     android:id="@+id/employee_hire_date_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="2"
@@ -360,7 +360,7 @@
                     android:background="@color/svw_dark_gray"
                     android:layout_gravity="bottom" />
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/active_title_text"
@@ -372,7 +372,7 @@
                     android:id="@+id/employee_active_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="0.5"
@@ -386,7 +386,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="5dp">
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/doc_expiration_title_text"
@@ -397,7 +397,7 @@
                     android:id="@+id/employee_doc_exp_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="2"
@@ -405,7 +405,7 @@
                     android:background="@color/svw_dark_gray"
                     android:layout_gravity="bottom" />
                 <TextView
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/current_title_text"
@@ -417,7 +417,7 @@
                     android:id="@+id/employee_current_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_small_text_size"
+                    android:textSize="@dimen/screen_text_small_size"
                     android:inputType="text"
                     android:textColor="@color/svw_black"
                     android:layout_weight="0.5"
