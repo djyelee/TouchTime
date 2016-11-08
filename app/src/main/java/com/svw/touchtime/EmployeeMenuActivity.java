@@ -334,7 +334,7 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         } else {
             DateTimeString = selectedDateString + " " + selectedTimeString;
         }
-        dbGroup.updateEmployeeListStatus(employeeID, 1);
+        dbGroup.updateEmployeeStatus(employeeID, 1);
         Activity = new DailyActivityList();
         Activity.setEmployeeID(Employee.getEmployeeID());
         Activity.setLastName(Employee.getLastName());
@@ -356,7 +356,7 @@ public class EmployeeMenuActivity extends ActionBarActivity {
         } else {
             DateTimeString = selectedDateString + " " + selectedTimeString;
         }
-        dbGroup.updateEmployeeListStatus(employeeID, 0);
+        dbGroup.updateEmployeeStatus(employeeID, 0);
         Activity = dbActivity.getPunchedInActivityList(employeeID);
         if (Activity != null && Activity.getEmployeeID() > 0) {
             long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), DateTimeString);

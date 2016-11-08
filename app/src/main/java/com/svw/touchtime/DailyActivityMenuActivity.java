@@ -27,12 +27,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class DailyActivityMenuActivity extends ActionBarActivity {
+    ArrayList<DailyActivityList> all_activity_lists;
     public ListView daily_activity_list_view;
     public EditText LunchMinuteEdit, SupervisorEdit, CommentsEdit;
     public TextView DailyActivityView;
-    Button SetTimeIn, SetTimeOut, CompanySort, DateSort;
+    Button SetTimeIn, SetTimeOut, CompanySort, DateSort, SummaryButton;
     public TouchTimeGeneralAdapter adapter_activity;
     ArrayList<HashMap<String, String>> feedActivityList;
     HashMap<String, String> map;
@@ -56,6 +58,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     String ActivityDateString;
     String TimeInString = "";
     String TimeOutString = "";
+    int display_flag = 0;               // set to detail as default
+    private static final int SELECT[] = {R.string.button_detail, R.string.button_summary};
     static final int PICK_JOB_REQUEST = 123;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +80,13 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         SetTimeOut = (Button) findViewById(R.id.set_time_out);
         CompanySort = (Button) findViewById(R.id.sort_company);
         DateSort = (Button) findViewById(R.id.sort_date);
+        SummaryButton = (Button) findViewById(R.id.daily_activity_summary);
         DailyActivityView = (TextView) findViewById(R.id.daily_activity_view);
         feedActivityList = new ArrayList<HashMap<String, String>>();
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);      // open database of the year and create if not exist
         Activity = new DailyActivityList();
-        dateFormat = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
-        dtFormat = new SimpleDateFormat(getText(R.string.date_time_format).toString());
+        dateFormat = new SimpleDateFormat(getText(R.string.date_YMD_format).toString(), Locale.US);
+        dtFormat = new SimpleDateFormat(getText(R.string.date_time_format).toString(), Locale.US);
         ActivityDateString = dateFormat.format(Calendar.getInstance().getTime());
 
         retrieveActivityRecord(findViewById(android.R.id.content));
@@ -115,7 +120,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                if (Caller == R.id.caller_administrator) {
+                                if (Caller == R.id.caller_administrator && SELECT[display_flag] == R.string.button_detail) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
                                     builder.setMessage(R.string.delete_daily_activity_message).setTitle(R.string.daily_activity_title);
                                     builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -125,8 +130,8 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                                             if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                             if (ID > 0) {
                                                 String TI = feedActivityList.get(item).get(getText(R.string.column_key_timein).toString());
-                                                dbGroup.updateEmployeeListStatus(ID, 0);        // set it to punch out anyway
-                                                dbActivity.deletePunchedInActivityList(ID, TI);
+                                                dbGroup.updateEmployeeStatus(ID, 0);        // set it to punch out anyway
+                                                dbActivity.deletePunchedInActivityList(ID, General.convertMDYTtoYMDT(TI));
                                                 feedActivityList.remove(item);
                                                 adapter_activity.notifyDataSetChanged();
                                             }
@@ -247,13 +252,96 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         dbActivity.updateActivityList(uniqueActivity, Column, Values);
      }
 
+    public void updateUniqueActivity(DailyActivityList uniqueActivity, int item) {
+        String [] Column = new String[6];
+        String [] Values = new String[6];
+        Column[0] = dbActivity.getIDColumnKey();
+        Column[1] = dbActivity.getTimeInColumnKey();
+        Column[2] = dbActivity.getTimeOutColumnKey();
+        Column[3] = dbActivity.getCompanyColumnKey();
+        Column[4] = dbActivity.getLocationColumnKey();
+        Column[5] = dbActivity.getJobColumnKey();
+        Values[0] = String.valueOf(feedActivityList.get(item).get(getText(R.string.column_key_employee_id).toString()));
+        Values[1] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
+        Values[3] = feedActivityList.get(item).get(getText(R.string.column_key_company).toString());
+        Values[4] = feedActivityList.get(item).get(getText(R.string.column_key_location).toString());
+        Values[5] = feedActivityList.get(item).get(getText(R.string.column_key_job).toString());
+        dbActivity.updateActivityList(uniqueActivity, Column, Values);
+    }
+
     public void onSelectDateButtonClicked(View view) {
         select_date = true;
         mDatePicker.show();
     }
 
+    public void onSelectSummaryButtonClicked(View view) {
+        retrieveActivityRecord(view);           // feedActivityList is already sorted by last name.
+        if (feedActivityList.size() <= 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+            builder.setMessage(getText(R.string.no_daily_activity_message).toString());
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    feedActivityList.clear();
+                    adapter_activity.notifyDataSetChanged();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, view);
+        } else {
+            display_flag = 1 - display_flag;
+            SummaryButton.setText(getText(SELECT[1 - display_flag]).toString());
+            if (SELECT[display_flag] == R.string.button_summary) {
+                sort_id_ascend = true;
+                onSortIDButtonClicked(view);    // sort by ID in ascending order
+                ArrayList<HashMap<String, String>> newActivityList = new ArrayList<HashMap<String, String>>();
+                int i, j, begin, end, totallunch, totalhours;
+                String ID, In, Out;
+                for (i = 0; i < feedActivityList.size(); i++) {      // list is already sorted by ID
+                    ID = feedActivityList.get(i).get(getText(R.string.column_key_employee_id).toString());
+                    In = feedActivityList.get(i).get(getText(R.string.column_key_timein).toString());
+                    Out = feedActivityList.get(i).get(getText(R.string.column_key_timeout).toString());
+                    begin = end = i;
+                    totallunch = totalhours = 0;
+                    for (j=i; j<feedActivityList.size(); j++) {
+                        if (ID.equals(feedActivityList.get(j).get(getText(R.string.column_key_employee_id).toString()))) {
+                            In = In.compareTo(feedActivityList.get(j).get(getText(R.string.column_key_timein).toString())) > 0
+                                    ? feedActivityList.get(j).get(getText(R.string.column_key_timein).toString()) : In;
+                            if (feedActivityList.get(j).get(getText(R.string.column_key_timeout).toString()).isEmpty() || Out.isEmpty()) {
+                                Out = "";
+                            } else {
+                                Out = Out.compareTo(feedActivityList.get(j).get(getText(R.string.column_key_timeout).toString())) < 0
+                                        ? feedActivityList.get(j).get(getText(R.string.column_key_timeout).toString()) : Out;
+                            }
+                            String ItemHours[] = feedActivityList.get(j).get(getText(R.string.column_key_hours).toString()).split(":");
+                            totalhours += Integer.parseInt(ItemHours[0]) * 60 +  Integer.parseInt(ItemHours[1]);
+                            String ItemLunch[] = feedActivityList.get(j).get(getText(R.string.column_key_lunch).toString()).split(":");
+                            totallunch += Integer.parseInt(ItemLunch[0]) * 60 +  Integer.parseInt(ItemLunch[1]);
+                            end = j;
+                        } else {       // no more activity with the same iD
+                            break;
+                        }
+                    }
+                    feedActivityList.get(begin).put(getText(R.string.column_key_timein).toString(), In);
+                    feedActivityList.get(begin).put(getText(R.string.column_key_timeout).toString(), Out);
+                    feedActivityList.get(begin).put(getText(R.string.column_key_hours).toString(), String.format("%2s:%2s", String.valueOf(totalhours / 60),
+                            String.valueOf(totalhours % 60)).replace(' ', '0'));
+                    feedActivityList.get(begin).put(getText(R.string.column_key_lunch).toString(), String.format("%2s:%2s", String.valueOf(totallunch / 60),
+                            String.valueOf(totallunch % 60)).replace(' ', '0'));
+                    newActivityList.add(feedActivityList.get(begin));
+                    i = end;
+                }
+                feedActivityList.clear();
+                for (i = 0; i < newActivityList.size(); i++) feedActivityList.add(newActivityList.get(i));  // copy new list back to feed list
+                sort_last_name_ascend = true;
+                onSortLastNameButtonClicked(view);
+             }
+            adapter_activity.notifyDataSetChanged();
+        }
+    }
+
     public void onColumnClicked(View view) {
-        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        if (feedActivityList.size() == 0 || itemPosition < 0 || SELECT[display_flag] == R.string.button_summary) return;
         itemPosition = daily_activity_list_view.getPositionForView((View) view.getParent());
         // is employee punched in?
             Activity = getUniqueActivity(itemPosition);
@@ -323,7 +411,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
                         General.TouchTimeDialog(dialog, view);
                     } else {
                         long diff = General.MinuteDifference(dtFormat, Activity.getTimeIn(), Activity.getTimeOut());
-                        diff = (diff > 0 && diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
+                        diff = (diff >= Activity.getLunch()) ? diff - Activity.getLunch() : 0;
                         Activity.setHours(diff);
                         feedActivityList.get(itemPosition).put(getText(R.string.column_key_hours).toString(),
                                 String.format("%2s:%2s", String.valueOf(Activity.Hours / 60),
@@ -350,7 +438,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     }
 
     public void onClearTimeClicked(View view) {
-        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        if (feedActivityList.size() == 0 || itemPosition < 0 || SELECT[display_flag] == R.string.button_summary) return;
         int timeClearID = view.getId();
         if (timeClearID == R.id.clear_time_in) {
             TimeInString = "";
@@ -391,7 +479,7 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     }
 
     public void onSetTimeClicked(View view) {
-        if (feedActivityList.size() == 0 || itemPosition < 0) return;
+        if (feedActivityList.size() == 0 || itemPosition < 0 || SELECT[display_flag] == R.string.button_summary) return;
         timeClickedID = view.getId();
         mTimePicker.show();         // show first but picked last
         mDatePicker.show();
@@ -517,9 +605,6 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
     }
 
     public void retrieveActivityRecord(View view) {
-        String[] employee_item = new String[20];
-        int[] employee_id = new int[20];
-        ArrayList<DailyActivityList> all_activity_lists;
         int year = Integer.parseInt(ActivityDateString.substring(0, 4));
         dbActivity = new DailyActivityDBWrapper(this, year);      // open database of the year and create if not exist
         // retrieve activity record only on the current date
@@ -532,30 +617,20 @@ public class DailyActivityMenuActivity extends ActionBarActivity {
         all_activity_lists = dbActivity.getActivityLists(Column, Compare, Values);
         feedActivityList.clear();           // clear so the old record won't be kept
 
-        employee_item[0] = getText(R.string.column_key_last_name).toString();
-        employee_item[1] = getText(R.string.column_key_first_name).toString();
-        employee_item[2] = getText(R.string.column_key_timein).toString();
-        employee_item[3] = getText(R.string.column_key_timeout).toString();
-        employee_item[4] = getText(R.string.column_key_hours).toString();
-        employee_item[5] = getText(R.string.column_key_lunch).toString();
-        employee_item[6] = getText(R.string.column_key_company).toString();
-        employee_item[7] = getText(R.string.column_key_location).toString();
-        employee_item[8] = getText(R.string.column_key_job).toString();
-        employee_item[9] = getText(R.string.column_key_group_id).toString();
-        employee_item[10] = getText(R.string.column_key_supervisor).toString();
-        employee_item[11] = getText(R.string.column_key_comments).toString();
-        employee_id[0] = R.id.textViewLastName;
-        employee_id[1] = R.id.textViewFirstName;
-        employee_id[2] = R.id.textViewTimeIn;
-        employee_id[3] = R.id.textViewTimeOut;
-        employee_id[4] = R.id.textViewHours;
-        employee_id[5] = R.id.textViewLunch;
-        employee_id[6] = R.id.textViewCompany;
-        employee_id[7] = R.id.textViewLocation;
-        employee_id[8] = R.id.textViewJob;
-        employee_id[9] = R.id.textViewGroup;
-        employee_id[10] = R.id.textViewSupervisor;
-        employee_id[11] = R.id.textViewComments;
+        String employee_item[] = {
+                getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString(),
+                getText(R.string.column_key_timein).toString(), getText(R.string.column_key_timeout).toString(),
+                getText(R.string.column_key_hours).toString(), getText(R.string.column_key_lunch).toString(),
+                getText(R.string.column_key_company).toString(), getText(R.string.column_key_location).toString(),
+                getText(R.string.column_key_job).toString(), getText(R.string.column_key_group_id).toString(),
+                getText(R.string.column_key_supervisor).toString(), getText(R.string.column_key_comments).toString()};
+        int employee_id[] = {
+                R.id.textViewLastName, R.id.textViewFirstName,
+                R.id.textViewTimeIn, R.id.textViewTimeOut,
+                R.id.textViewHours, R.id.textViewLunch,
+                R.id.textViewCompany, R.id.textViewLocation,
+                R.id.textViewJob, R.id.textViewGroup,
+                R.id.textViewSupervisor, R.id.textViewComments};
 
         int i = 0;
         if (all_activity_lists.size() > 0) {

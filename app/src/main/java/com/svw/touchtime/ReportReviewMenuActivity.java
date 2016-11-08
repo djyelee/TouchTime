@@ -87,6 +87,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     private DatePickerDialog mYearPicker;
     private DatePickerDialog mDatePicker;
     DateFormat dtFormat;
+    int SelectedYear;
     int itemPosition, Caller;
     String FileName = "Activities";
     File NewActivityFile;
@@ -197,7 +198,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         JobSpinner.setOnItemSelectedListener(OnSpinnerCL);
         GroupSpinner.setOnItemSelectedListener(OnSpinnerCL);
 
-        selectYear(findViewById(android.R.id.content), Integer.parseInt(CurrentYear));
+        SelectedYear = Integer.parseInt(CurrentYear);
+        selectYear(findViewById(android.R.id.content), SelectedYear);
         deleteCSVFiles();
         LunchMinuteEdit.setOnTouchListener(new TextView.OnTouchListener() {         // set blank whenever touched
             public boolean onTouch(View v, MotionEvent event) {
@@ -237,7 +239,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                                             if (G != null && !G.isEmpty()) ID = Integer.parseInt(G);
                                             if (ID > 0) {
                                                 String TI = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
-                                                dbGroup.updateEmployeeListStatus(ID, 0);        // set it to punch out anyway
+                                                dbGroup.updateEmployeeStatus(ID, 0);        // set it to punch out anyway
                                                 dbActivity.deletePunchedInActivityList(ID, TI);
                                                 feedActivityList.remove(item);
                                                 adapter_activity.notifyDataSetChanged();
@@ -367,6 +369,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             if (view.isShown()) {           // somehow onDateSet is called twice in higher version of Android, use this to avoid doing it the second time.
                 String keyDate = String.format("%4s/%2s/%2s", year, ++monthOfYear, dayOfMonth).replace(' ', '0');   // monthOfYear starts from 0
+                SelectedYear = year;
                 switch (dateButtonID) {
                     case R.id.report_start_date_button:
                         if (feedActivityList.size() > 0) {
@@ -421,8 +424,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         Column[2] = dbActivity.getTimeOutColumnKey();
         String[] Name = feedActivityList.get(item).get(getText(R.string.column_key_name).toString()).split(", ");       // name is stored as last, first, ID
         Values[0] = String.valueOf(Name[2]);            // getting the third component, which is the ID
-        Values[1] = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
-        Values[2] = General.convertMDYtoYMD(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
+        Values[1] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timein).toString()));
+        Values[2] = General.convertMDYTtoYMDT(feedActivityList.get(item).get(getText(R.string.column_key_timeout).toString()));
         Compare[0] = Compare[1] = Compare[2] = "=";
         ActivityList = dbActivity.getActivityLists(Column, Compare, Values);
         return (ActivityList.size() == 0) ? null : ActivityList.get(0);              // should only match and return one, so take the first one
@@ -464,7 +467,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                     feedActivityList.get(itemPosition).put(getText(R.string.column_key_lunch).toString(),
                             String.format("%2s:%2s", String.valueOf(Activity.Lunch / 60),
                                     String.valueOf(Activity.Lunch % 60)).replace(' ', '0'));
-                    update = true;
+                    update =  true;
                 }
                 break;
         }
@@ -517,7 +520,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                     if (i == ObjectKeys.indexOf(dbActivity.getDateColumnKey()) + 1)
                         Compare[count] = "<=";    // end date
                 }
-                Values[count] = s;
+                Values[count] = s;   // dates are already in YMD format, no need to convert
                 count++;
             }
             i++;
@@ -621,8 +624,22 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
 
     public void selectYear(View view, int year) {
         dbActivity = new DailyActivityDBWrapper(context, year);
+        ObjectKeys.clear();
+        itemsSelected.clear();
+        ObjectKeys.add(dbActivity.getIDColumnKey());
+        ObjectKeys.add(dbActivity.getLastNameColumnKey());
+        ObjectKeys.add(dbActivity.getFirstNameColumnKey());
+        ObjectKeys.add(dbActivity.getDateColumnKey());
+        ObjectKeys.add(dbActivity.getDateColumnKey());
+        ObjectKeys.add(dbActivity.getCompanyColumnKey());
+        ObjectKeys.add(dbActivity.getLocationColumnKey());
+        ObjectKeys.add(dbActivity.getJobColumnKey());
+        ObjectKeys.add(dbActivity.getWorkGroupColumnKey());
+        for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
+        report_view.setText(String.valueOf(year));
+
         if (dbActivity.getActivityListCount() == 0) {
-            context.deleteDatabase(dbActivity.getDatabaseName());       // it is empty, might as well delete it
+            // context.deleteDatabase(dbActivity.getDatabaseName());       // Don't delete it
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
             builder.setMessage(getText(R.string.daily_activity_no_message).toString() + " " + String.valueOf(year)).setTitle(R.string.report_review_title);
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -634,20 +651,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
             AlertDialog dialog = builder.create();
             General.TouchTimeDialog(dialog, view);
         } else {
-            ObjectKeys.clear();
-            itemsSelected.clear();
-            ObjectKeys.add(dbActivity.getIDColumnKey());
-            ObjectKeys.add(dbActivity.getLastNameColumnKey());
-            ObjectKeys.add(dbActivity.getFirstNameColumnKey());
-            ObjectKeys.add(dbActivity.getDateColumnKey());
-            ObjectKeys.add(dbActivity.getDateColumnKey());
-            ObjectKeys.add(dbActivity.getCompanyColumnKey());
-            ObjectKeys.add(dbActivity.getLocationColumnKey());
-            ObjectKeys.add(dbActivity.getJobColumnKey());
-            ObjectKeys.add(dbActivity.getWorkGroupColumnKey());
-            for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
             updateSpinnerListView(view);
-            report_view.setText(String.valueOf(year));
             sort_name_ascend = true;
             onSortNameButtonClicked(view);
         }
@@ -666,6 +670,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         sort_name_ascend = !sort_name_ascend;
         NameSort.setText(sort_name_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortGroupButtonClicked(View view) {
@@ -681,6 +686,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         sort_group_ascend = !sort_group_ascend;
         GroupSort.setText(sort_group_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onSortCompanyButtonClicked(View view) {
@@ -696,6 +702,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         sort_company_ascend = !sort_company_ascend;
         CompanySort.setText(sort_company_ascend ? getText(R.string.up).toString() : getText(R.string.down).toString());
         daily_activity_list_view.setAdapter(adapter_activity);
+        daily_activity_list_view.smoothScrollToPosition(itemPosition);
     }
 
     public void onImportButtonClicked(final View view) {
@@ -703,7 +710,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         File Folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         File list[] = Folder.listFiles();
         // for (File s : list) s.delete();
-        final File file = new File(Folder, FileName + ".csv");
+        final File file = new File(Folder, String.valueOf(SelectedYear) + FileName + ".csv");
         for (File f : list) {
             if (f.equals(file)) {
                 FileFound = true;
@@ -727,6 +734,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     readCsvFile(file);
                     updateSpinnerListView(view);
+                    sort_name_ascend = true;
+                    onSortNameButtonClicked(view);
                 }
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -772,6 +781,21 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
                     ID_list.add(item[0]);   // keep a list for checking removed ID later
                 }
             }
+            /*  A more efficient way to perform bulk insert
+                    db.beginTransaction();
+                    try {
+                        ContentValues values = new ContentValues();
+                        for (Cities city : list) {
+                            values.put(CityId, city.getCityid());
+                            values.put(CityName, city.getCityName());
+                            db.insert(TABLE_CITY, null, values);
+                        }
+                        db.setTransactionSuccessful();
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+            */
             Count = dbActivity.getActivityListCount();
             all_activity_lists = dbActivity.getAllActivityLists();
             for (int i=0; i<ObjectKeys.size(); i++) itemsSelected.add(noSelection);
@@ -789,7 +813,8 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         try {
             deleteCSVFiles();
 //          NewTimeSheetFile = new File(context.getExternalCacheDir(), Subject + ".csv");   // app private folder
-            NewActivityFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), FileName + ".csv");  // download folder
+            NewActivityFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    String.valueOf(SelectedYear) + FileName + ".csv");  // download folder
             if (!NewActivityFile.exists()) {
                 if (NewActivityFile.createNewFile()) {
                     generateCsvFile(NewActivityFile);

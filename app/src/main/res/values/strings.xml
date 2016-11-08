@@ -176,6 +176,7 @@
     <string name="group_select_employee">Select employees for group </string>
     <string name="group_not_found">Group file is lost! Download again.</string>
     <string name="group_will_be_lost">Replace group file!  Are you sure ?</string>
+    <string name="group_multiple_groups">assigned to multiple groups</string>
     <!-- TextView title text -->
         <string name="group_name_title_text">Group Name:</string>
         <string name="supervisor_title_text">Supervisor:</string>
@@ -217,10 +218,7 @@
     <string name="group_must_punch_out_message">Group(s) must be punched out first !</string>
     <string name="group_must_punch_in_message">Group(s) has not been punched in. Punch in now ?</string>
     <string name="group_inactive_employee_message">Inactive employees have been removed !</string>
-    <string name="group_are_not_changed_message">Groups already punched in are not changed </string>
-    <string name="group_out_punch_in_message">Punched out groups will be punched in !</string>
-    <string name="group_move_job">Group already punched in ! Move to a new job ?</string>
-    <string name="group_same_job">Selected the same job ! No actions taken !</string>
+    <string name="group_same_job">Same job selected ! Nothing changed !</string>
 
     <!-- Daily Activity -->
     <string name="daily_activity_title">Daily Activity </string>

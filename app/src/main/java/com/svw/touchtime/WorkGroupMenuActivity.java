@@ -80,7 +80,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         adapter_group = new SimpleAdapter(this, feedGroupList, R.layout.group_display_view, group_item, group_id);
         work_group_list_view.setAdapter(adapter_group);
         itemWorkGroup = 0;
-        readWorkGroup(false);
+        readWorkGroup(true);
         displayWorkGroup();
         // display selected employees
         String[] employee_item = {getText(R.string.column_key_employee_id).toString(), getText(R.string.column_key_last_name).toString(), getText(R.string.column_key_first_name).toString()};
@@ -110,42 +110,50 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         });
     }
 
-    public void readWorkGroup(boolean update) {
+    public void readWorkGroup(boolean RemoveDuplicates) {
+        ArrayList employeeID = new ArrayList<String>();
         all_work_group_lists = db.getAllWorkGroupLists();
+
         DateFormat df = new SimpleDateFormat(getText(R.string.date_YMD_format).toString());
         String CurrentDate = df.format(Calendar.getInstance().getTime());
         feedGroupList.clear();
         if (all_work_group_lists.size() > 0) {
-            int i = 0;
+            int i;
             WorkGroupList WorkGroup = new WorkGroupList();
+            if (RemoveDuplicates) db.resetAllEmployeeGroup(0);    // reset them all to group 0
             for (i=0; i < all_work_group_lists.size(); i++) {
                 WorkGroup = all_work_group_lists.get(i);
                 map = new HashMap<String, String>();
                 map.put(getText(R.string.column_key_group_id).toString(), String.valueOf(WorkGroup.GroupID));
                 feedGroupList.add(map);
-                 if (update) {
-                     // update group for all employees
+                // don't have to update group for all employees because they can be updated later in Workgroup Punch
+                // just need to check if multiple groups have the same employee
+                if (RemoveDuplicates) {
                      String[] array = WorkGroup.getEmployees().split(",");
                      for (String s : array) {
                          String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                          if (!ss.isEmpty()) {
-                             if (db.checkEmployeeID(Integer.parseInt(ss))) {  // make sure employee is still available
-                                 EmployeeProfileList Employee = db.getEmployeeList(Integer.parseInt(ss));
-                                 if (Employee.Active == 0 || Employee.Current == 0 || Employee.DocExp.compareTo(CurrentDate) < 0) {
-                                     Employee.Group = 0;
-                                 } else {
-                                     Employee.Group = WorkGroup.GroupID;
-                                     Employee.Company = WorkGroup.Company;
-                                     Employee.Location = WorkGroup.Location;
-                                     Employee.Job = WorkGroup.Job;
-                                 }
-                                 db.updateEmployeeList(Employee);
-                             }
+                             db.updateEmployeeGroup(Integer.parseInt(ss), WorkGroup.GroupID);       // set them to be the same as workgroup
+                             employeeID.add(ss);
                          }
                      }
                 }
             }
-            General.SortIntegerList(feedGroupList, getText(R.string.column_key_group_id).toString(), true);     // sort accend
+            General.SortIntegerList(feedGroupList, getText(R.string.column_key_group_id).toString(), true);     // sort ascend
+            if (RemoveDuplicates) {
+                ArrayList<String> duplicates = General.returnDuplicates(employeeID);
+                if (duplicates.size() > 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+                    String Name = "Employee IDs " + duplicates + " " + getText(R.string.group_multiple_groups);
+                    builder.setMessage(Name).setTitle(R.string.group_punch_title);
+                    builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+                }
+            }
         }
     }
 
@@ -309,7 +317,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                                 String ss = s.replace("\"", "").replace("[", "").replace("]", "").replace("\\", "");
                                 if (!ss.isEmpty()) {
                                     if (db.checkEmployeeID(Integer.parseInt(ss))) {                 // make sure employee is still available
-                                        db.updateEmployeeListGroup(Integer.parseInt(ss), 0); // group is removed, employee record must be updated as well to set group to 0
+                                        db.updateEmployeeGroup(Integer.parseInt(ss), 0); // group is removed, employee record must be updated as well to set group to 0
                                     }
                                 }
                             }
@@ -435,7 +443,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
                     if (item.length > 4) G.setCompany(item[4]); else G.setCompany("");
                     if (item.length > 5) G.setLocation(item[5]); else G.setLocation("");
                     if (item.length > 6) G.setJob(item[6]); else G.setJob("");
-                    if (item.length > 7) G.setStatus(Integer.parseInt(item[7])); else G.setStatus(0);
+                    G.setStatus(0);     // all imported groups must be default to punched out
                     G.setEmployees(Employee);
                     if (db.checkWorkGroupID(G.getGroupID())) { // ID already exists
                         db.updateWorkGroupList(G);

@@ -21,62 +21,6 @@
         />
 
     <TextView
-        android:id="@+id/textViewCompany"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1.5"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/screen_text_small_size"
-        android:singleLine="true"
-        />
-
-    <TextView
-        android:id="@+id/textViewLocation"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1.2"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/screen_text_small_size"
-        android:singleLine="true"
-        />
-
-    <TextView
-        android:id="@+id/textViewJob"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1.2"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/screen_text_small_size"
-        android:singleLine="true"
-        />
-
-    <TextView
-        android:id="@+id/textViewSupervisor"
-        android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:layout_weight="1.2"
-        android:gravity="start|center_vertical"
-        android:paddingLeft="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:textColor="#000000"
-        android:textSize="@dimen/view_small_size"
-        android:singleLine="true"
-        />
-
-    <TextView
         android:id="@+id/textViewSunday"
         android:layout_height="match_parent"
         android:layout_width="0dp"
@@ -165,6 +109,62 @@
         android:layout_marginRight="3dp"
         android:textColor="#000000"
         android:textSize="@dimen/view_small_size"
+        />
+
+    <TextView
+        android:id="@+id/textViewCompany"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:gravity="start|center_vertical"
+        android:paddingLeft="5dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:textColor="#000000"
+        android:textSize="@dimen/screen_text_small_size"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/textViewLocation"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1.2"
+        android:gravity="start|center_vertical"
+        android:paddingLeft="5dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:textColor="#000000"
+        android:textSize="@dimen/screen_text_small_size"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/textViewJob"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1.2"
+        android:gravity="start|center_vertical"
+        android:paddingLeft="5dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:textColor="#000000"
+        android:textSize="@dimen/screen_text_small_size"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/textViewSupervisor"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1.2"
+        android:gravity="start|center_vertical"
+        android:paddingLeft="5dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:textColor="#000000"
+        android:textSize="@dimen/view_small_size"
+        android:singleLine="true"
         />
 
 </LinearLayout>

@@ -79,6 +79,12 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         return (item.length == 3 ? item[1] + "/" + item[2] + "/" + item[0] + " " + YMD.substring(YMD.indexOf(" ")+1, YMD.length()) : "");
     }
 
+    public String convertYMDTtoTime(String YMD) {
+        if (YMD.isEmpty()) return "";
+        String item[] = YMD.substring(0, YMD.indexOf(" ")).replace("-", "/").split("/");
+        return (item.length == 3 ? YMD.substring(YMD.indexOf(" ")+1, YMD.length()) : "");
+    }
+
     public String convertMDYtoYMD(String MDY) {
         if (MDY.isEmpty()) return "";
         MDY.replace("-", "/");
@@ -90,6 +96,12 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
         if (MDY.isEmpty()) return "";
         String item[] = MDY.substring(0, MDY.indexOf(" ")).replace("-", "/").split("/");
         return (item.length == 3 ? item[2] + "/" + item[0] + "/" + item[1] + " " + MDY.substring(MDY.indexOf(" ")+1, MDY.length()) : "");
+    }
+
+    public String convertMDYTtoTime(String MDY) {
+        if (MDY.isEmpty()) return "";
+        String item[] = MDY.substring(0, MDY.indexOf(" ")).replace("-", "/").split("/");
+        return (item.length == 3 ? MDY.substring(MDY.indexOf(" ")+1, MDY.length()) : "");
     }
 
     public String TimeDifference(DateFormat df, String OldTime, String NewTime) {
@@ -261,6 +273,18 @@ public class TouchTimeGeneralFunctions extends ActionBarActivity {
             }
         }
         return nDuplicates;
+    }
+
+    public ArrayList<String> returnDuplicates(ArrayList<String> list) {
+        sortString(list);
+        ArrayList duplicates = new ArrayList<String>();
+        for (int i=0; i<list.size(); i++) {
+            if (Collections.frequency(list, list.get(i)) > 1) {
+                duplicates.add(list.get(i));
+                list.remove(i);
+            }
+        }
+        return duplicates;
     }
 
     public ArrayList<String> sortString(ArrayList<String> list) {

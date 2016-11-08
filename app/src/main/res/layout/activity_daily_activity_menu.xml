@@ -27,7 +27,7 @@
                 android:text="@string/daily_activity_view_message"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
-                android:layout_weight="5"
+                android:layout_weight="4"
                 android:gravity="center" />
 
             <Button
@@ -38,8 +38,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundshapebtn"
+                android:layout_marginRight="3dp"
                 android:clickable="true"
                 android:onClick="onSelectDateButtonClicked"
+                android:layout_gravity="center_vertical" />
+
+            <Button
+                android:id="@+id/daily_activity_summary"
+                android:text="@string/button_summary"
+                android:textSize="@dimen/screen_button_small_size"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/roundshapebtn"
+                android:clickable="true"
+                android:onClick="onSelectSummaryButtonClicked"
                 android:layout_gravity="center_vertical" />
         </TableRow>
 

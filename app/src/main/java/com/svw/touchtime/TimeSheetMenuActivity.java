@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static com.svw.touchtime.R.layout.general_edit_text_view;
 
@@ -298,7 +299,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     if (i == ObjectKeys.indexOf(dbActivity.getDateColumnKey()) + 1)
                         Compare[count] = "<=";    // end date
                 }
-                Values[count] = s;
+                Values[count] = s;  // start date and end date are already in YMD
                 count++;
             }
             i++;
@@ -341,7 +342,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     Hours = (double) Activity.getHours() / 60;
                     for (j = 1; j <= 7; j++) {
                         if (j == DayOfWeek) {
-                            map.put(activity_item[j + 4], String.format("%1$.2f", Hours)); // activity_items 5: Sunday.  Divided by 60 to get fraction of an hour
+                            map.put(activity_item[j + 4], String.format(Locale.getDefault(), "%1$.2f", Hours)); // activity_items 5: Sunday.  Divided by 60 to get fraction of an hour
                         } else {
                             map.put(activity_item[j + 4], "");                              // blank
                         }
@@ -366,7 +367,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                                 } else {
                                     Sum = Double.parseDouble(newTimeSheetList.get(j).get(activity_item[k]));
                                 }
-                                newTimeSheetList.get(i).put(activity_item[k], String.format("%1$.2f", Sum));
+                                newTimeSheetList.get(i).put(activity_item[k], String.format(Locale.getDefault(), "%1$.2f", Sum));
                                 newTimeSheetList.remove(j);
                                 j--;        // adjust index because record is removed.
                                 break;
@@ -385,7 +386,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                         ActivityTotal += Double.parseDouble(newTimeSheetList.get(i).get(activity_item[k]));
                     }
                 }
-                newTimeSheetList.get(i).put(getText(R.string.column_key_hours).toString(), String.format("%1$.2f", ActivityTotal));
+                newTimeSheetList.get(i).put(getText(R.string.column_key_hours).toString(), String.format(Locale.getDefault(), "%1$.2f", ActivityTotal));
                 WeekTotal[7] += ActivityTotal;
                 filterTimeSheetList.add(i, newTimeSheetList.get(i));
                 feedTimeSheetList.add(i, newTimeSheetList.get(i));
@@ -472,7 +473,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
                     map.put(getText(R.string.column_key_job).toString(), "");
                     map.put(getText(R.string.column_key_supervisor).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_supervisor).toString())) ? First : "");
                     for (k = 5, m = 0; k <= 12; k++, m++) {     // K is the index of the activity_item
-                                map.put(activity_item[k], String.format("%1$.2f", ESubtotal[m]));
+                                map.put(activity_item[k], String.format(Locale.getDefault(), "%1$.2f", ESubtotal[m]));
                     }
                     feedTimeSheetList.add(map);
                     adapter_time_sheet.MyListColors.add(1);
@@ -486,7 +487,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
             map.put(getText(R.string.column_key_job).toString(), "");
             map.put(getText(R.string.column_key_supervisor).toString(), (activity_item[sort_select].equals(getText(R.string.column_key_supervisor).toString())) ? First : "");
             for (k = 5, l = 0; k <= 12; k++, l++) {     // K is the index of the activity_item
-                map.put(activity_item[k], String.format("%1$.2f", ISubtotal[l]));
+                map.put(activity_item[k], String.format(Locale.getDefault(), "%1$.2f", ISubtotal[l]));
             }
             feedTimeSheetList.add(map);
             adapter_time_sheet.MyListColors.add(2);
@@ -498,7 +499,7 @@ public class TimeSheetMenuActivity extends ActionBarActivity {
         map.put(getText(R.string.column_key_job).toString(), "");
         map.put(getText(R.string.column_key_supervisor).toString(), getText(R.string.report_total_hours).toString());
         for (k = 5, j = 0; k <= 12; k++, j++) {     // K is the index of the activity_item
-            map.put(activity_item[k], String.format("%1$.2f", WeekTotal[j]));
+            map.put(activity_item[k], String.format(Locale.getDefault(), "%1$.2f", WeekTotal[j]));
         }
         feedTimeSheetList.add(map);
         adapter_time_sheet.MyListColors.add(3);

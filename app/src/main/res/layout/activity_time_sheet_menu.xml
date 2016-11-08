@@ -137,63 +137,6 @@
                         android:clickable="true"
                         android:onClick="onSortNameButtonClicked" />
 
-                    <Button
-                        android:id="@+id/sort_company"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1.5"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/time_sheet_company"
-                        android:textSize="@dimen/screen_button_small_size"
-                        android:clickable="true"
-                        android:onClick="onSortCompanyButtonClicked" />
-
-                    <TextView
-                        android:id="@+id/textViewLocation"
-                        android:layout_height="match_parent"
-                        android:layout_width="0dp"
-                        android:layout_weight="1.2"
-                        android:gravity="center"
-                        android:paddingLeft="5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginRight="3dp"
-                        android:textColor="#000000"
-                        android:background="@color/svw_orange"
-                        android:textSize="@dimen/screen_button_small_size"
-                        android:text="@string/time_sheet_location"
-                        />
-
-                    <TextView
-                        android:id="@+id/textViewJob"
-                        android:layout_height="match_parent"
-                        android:layout_width="0dp"
-                        android:layout_weight="1.2"
-                        android:gravity="center"
-                        android:paddingLeft="5dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginRight="3dp"
-                        android:textColor="#000000"
-                        android:background="@color/svw_orange"
-                        android:textSize="@dimen/screen_button_small_size"
-                        android:text="@string/time_sheet_job"
-                        />
-
-                    <Button
-                        android:id="@+id/sort_Supervisor"
-                        android:layout_height="match_parent"
-                        android:layout_width="0dp"
-                        android:layout_weight="1.2"
-                        android:gravity="center"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginRight="3dp"
-                        android:background="@drawable/roundshapebtn"
-                        android:text="@string/column_view_supervisor"
-                        android:textSize="@dimen/screen_button_small_size"
-                        android:clickable="true"
-                        android:onClick="onSortSupervisorButtonClicked" />
-
                     <TextView
                         android:id="@+id/textViewSunday"
                         android:layout_height="match_parent"
@@ -301,7 +244,64 @@
                         android:text="@string/time_sheet_hours"
                         />
 
-                 </TableRow>
+                    <Button
+                        android:id="@+id/sort_company"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/time_sheet_company"
+                        android:textSize="@dimen/screen_button_small_size"
+                        android:clickable="true"
+                        android:onClick="onSortCompanyButtonClicked" />
+
+                    <TextView
+                        android:id="@+id/textViewLocation"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/screen_button_small_size"
+                        android:text="@string/time_sheet_location"
+                        />
+
+                    <TextView
+                        android:id="@+id/textViewJob"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:textColor="#000000"
+                        android:background="@color/svw_orange"
+                        android:textSize="@dimen/screen_button_small_size"
+                        android:text="@string/time_sheet_job"
+                        />
+
+                    <Button
+                        android:id="@+id/sort_Supervisor"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/roundshapebtn"
+                        android:text="@string/column_view_supervisor"
+                        android:textSize="@dimen/screen_button_small_size"
+                        android:clickable="true"
+                        android:onClick="onSortSupervisorButtonClicked" />
+
+                </TableRow>
 
                 <ListView
                     android:id="@+id/time_sheet_list_view"

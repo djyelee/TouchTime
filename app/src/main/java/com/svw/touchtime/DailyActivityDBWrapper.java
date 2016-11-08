@@ -17,7 +17,7 @@ import java.util.ArrayList;
         private static final String LOG = DailyActivityDBWrapper.class.getName();
 
         // Database Version
-        private static final int DATABASE_VERSION = 14;
+        private static final int DATABASE_VERSION = 15;
 
         // Database Name
         private static final String DATABASE_NAME = "DailyActivityDB";
@@ -67,13 +67,37 @@ import java.util.ArrayList;
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTIVITY);
             // create new tables
             onCreate(db);
+
+            /*  This is a better way to alter the tables than drop and create
+            String DATABASE_ALTER_COMPANY = "ALTER TABLE " + TABLE_COMPANY + " ADD COLUMN " + COLUMN_NEW + " string;";
+            String DATABASE_ALTER_EMPLOYEE = "ALTER TABLE " + TABLE_EMPLOYEE + " ADD COLUMN " + COLUMN_NEW + " string;";
+            String DATABASE_ALTER_WORKGROUP = "ALTER TABLE " + TABLE_WORK_GROUP + " ADD COLUMN " + COLUMN_NEW + " string;";
+            if (oldVersion < 2) db.execSQL(DATABASE_ALTER_COMPANY);     // this will ensure no skipping update
+            if (oldVersion < 3) db.execSQL(DATABASE_ALTER_COMPANY);
+            */
         }
 
         // ------------------------ "activity" table methods ----------------//
 
         // Creating a Activity List
         public void createActivityList(DailyActivityList Activity) {
-            database.insert(TABLE_ACTIVITY, null, storeActivity(Activity));
+            ContentValues values = new ContentValues();
+            values.put(KEY_EMPLOYEE_ID, Activity.EmployeeID);
+            values.put(KEY_LAST_NAME, Activity.LastName);
+            values.put(KEY_FIRST_NAME, Activity.FirstName);
+            values.put(KEY_WORK_GROUP, Activity.WorkGroup);
+            values.put(KEY_COMPANY, Activity.Company);
+            values.put(KEY_LOCATION, Activity.Location);
+            values.put(KEY_JOB, Activity.Job);
+            values.put(KEY_DATE, Activity.Date);
+            values.put(KEY_TIME_IN, Activity.TimeIn);
+            values.put(KEY_TIME_OUT, Activity.TimeOut);
+            values.put(KEY_LUNCH, Activity.Lunch);
+            values.put(KEY_HOURS, Activity.Hours);
+            values.put(KEY_SUPERVISOR, Activity.Supervisor);
+            values.put(KEY_COMMENTS, Activity.Comments);
+            database.insert(TABLE_ACTIVITY, null, values);
+            // database.insert(TABLE_ACTIVITY, null, storeActivity(Activity));
         }
 
         // get activity 
@@ -148,7 +172,7 @@ import java.util.ArrayList;
             int i;
             String Empty = "" + "";
             for (i=1; i < Column.length && Column[i] != null; i++) {
-                    selectQuery = selectQuery + " AND " + Column[i] + " = " + "'" + Values[i] + "'";
+                selectQuery = selectQuery + " AND " + Column[i] + " = " + "'" + Values[i] + "'";
             }
             Log.e(LOG, selectQuery);
             return database.update(TABLE_ACTIVITY, storeActivity(Activity), selectQuery, null);

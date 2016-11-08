@@ -93,6 +93,8 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         adapter_company = new TouchTimeGeneralAdapter(this, feedCompanyList, R.layout.general_single_item_view, company_list_items, company_list_id, 40);
         adapter_company.setSelectedItem(itemCompany);
         company_list_view.setAdapter(adapter_company);
+        adapter_company.notifyDataSetChanged();
+        company_list_view.smoothScrollToPosition(itemCompany);
 
         getLocationJob();
         location_list_items[0] = getText(R.string.column_key_location).toString();
@@ -101,6 +103,8 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         adapter_location = new TouchTimeGeneralAdapter(this, feedLocationList, R.layout.general_single_item_view, location_list_items, location_list_id, 40);
         adapter_location.setSelectedItem(itemLocation);
         location_list_view.setAdapter(adapter_location);
+        adapter_location.notifyDataSetChanged();
+        location_list_view.smoothScrollToPosition(itemLocation);
 
         job_list_items[0] = getText(R.string.column_key_job).toString();
         job_list_id[0] = R.id.singleItemDisplayID;
@@ -108,6 +112,8 @@ public class CompanyJobLocationSelectionActivity extends ActionBarActivity {
         adapter_job = new TouchTimeGeneralAdapter(this, feedJobList, R.layout.general_single_item_view, job_list_items, job_list_id, 40);
         adapter_job.setSelectedItem(itemJob);
         job_list_view.setAdapter(adapter_job);
+        adapter_job.notifyDataSetChanged();
+        job_list_view.smoothScrollToPosition(itemJob);
 
         company_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -201,6 +201,8 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                             feedEmployeeList.set(i, map);
                         }
                     } while (++i < feedEmployeeList.size());
+                    itemEmployee = General.GetIntegerIndex(feedEmployeeList, getText(R.string.column_key_employee_id).toString(), ID);
+                    employee_list_view.smoothScrollToPosition(itemEmployee); // scroll to the newly added item
                 }
             }
             all_employee_lists = dbGroup.getAllEmployeeLists();
@@ -371,7 +373,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
                     if (item.length > 20) E.setCompany(item[20]); else E.setCompany("");
                     if (item.length > 21) E.setLocation(item[21]); else E.setLocation("");
                     if (item.length > 22) E.setJob(item[22]); else E.setJob("");
-                    if (item.length > 23) E.setStatus(Integer.parseInt(item[23])); else E.setStatus(0);
+                    E.setStatus(0);         // all import individuals must be default to punched out
                     // do not update photo, photo is null if a new ID
                     if (dbGroup.checkEmployeeID(E.getEmployeeID())) { // ID already exists
                         dbGroup.updateEmployeeList(E);
