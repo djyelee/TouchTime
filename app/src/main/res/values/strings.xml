@@ -276,6 +276,26 @@
     <string name="date_hire_title_text">Date of Hire:</string>
     <string name="doc_expiration_title_text">Expire Date:</string>
 
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="change_password">Change Pssword</string>
+    <string name="shortest_activities">Remove activities shorter than</string>
+    <string name="default_lunch_time">Default lunch time</string>
+    <string name="lunch_time_minutes">minutes</string>
+    <string name="update_settings">Update Settings</string>
+    <string name="minimum_lunch_hours">Deduct lunch time after</string>
+    <string name="lunch_time_hours">hours</string>
+    <string name="minimum_back_up_days">Back up files every</string>
+    <string name="back_up_days">days</string>
+    <string name="default_email_address">Default email address</string>
+    <string name="settings_not_available">Settings not available, use default!</string>
+    <string name="settings_wrong_password">Wrong password!</string>
+    <string name="settings_password_not_match">Passwords do not match, re-enter!</string>
+    <string name="settings_enter_password">Enter password !</string>
+
     <!-- Dialog Selections -->
     <string name="change_not_saved_message">Changes not saved, quit anyway ?</string>
     <string name="back_to">BACK to </string>

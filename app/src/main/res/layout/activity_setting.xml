@@ -1,7 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:binding="http://www.gueei.com/android-binding/"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="5dp"
@@ -10,393 +10,331 @@
     android:paddingBottom="5dp"
     android:background="?android:attr/activatedBackgroundIndicator">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1.75"
-        android:orientation="vertical"
-        android:layout_marginRight="5dp">
-         <TableRow
+     <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/old_password"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/street_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-            <EditText
-                android:id="@+id/company_street_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="textCapWords"
-                android:textColor="@color/svw_black"
-                android:layout_weight="4.7"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-        </TableRow>
-        <TableRow
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/old_password_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="textPassword"
+            android:textColor="@color/svw_black"
+            android:layout_weight="2"
+            android:paddingLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+         <Space
+             android:layout_width="0dp"
+             android:layout_height="match_parent"
+             android:layout_weight="1"
+             android:layout_marginRight="5dp"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/new_password"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/city_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-            <Spinner
-                android:id="@+id/city_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4.7"
-                android:layout_marginEnd="3dp"
-                android:layout_marginRight="3dp"
-                android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_large_size"
-                android:touchscreenBlocksFocus="false"
-                android:gravity="center" />
-
-        </TableRow>
-        <TableRow
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/new_password_text1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="textPassword"
+            android:textColor="@color/svw_black"
+            android:layout_weight="2"
+            android:paddingLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/state_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-            <Spinner
-                android:id="@+id/state_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2.1"
-                android:layout_marginEnd="3dp"
-                android:layout_marginRight="3dp"
-                android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_large_size"
-                android:touchscreenBlocksFocus="false"
-                android:gravity="center" />
+            android:layout_marginRight="5dp"/>
+    </TableRow>
 
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/zip_code_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.4"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/company_zip_code_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.2"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-        </TableRow>
-        <TableRow
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/confirm_password"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/country_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-
-            <Spinner
-                android:id="@+id/country_spinner"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2.1"
-                android:layout_marginEnd="3dp"
-                android:layout_marginRight="3dp"
-                android:background="@color/svw_dark_gray"
-                android:textSize="@dimen/screen_text_large_size"
-                android:touchscreenBlocksFocus="false"
-                android:gravity="center" />
-
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/phone_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="0.7"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical" />
-
-            <EditText
-                android:id="@+id/company_phone_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.9"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-        </TableRow>
-
-        <TableRow
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/new_password_text2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="textPassword"
+            android:textColor="@color/svw_black"
+            android:paddingLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <Button
+            android:id="@+id/change_password_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/email_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.3" />
-            <EditText
-                android:id="@+id/company_email_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/svw_black"
-                android:layout_weight="4.7"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="bottom" />
-        </TableRow>
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/hourly_rate_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.8"
-                android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/employee_hourly_rate_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.2"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/piece_rate_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.8"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/employee_piece_rate_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.2"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
-        </TableRow>
+            android:textSize="@dimen/screen_text_large_size"
+            android:text="@string/change_password"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:clickable="true"
+            android:onClick="onChangePasswordClicked"
+            android:gravity="center" />
+    </TableRow>
 
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/birth_date_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.4"
-                android:layout_marginRight="5dp"
-                android:layout_gravity="center_vertical" />
-            <Button
-                android:id="@+id/dob_button"
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@color/svw_dark_gray"
-                android:clickable="true"
-                android:onClick="onSetDateButtonClicked"
-                android:layout_gravity="center_vertical" />
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/ss_number_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="0.8"
-                android:layout_marginLeft="5dp"
-                android:layout_gravity="center_vertical" />
-            <EditText
-                android:id="@+id/employee_ss_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/screen_text_large_size"
-                android:inputType="number"
-                android:textColor="@color/svw_black"
-                android:layout_weight="1.8"
-                android:paddingLeft="5dp"
-                android:background="@color/svw_dark_gray"
-                android:layout_gravity="center_vertical" />
-        </TableRow>
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/default_email_address"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:layout_weight="1.4"
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/default_email_address"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/svw_black"
+            android:layout_weight="1.6"
+            android:paddingLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+    </TableRow>
 
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/hire_date_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.4"
-                android:layout_marginRight="5dp"/>
-            <Button
-                android:id="@+id/doh_button"
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:background="@color/svw_dark_gray"
-                android:clickable="true"
-                android:onClick="onSetDateButtonClicked"
-                android:layout_gravity="center_vertical" />
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/selection_active"
-                android:layout_width="0dp"
-                android:layout_weight="2.6"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:clickable="true" >
-                <RadioButton
-                    android:id="@+id/radio_active_yes"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="@string/active_title_text"
-                    android:textSize="@dimen/screen_text_large_size"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_gravity="center_vertical"
-                    android:checked="true"
-                    android:clickable="true" />
-                <RadioButton
-                    android:id="@+id/radio_active_no"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/no"
-                    android:textSize="@dimen/screen_text_large_size"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="true" />
-            </RadioGroup>
-        </TableRow>
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/shortest_activities"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:layout_weight="1.4"
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/shortest_activities"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="number"
+            android:textColor="@color/svw_black"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="@string/lunch_time_minutes"
+            android:paddingLeft="10dp"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:gravity="center_vertical|start" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:layout_marginRight="5dp"/>
+    </TableRow>
 
-        <TableRow
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp">
-            <TextView
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/expiration_title_text"
-                android:textStyle="bold|italic"
-                android:textColor="@color/svw_blue"
-                android:layout_weight="1.4"
-                android:layout_marginRight="5dp"
-                android:clickable="true" />
-            <Button
-                android:id="@+id/doc_exp_button"
-                android:textSize="@dimen/screen_text_large_size"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="5dp"
-                android:background="@color/svw_dark_gray"
-                android:clickable="true"
-                android:onClick="onSetDateButtonClicked"
-                android:layout_gravity="center_vertical" />
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/selection_current"
-                android:layout_width="0dp"
-                android:layout_weight="2.6"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:clickable="true" >
-                <RadioButton
-                    android:id="@+id/radio_current_yes"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="@string/current_title_text"
-                    android:textSize="@dimen/screen_text_large_size"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_gravity="center_vertical"
-                    android:checked="true"
-                    android:clickable="true" />
-                <RadioButton
-                    android:id="@+id/radio_current_no"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/no"
-                    android:textSize="@dimen/screen_text_large_size"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="true" />
-            </RadioGroup>
-        </TableRow>
-    </LinearLayout>
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/default_lunch_time"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:layout_weight="1.4"
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/default_lunch_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="number"
+            android:textColor="@color/svw_black"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="@string/lunch_time_minutes"
+            android:paddingLeft="10dp"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:gravity="center_vertical|start" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:layout_marginRight="5dp"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/minimum_lunch_hours"
+            android:textColor="@color/svw_blue"
+            android:textStyle="bold|italic"
+            android:layout_weight="1.4"
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/minimum_lunch_hours"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="numberDecimal"
+            android:textColor="@color/svw_black"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="@string/lunch_time_hours"
+            android:paddingLeft="10dp"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:gravity="center_vertical|start" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:layout_marginRight="5dp"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/minimum_back_up_days"
+            android:textColor="@color/svw_blue"
+            android:textStyle="bold|italic"
+            android:layout_weight="1.4"
+            android:gravity="center_vertical|start" />
+        <EditText
+            android:id="@+id/minimum_back_up_days"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:textSize="@dimen/screen_text_large_size"
+            android:inputType="number"
+            android:textColor="@color/svw_black"
+            android:paddingLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/svw_dark_gray"
+            android:imeOptions="actionNext"
+            android:gravity="center_vertical|start" />
+        <TextView
+            android:textSize="@dimen/screen_text_large_size"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="@string/back_up_days"
+            android:paddingLeft="10dp"
+            android:textStyle="bold|italic"
+            android:textColor="@color/svw_blue"
+            android:gravity="center_vertical|start" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.05"
+            android:layout_marginRight="5dp"/>
+        <Button
+            android:id="@+id/update_settings_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75"
+            android:textSize="@dimen/screen_text_large_size"
+            android:text="@string/update_settings"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundshapebtn"
+            android:clickable="true"
+            android:onClick="onUpdateSettingsClicked"
+            android:gravity="center" />
+
+    </TableRow>
 
 </LinearLayout>

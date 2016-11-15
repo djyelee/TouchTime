@@ -1,17 +1,23 @@
 package com.svw.touchtime;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
-public class AdministratorMenuActivity extends ActionBarActivity {
+public class AdministratorMenuActivity extends SettingActivity {
     private int Caller;
-
+    String Password;
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +32,38 @@ public class AdministratorMenuActivity extends ActionBarActivity {
         else
             main_menu.setText(getText(R.string.title_activity_supervisor_menu).toString());
 
+        context = this;
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_launcher);
-    }
+
+        if (Caller == R.id.caller_administrator) {
+            ReadSettings();
+
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            input.setTextColor(getResources().getColor(R.color.svw_cyan));
+            input.setTextSize(getResources().getInteger(R.integer.password_size));
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.TouchTimeDialog));
+            builder.setView(input);    //edit text added to alert
+            builder.setMessage(R.string.settings_enter_password).setTitle(R.string.settings_title);
+            builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    if (!input.getText().toString().equals(SettingOldPassword)) {
+                        AlertDialog.Builder Pbuilder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.TouchTimeDialog));
+                        Pbuilder.setMessage(R.string.settings_wrong_password).setTitle(R.string.settings_title);
+                        Pbuilder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                onBackPressed();
+                            }
+                        });
+                        AlertDialog Pdialog = Pbuilder.create();
+                        General.TouchTimeDialog(Pdialog, findViewById(android.R.id.content));
+                    }
+                }
+            });
+            AlertDialog dialog = builder.create();
+            General.TouchTimeDialog(dialog, findViewById(android.R.id.content));
+        }
+     }
 
     public void ReportReviewMenu(View view) {
         Intent intent = new Intent(this, ReportReviewMenuActivity.class);
@@ -99,6 +135,10 @@ public class AdministratorMenuActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            if (Caller == R.id.caller_administrator) {
+                Intent intent = new Intent(this, SettingActivity.class);
+                startActivity(intent);
+            }
             return true;
         }
 

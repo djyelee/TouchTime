@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 
 
-public class EmployeePunchMenuActivity extends ActionBarActivity {
+public class EmployeePunchMenuActivity extends SettingActivity {
     public TextView Current_date;
     public TextView Current_time;
     private ListView universal_list_view;
@@ -56,9 +55,6 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
     Context context;
     static final int PICK_JOB_REQUEST = 123;
     static final int MOVE_JOB_REQUEST = 456;
-    static final int MIN_HOURS = 10;
-    static final int LUNCH_TIME = 30;
-    static final int WORK_HOURS = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +75,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         unique_itemNumber = new ArrayList<Integer>();
         ArrayList<EmployeeProfileList> all_employee_lists;
         context = this;
+        ReadSettings();
 
         btn_select_all.setText(getText(R.string.button_select_all));
         DateFormat yf = new SimpleDateFormat("yyyy", Locale.US);
@@ -422,7 +419,7 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
         } else if (Activity.getEmployeeID() > 0) {
             // calculate the time (in minutes) for the current work period and update record
             long diff = General.MinuteDifference(tf, Activity.getTimeIn(), currentDateTimeString);  // function always returns positive
-            if (diff < MIN_HOURS) {     // work time too short, remove automatically
+            if (diff < SettingShortestActivity) {     // work time too short, remove automatically
                 dbActivity.deletePunchedInActivityList(unique_employeeID.get(index), Activity.getTimeIn());
                 feedEmployeeList.get(unique_itemNumber.get(index)).put(getText(R.string.column_key_status).toString(), getText(R.string.out).toString());
                 dbGroup.updateEmployeeStatus(unique_employeeID.get(index), 0);
@@ -442,9 +439,9 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
             activity_lists = dbActivity.getActivityLists(Column, Compare, Values);
             // if employee has multiple work periods in one day
             if (activity_lists.size() == 1) {
-                if (diff >= WORK_HOURS) {       // original work hours already recorded, check and change here
-                    activity_lists.get(0).setLunch(LUNCH_TIME);
-                    activity_lists.get(0).setHours(diff - LUNCH_TIME);
+                if (diff >= SettingWorkHours) {       // original work hours already recorded, check and change here
+                    activity_lists.get(0).setLunch(SettingLunchTime);
+                    activity_lists.get(0).setHours(diff - SettingLunchTime);
                     updateUniqueActivity(activity_lists.get(0));        // update
                 }
             } else if (activity_lists.size() > 1) {
@@ -463,13 +460,13 @@ public class EmployeePunchMenuActivity extends ActionBarActivity {
                 // sort in descending order so the longest work period gets deducted the lunch horus first
                 General.SortIntegerList(activityList, getText(R.string.column_key_hours).toString(), false);
                 // assign lunch hours
-                if (total_lunch < LUNCH_TIME && total_work >= WORK_HOURS) { // lunch hours are not all deducted yet and work hours has reach the limit to take a lunch break
+                if (total_lunch < SettingLunchTime && total_work >= SettingWorkHours) { // lunch hours are not all deducted yet and work hours has reach the limit to take a lunch break
                     long hours_needed;
                     // distribute lunch hours over as many records as needed
                     for (int i = 0; i < activityList.size(); i++) {
-                        if (total_lunch < LUNCH_TIME) {
+                        if (total_lunch < SettingLunchTime) {
                             DailyActivityList temp = activity_lists.get(Integer.parseInt(activityList.get(i).get(getText(R.string.column_key_employee_id).toString())));
-                            hours_needed = LUNCH_TIME - total_lunch;
+                            hours_needed = SettingLunchTime - total_lunch;
                             // change work hour last, it is needed for lunch time calculation
                             temp.setLunch(temp.Lunch + (temp.Hours >= hours_needed ? hours_needed : temp.Hours));
                             total_lunch += temp.Hours >= hours_needed ? hours_needed : temp.Hours;

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +38,7 @@ import java.util.regex.Pattern;
 
 import static com.svw.touchtime.R.layout.general_edit_text_view;
 
-public class CompanyProfileMenuActivity extends ActionBarActivity {
+public class CompanyProfileMenuActivity extends SettingActivity {
     private ListView company_list_view;
     private EditText NameEdit, StreetEdit, ZipCodeEdit;
     private EditText PhoneEdit, ContactEdit, EmailEdit;
@@ -91,6 +90,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
         EmailEdit = (EditText) findViewById(R.id.company_email_text);
         feedCompanyList = new ArrayList<HashMap<String, String>>();
 
+        ReadSettings();
         // database and other data
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);
         dbCountry = new CountryStateCityDBWrapper(this);
@@ -656,7 +656,7 @@ public class CompanyProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onExportButtonClicked(View view) {
-        String to = "svwtouchtime@gmail.com";
+        String to = SettingEmail;
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {

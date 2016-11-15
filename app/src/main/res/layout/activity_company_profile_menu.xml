@@ -91,7 +91,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/name_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -118,7 +118,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/street_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -144,7 +144,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/city_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -170,7 +170,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/state_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -191,7 +191,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/zip_code_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -208,6 +208,7 @@
                 android:layout_weight="1.2"
                 android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
+                android:imeOptions="actionNext"
                 android:layout_gravity="center_vertical" />
         </TableRow>
         <TableRow
@@ -218,7 +219,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/country_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -239,7 +240,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/phone_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -256,6 +257,7 @@
                 android:layout_weight="1.9"
                 android:paddingLeft="10dp"
                 android:background="@color/svw_dark_gray"
+                android:imeOptions="actionNext"
                 android:layout_gravity="center_vertical" />
         </TableRow>
 
@@ -267,7 +269,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/contact_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"
@@ -293,7 +295,7 @@
             <TextView
                 android:textSize="@dimen/screen_text_large_size"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/email_title_text"
                 android:textStyle="bold|italic"
                 android:textColor="@color/svw_blue"

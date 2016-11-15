@@ -19,4 +19,5 @@
     <dimen name="view_xlarge_size">36sp</dimen>
     <dimen name="view_large_size">32sp</dimen>
     <dimen name="view_small_size">28sp</dimen>
+    <integer name="password_size">24</integer>
 </resources>

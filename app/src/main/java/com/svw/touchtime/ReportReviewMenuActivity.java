@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,7 @@ import java.util.HashMap;
 
 import static com.svw.touchtime.R.layout.general_edit_text_view;
 
-public class ReportReviewMenuActivity extends ActionBarActivity {
+public class ReportReviewMenuActivity extends SettingActivity {
     private static final int   NUMBER_ITEMS = 9;
     private static final int   NUMBER_SPINNERS = 9;
     private static final String DEFAULT_CHECKOUT_TIME = "05:00:00 PM";
@@ -161,7 +160,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
         ObjectKeys = new ArrayList<String>();
 
         noSelection = getText(R.string.column_key_no_selection).toString();
-
+        ReadSettings();
         // Follow the following order to prevent them from firing the first time
         NameSpinner = (Spinner) findViewById(R.id.name_spinner);
         CompanySpinner = (Spinner) findViewById(R.id.company_spinner);
@@ -807,7 +806,7 @@ public class ReportReviewMenuActivity extends ActionBarActivity {
     }
 
     public void onExportButtonClicked(View view) {
-        String to = "svwtouchtime@gmail.com";
+        String to = SettingEmail;
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {

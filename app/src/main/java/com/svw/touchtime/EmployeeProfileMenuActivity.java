@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class EmployeeProfileMenuActivity extends ActionBarActivity {
+public class EmployeeProfileMenuActivity extends SettingActivity {
     ListView employee_list_view;
     Button sort_id;
     Button sort_last_name;
@@ -75,7 +74,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
         dbGroup = new EmployeeGroupCompanyDBWrapper(this);
         Employee = new EmployeeProfileList();
         all_employee_lists = dbGroup.getAllEmployeeLists();
-
+        ReadSettings();
         readDisplayEmployee();
         deleteCSVFiles();
 
@@ -409,7 +408,7 @@ public class EmployeeProfileMenuActivity extends ActionBarActivity {
     }
 
     public void onExportButtonClicked(View view) {
-        String to = "svwtouchtime@gmail.com";
+        String to = SettingEmail;
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {

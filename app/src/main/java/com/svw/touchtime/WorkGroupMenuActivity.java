@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class WorkGroupMenuActivity extends ActionBarActivity {
+public class WorkGroupMenuActivity extends SettingActivity {
     private ListView work_group_list_view;
     private EditText GroupNameEdit, SupervisorEdit, ShiftNameEdit;
     boolean sort_id_ascend = true;
@@ -80,6 +79,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
         adapter_group = new SimpleAdapter(this, feedGroupList, R.layout.group_display_view, group_item, group_id);
         work_group_list_view.setAdapter(adapter_group);
         itemWorkGroup = 0;
+        ReadSettings();
         readWorkGroup(true);
         displayWorkGroup();
         // display selected employees
@@ -479,7 +479,7 @@ public class WorkGroupMenuActivity extends ActionBarActivity {
     }
 
     public void onExportButtonClicked(View view) {
-        String to = "svwtouchtime@gmail.com";
+        String to = SettingEmail;
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("plain/text");
         try {
